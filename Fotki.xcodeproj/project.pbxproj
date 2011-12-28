@@ -35,19 +35,19 @@
 		E1EA4A2814A59F0400EE9703 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E1EA4A2914A59F0400EE9703 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		E1EA4A2A14A59F0400EE9703 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		E1EA4A2D14A59F0400EE9703 /* Fotki-Info.plist */ = {isa = PBXFileReference; path = "Fotki-Info.plist"; sourceTree = "<group>"; };
+		E1EA4A2D14A59F0400EE9703 /* Fotki-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Fotki-Info.plist"; sourceTree = "<group>"; };
 		E1EA4A2F14A59F0400EE9703 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E1EA4A3114A59F0400EE9703 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		E1EA4A3314A59F0400EE9703 /* Fotki-Prefix.pch */ = {isa = PBXFileReference; path = "Fotki-Prefix.pch"; sourceTree = "<group>"; };
+		E1EA4A3314A59F0400EE9703 /* Fotki-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fotki-Prefix.pch"; sourceTree = "<group>"; };
 		E1EA4A3514A59F0400EE9703 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		E1EA4A3714A59F0400EE9703 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		E1EA4A3714A59F0400EE9703 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E1EA4A3814A59F0400EE9703 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E1EA4A3B14A59F0400EE9703 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E1EA4A4214A59F0400EE9703 /* FotkiTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FotkiTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1EA4A4314A59F0400EE9703 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		E1EA4A4A14A59F0400EE9703 /* FotkiTests-Info.plist */ = {isa = PBXFileReference; path = "FotkiTests-Info.plist"; sourceTree = "<group>"; };
+		E1EA4A4A14A59F0400EE9703 /* FotkiTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FotkiTests-Info.plist"; sourceTree = "<group>"; };
 		E1EA4A4C14A59F0400EE9703 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E1EA4A4E14A59F0400EE9703 /* FotkiTests.h */ = {isa = PBXFileReference; path = FotkiTests.h; sourceTree = "<group>"; };
+		E1EA4A4E14A59F0400EE9703 /* FotkiTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FotkiTests.h; sourceTree = "<group>"; };
 		E1EA4A4F14A59F0400EE9703 /* FotkiTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FotkiTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
