@@ -46,6 +46,11 @@
     [self addPathToSharedItem:FOTKI_PATH];
 }
 
+- (IBAction)settingsMenuItemClicked:(id)sender {
+    //[self.window orderOut:self];
+    [self.window makeKeyAndOrderFront:self];
+}
+
 - (NSImage *)image:(NSImage *)sourceImage resizeTo:(NSSize)newSize {
     NSImage *resizedImage = [[[NSImage alloc] initWithSize:newSize] autorelease];
 

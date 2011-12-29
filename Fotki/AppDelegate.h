@@ -16,6 +16,9 @@
 @property (assign) IBOutlet NSWindow *window;
 
 - (IBAction) testMenuItemClicked:(id)sender;
+
+- (IBAction)settingsMenuItemClicked:(id)sender;
+
 - (IBAction)itemClicked:(id)sender;
 
 @end
