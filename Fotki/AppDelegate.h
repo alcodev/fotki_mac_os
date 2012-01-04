@@ -16,7 +16,7 @@
 
     NSFileManager *_fm;
     NSMutableArray *_files;
-    NSMutableDictionary *_pathModificationDates;
+    NSMutableDictionary *_filesHashes;
     NSDate *_appStartedTimestamp;
     FSEventStreamRef _stream;
 

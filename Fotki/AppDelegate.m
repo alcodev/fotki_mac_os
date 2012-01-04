@@ -56,7 +56,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem release];
 
     [_files release];
-    [_pathModificationDates release];
+    [_filesHashes release];
     [_lastEventId release];
 
     [_appStartedTimestamp release];
@@ -101,7 +101,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *appDefaults = [NSDictionary
         dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:kFSEventStreamEventIdSinceNow], [NSMutableDictionary new], nil]
-                      forKeys:[NSArray arrayWithObjects:@"lastEventId", @"pathModificationDates", nil]];
+                      forKeys:[NSArray arrayWithObjects:@"lastEventId", @"filesHashes", nil]];
     [defaults registerDefaults:appDefaults];
 }
 
@@ -114,17 +114,17 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [self registerDefaults];
 
     _appStartedTimestamp = [[NSDate date] retain];
-    _pathModificationDates = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"pathModificationDates"] mutableCopy];
+    _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
     _lastEventId = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastEventId"];
 
     NSArray *pathsToWatch = [NSArray arrayWithObject:@"/Users/vavaka/tmp/fotki/"];
-    _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId pathModificationDate:_pathModificationDates];
+    _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
     [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
         LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:sender.lastEventId forKey:@"lastEventId"];
-        [defaults setObject:sender.pathModificationDates forKey:@"pathModificationDates"];
+        [defaults setObject:sender.filesHashes forKey:@"filesHashes"];
         [defaults synchronize];
     } doOnFileAdded:^(NSString *path){
         [self handleFileAdd:path];

@@ -26,6 +26,7 @@
 		E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E7 /* Finder.m */; };
 		E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8EA /* NSImage+Helper.m */; };
 		E1EE7F8414AC79AA003AD8F1 /* FileSystemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */; };
+		E1EE7F8414AC79AA003AD8F5 /* FileMD5Hash.c in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8F4 /* FileMD5Hash.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,9 @@
 		E1EE7F8414AC79AA003AD8EC /* NSImage+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+Helper.h"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemHelper.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD8F2 /* FileSystemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemHelper.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8F4 /* FileMD5Hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileMD5Hash.c; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8F6 /* FileMD5Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileMD5Hash.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8F7 /* FileMD5Hash_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileMD5Hash_Prefix.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,8 +207,19 @@
 				E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */,
 				E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */,
 				E1EE7F8414AC79AA003AD8E1 /* NSThread+Helper.h */,
+				E1EE7F8414AC79AA003AD8F3 /* FileMD5Hash */,
 			);
 			path = Lib;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD8F3 /* FileMD5Hash */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD8F7 /* FileMD5Hash_Prefix.pch */,
+				E1EE7F8414AC79AA003AD8F6 /* FileMD5Hash.h */,
+				E1EE7F8414AC79AA003AD8F4 /* FileMD5Hash.c */,
+			);
+			path = FileMD5Hash;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -324,6 +339,7 @@
 				E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */,
 				E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */,
 				E1EE7F8414AC79AA003AD8F1 /* FileSystemHelper.m in Sources */,
+				E1EE7F8414AC79AA003AD8F5 /* FileMD5Hash.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

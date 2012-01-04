@@ -4,6 +4,7 @@
 
 
 #import "FileSystemMonitor.h"
+#include "FileMD5Hash.h"
 
 static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
     FileSystemMonitor *fileSystemMonitor = (FileSystemMonitor *) userData;
@@ -21,9 +22,9 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 @implementation FileSystemMonitor
 
 @synthesize lastEventId = _lastEventId;
-@synthesize pathModificationDates = _pathModificationDates;
+@synthesize filesHashes = _filesHashes;
 
-- (id)initWithPaths:(NSArray *)paths lastEventId:(NSNumber *)lastEventId pathModificationDate:(NSMutableDictionary *)pathModificationDates {
+- (id)initWithPaths:(NSArray *)paths lastEventId:(NSNumber *)lastEventId filesHashes:(NSMutableDictionary *)filesHash {
     self = [super init];
     if (self != nil) {
         _fm = [NSFileManager defaultManager];
@@ -32,7 +33,7 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 
         _paths = [paths retain];
         _lastEventId = [lastEventId retain];
-        _pathModificationDates = [pathModificationDates retain];
+        _filesHashes = [filesHash retain];
     }
 
     return self;
@@ -42,7 +43,7 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
     [_files release];
 
     [_paths release];
-    [_pathModificationDates release];
+    [_filesHashes release];
     [_lastEventId release];
 
     Block_release(_syncNeededCallback);
@@ -55,8 +56,8 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 
 - (void)startAndDoOnSyncNeeded:(FileSystemSyncCallback)syncNeededCallback
                  doOnFileAdded:(FileSystemEventCallback)addCallback
-                 doOnFileUpdated:(FileSystemEventCallback)updateCallback
-                 doOnFileDeleted:(FileSystemEventCallback)deleteCallback {
+               doOnFileUpdated:(FileSystemEventCallback)updateCallback
+               doOnFileDeleted:(FileSystemEventCallback)deleteCallback {
 
     LOG(@"Subscribing to events from %d", [_lastEventId unsignedLongLongValue]);
 
@@ -85,27 +86,38 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 }
 
 - (void)callSyncNeededCallback {
-    if (_syncNeededCallback){
+    if (_syncNeededCallback) {
         _syncNeededCallback(self);
     }
 }
 
 - (void)callAddCallback:(NSString *)path {
-    if (_addCallback){
+    if (_addCallback) {
         _addCallback(path);
     }
 }
 
 - (void)callUpdateCallback:(NSString *)path {
-    if (_updateCallback){
+    if (_updateCallback) {
         _updateCallback(path);
     }
 }
 
 - (void)callDeleteCallback:(NSString *)path {
-    if (_deleteCallback){
+    if (_deleteCallback) {
         _deleteCallback(path);
     }
+}
+
+- (NSString *)hashForFileAtPath:(NSString *)path {
+    NSString *result = nil;
+    CFStringRef hash = FileMD5HashCreateWithPath((CFStringRef) path, FileHashDefaultChunkSizeForReadingData);
+    if (hash) {
+        result = [NSString stringWithString:(NSString *) hash];
+        CFRelease(result);
+    }
+
+    return result;
 }
 
 - (void)handleFileSystemEventWithId:(uint64_t)eventId path:(NSString *)path {
@@ -113,45 +125,38 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 
     for (NSString *node in [_fm directoryContentsAtPath:path]) {
         NSString *fullPath = [path stringByAppendingPathComponent:node];
-        if ([_fm fileExistsAtPath:fullPath]) {
-            NSDictionary *fileAttributes = [_fm attributesOfItemAtPath:fullPath error:NULL];
-            NSDate *fileModDate = [fileAttributes objectForKey:NSFileModificationDate];
-            NSDate *modDateForFullPath = [_pathModificationDates objectForKey:fullPath];
-            if ([fileModDate compare:modDateForFullPath] != NSOrderedSame) {
-                LOG(@"File %@ updated", fullPath);
-                [self callUpdateCallback:fullPath];
-
-                [_pathModificationDates setObject:fileModDate forKey:fullPath];
-                [self callSyncNeededCallback];
-            }
+        NSString *hash = [self hashForFileAtPath:fullPath];
+        if (!hash) {
+            LOG(@"Can't get hash of %@ file", fullPath);
+            continue;
         }
-    }
 
-    for (NSString *node in [_fm directoryContentsAtPath:path]) {
-        NSString *fullPath = [path stringByAppendingPathComponent:node];
-        if ([_pathModificationDates objectForKey:fullPath] == nil) {
-            LOG(@"File %@ added", fullPath);
+        if (![_filesHashes objectForKey:fullPath]) {
+            LOG(@"File %@ added, hash: %@", fullPath, hash);
             [self callAddCallback:fullPath];
 
-            NSDictionary *fileAttributes = [_fm attributesOfItemAtPath:fullPath error:NULL];
-            NSDate *fileModDate = [fileAttributes objectForKey:NSFileModificationDate];
-            [_pathModificationDates setObject:fileModDate forKey:fullPath];
+            [_filesHashes setObject:hash forKey:fullPath];
+            [self callSyncNeededCallback];
+        } else if (![hash isEqualToString:[_filesHashes objectForKey:fullPath]]) {
+            LOG(@"File %@ updated, hash_old: %@, hash_new: %@", fullPath, [_filesHashes objectForKey:fullPath], hash);
+            [self callUpdateCallback:fullPath];
+
+            [_filesHashes setObject:hash forKey:fullPath];
             [self callSyncNeededCallback];
         }
     }
 
     NSMutableArray *discardedItems = [NSMutableArray array];
-    for (NSString *fullPath in [_pathModificationDates keyEnumerator]) {
+    for (NSString *fullPath in [_filesHashes keyEnumerator]) {
         if (![_fm fileExistsAtPath:fullPath]) {
             [discardedItems addObject:fullPath];
         }
     }
-    [_pathModificationDates removeObjectsForKeys:discardedItems];
     for (NSString *fullPath in discardedItems) {
         LOG(@"File %@ deleted", fullPath);
         [self callDeleteCallback:fullPath];
 
-        [_pathModificationDates removeObjectForKey:fullPath];
+        [_filesHashes removeObjectForKey:fullPath];
         [self callSyncNeededCallback];
     }
 }

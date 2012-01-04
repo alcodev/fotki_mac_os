@@ -23,9 +23,9 @@ typedef void (^FileSystemEventCallback)(NSString *path);
 }
 
 @property(readonly) NSNumber *lastEventId;
-@property(readonly) NSMutableDictionary *pathModificationDates;
+@property(readonly) NSMutableDictionary *filesHashes;
 
-- (id)initWithPaths:(NSArray *)paths lastEventId:(NSNumber *)lastEventId pathModificationDate:(NSMutableDictionary *)pathModificationDates;
+- (id)initWithPaths:(NSArray *)paths lastEventId:(NSNumber *)lastEventId filesHashes:(NSMutableDictionary *)filesHash;
 
 - (void)startAndDoOnSyncNeeded:(FileSystemSyncCallback)syncNeededCallback doOnFileAdded:(FileSystemEventCallback)addCallback doOnFileUpdated:(FileSystemEventCallback)updateCallback doOnFileDeleted:(FileSystemEventCallback)deleteCallback;
 
