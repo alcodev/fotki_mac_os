@@ -20,6 +20,11 @@
 		E1EE7F8214AC79AA003AD8DF /* check.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F7F14AC79AA003AD8DF /* check.icns */; };
 		E1EE7F8314AC79AA003AD8DF /* nosync.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8014AC79AA003AD8DF /* nosync.icns */; };
 		E1EE7F8414AC79AA003AD8DF /* updated.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8114AC79AA003AD8DF /* updated.icns */; };
+		E1EE7F8414AC79AA003AD8E3 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */; };
+		E1EE7F8414AC79AA003AD8E5 /* FileSystemMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */; };
+		E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E7 /* Finder.m */; };
+		E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8EA /* NSImage+Helper.m */; };
+		E1EE7F8414AC79AA003AD8F1 /* FileSystemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +60,16 @@
 		E1EE7F7F14AC79AA003AD8DF /* check.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = check.icns; path = Resources/check.icns; sourceTree = "<group>"; };
 		E1EE7F8014AC79AA003AD8DF /* nosync.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = nosync.icns; path = Resources/nosync.icns; sourceTree = "<group>"; };
 		E1EE7F8114AC79AA003AD8DF /* updated.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = updated.icns; path = Resources/updated.icns; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E1 /* NSThread+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSThread+Helper.h"; path = "Extensions/NSThread+Helper.h"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSThread+Helper.m"; path = "Extensions/NSThread+Helper.m"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemMonitor.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E6 /* FileSystemMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemMonitor.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E7 /* Finder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Finder.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8E9 /* Finder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Finder.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8EA /* NSImage+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+Helper.m"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8EC /* NSImage+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+Helper.h"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemHelper.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD8F2 /* FileSystemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemHelper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +140,7 @@
 				E1EA4A3814A59F0400EE9703 /* AppDelegate.m */,
 				E1EA4A3A14A59F0400EE9703 /* MainMenu.xib */,
 				E1EA4A2C14A59F0400EE9703 /* Supporting Files */,
+				E1EE7F8414AC79AA003AD8E0 /* Lib */,
 			);
 			path = Fotki;
 			sourceTree = "<group>";
@@ -168,6 +184,23 @@
 				E1EE7F8114AC79AA003AD8DF /* updated.icns */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD8E0 /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD8F2 /* FileSystemHelper.h */,
+				E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */,
+				E1EE7F8414AC79AA003AD8EC /* NSImage+Helper.h */,
+				E1EE7F8414AC79AA003AD8EA /* NSImage+Helper.m */,
+				E1EE7F8414AC79AA003AD8E9 /* Finder.h */,
+				E1EE7F8414AC79AA003AD8E7 /* Finder.m */,
+				E1EE7F8414AC79AA003AD8E6 /* FileSystemMonitor.h */,
+				E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */,
+				E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */,
+				E1EE7F8414AC79AA003AD8E1 /* NSThread+Helper.h */,
+			);
+			path = Lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -282,6 +315,11 @@
 			files = (
 				E1EA4A3214A59F0400EE9703 /* main.m in Sources */,
 				E1EA4A3914A59F0400EE9703 /* AppDelegate.m in Sources */,
+				E1EE7F8414AC79AA003AD8E3 /* NSThread+Helper.m in Sources */,
+				E1EE7F8414AC79AA003AD8E5 /* FileSystemMonitor.m in Sources */,
+				E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */,
+				E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */,
+				E1EE7F8414AC79AA003AD8F1 /* FileSystemHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

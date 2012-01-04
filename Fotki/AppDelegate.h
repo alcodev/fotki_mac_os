@@ -8,17 +8,40 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class FileSystemMonitor;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     IBOutlet NSMenu *statusMenu;
-    NSStatusItem * statusItem;
+    NSStatusItem *statusItem;
+
+    NSFileManager *_fm;
+    NSMutableArray *_files;
+    NSMutableDictionary *_pathModificationDates;
+    NSDate *_appStartedTimestamp;
+    FSEventStreamRef _stream;
+
+    FileSystemMonitor *_fileSystemMonitor;
 }
 
-@property (assign) IBOutlet NSWindow *window;
+@property(assign) IBOutlet NSWindow *window;
+@property(readonly) NSNumber *lastEventId;
 
-- (IBAction) testMenuItemClicked:(id)sender;
+- (IBAction)testMenuItemClicked:(id)sender;
 
 - (IBAction)settingsMenuItemClicked:(id)sender;
 
 - (IBAction)itemClicked:(id)sender;
+
+- (void)synchronizeData;
+
+- (void)registerDefaults;
+
+- (void)initializeEventStream;
+
+- (void)addModifiedImagesAtPath:(NSString *)path;
+
+- (void)updateLastEventId:(uint64_t)eventId;
+
+- (BOOL)fileIsImage:(NSString *)path;
 
 @end
