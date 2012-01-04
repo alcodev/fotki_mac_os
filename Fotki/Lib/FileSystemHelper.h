@@ -10,6 +10,6 @@
 
 + (BOOL)isImageFileAtPath:(NSString *)path;
 
-+ (void)putBadge:(NSImage *)badge onFileIconAtPath:(NSString *)path;
++ (NSImage *)imageWithPreviewOfFileAtPath:(NSString *)path ofSize:(NSSize)size asIcon:(BOOL)icon;
 
 @end

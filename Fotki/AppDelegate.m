@@ -76,15 +76,24 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     return NSTerminateNow;
 }
 
+- (void)putBadge:(NSImage *)badge onFileIconAtPath:(NSString *)path {
+    NSImage *fileIcon = [FileSystemHelper imageWithPreviewOfFileAtPath:path ofSize:NSMakeSize(64, 64) asIcon:YES];
+    //NSImage *fileIcon = [[NSWorkspace sharedWorkspace] iconForFile:path];
+    NSImage *badgedIcon = [[fileIcon putOtherImage:badge] retain];    
+    [[NSWorkspace sharedWorkspace] setIcon:badgedIcon forFile:path options:nil];
+    
+    [badgedIcon release];
+}
+
 - (void)handleFileAdd:(NSString *)path {
     if (![FileSystemHelper isImageFileAtPath:path]) {
         return;
     }
 
     [NSThread doInNewThread:^{
-        [FileSystemHelper putBadge:[self getBadgeImageWithName:@"updated.icns"] onFileIconAtPath:path];
+        [self putBadge:[self getBadgeImageWithName:@"updated.icns"] onFileIconAtPath:path];
         [NSThread sleepForTimeInterval:5];
-        [FileSystemHelper putBadge:[self getBadgeImageWithName:@"check.icns"] onFileIconAtPath:path];
+        [self putBadge:[self getBadgeImageWithName:@"check.icns"] onFileIconAtPath:path];
     }];
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E1DA1C1614B44A2C00E44BE2 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DA1C1514B44A2C00E44BE2 /* QuickLook.framework */; };
 		E1EA4A2614A59F0400EE9703 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1EA4A2514A59F0400EE9703 /* Cocoa.framework */; };
 		E1EA4A3014A59F0400EE9703 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1EA4A2E14A59F0400EE9703 /* InfoPlist.strings */; };
 		E1EA4A3214A59F0400EE9703 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EA4A3114A59F0400EE9703 /* main.m */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E1DA1C1514B44A2C00E44BE2 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		E1EA4A2114A59F0400EE9703 /* Fotki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fotki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1EA4A2514A59F0400EE9703 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E1EA4A2814A59F0400EE9703 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -77,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1DA1C1614B44A2C00E44BE2 /* QuickLook.framework in Frameworks */,
 				E1EA4A2614A59F0400EE9703 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -96,6 +99,7 @@
 		E1EA4A1614A59F0300EE9703 = {
 			isa = PBXGroup;
 			children = (
+				E1DA1C1514B44A2C00E44BE2 /* QuickLook.framework */,
 				E1EA4A2B14A59F0400EE9703 /* Fotki */,
 				E1EA4A4814A59F0400EE9703 /* FotkiTests */,
 				E1EA4A2414A59F0400EE9703 /* Frameworks */,
