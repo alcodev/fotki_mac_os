@@ -12,9 +12,10 @@
 #import "Finder.h"
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
+#import "FotkiServiceFacade.h"
 
 #define APP_NAME @"Fotki"
-#define FOTKI_PATH @"/Users/vavaka/tmp/fotki"
+#define FOTKI_PATH @"/Users/aistomin/tmp/fotki"
 
 void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
     AppDelegate *appDelegate = (AppDelegate *) userData;
@@ -54,6 +55,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (void)dealloc {
     [statusMenu release];
     [statusItem release];
+    [loginButton release];
 
     [_files release];
     [_filesHashes release];
@@ -110,6 +112,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setMenu:statusMenu];
     [statusItem setTitle:APP_NAME];
     [statusItem setHighlightMode:YES];
+    [loginButton setTitle:@"Login"];
 
     [self registerDefaults];
 
@@ -117,7 +120,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
     _lastEventId = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastEventId"];
 
-    NSArray *pathsToWatch = [NSArray arrayWithObject:@"/Users/vavaka/tmp/fotki/"];
+    NSArray *pathsToWatch = [NSArray arrayWithObject:FOTKI_PATH];
     _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
     [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
         LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
@@ -145,6 +148,8 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (IBAction)itemClicked:(id)sender {
+    [Finder addPathToFavourites:FOTKI_PATH];
+    return;
     NSImage *badge = [[NSImage imageNamed:@"check.icns"] extractAsImageRepresentationOfSize:0];
 
     NSImage *fileIcon = [[[NSWorkspace sharedWorkspace] iconForFile:@"/Users/vavaka/tmp/fotki/alcodev.png"] copy];
@@ -153,6 +158,16 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     [[NSWorkspace sharedWorkspace] setIcon:badgedIcon forFile:@"/Users/vavaka/tmp/fotki/en2.yml" options:nil];
 }
+
+- (IBAction)exitMenuItemClicked:(id)sender {
+    //exit
+}
+
+- (IBAction)loginButtonClicked:(id)sender {
+    FotkiServiceFacade *fotkiServiceFacade = [[[FotkiServiceFacade alloc] init]autorelease];
+    [fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"];
+}
+
 
 - (NSImage *)getBadgeImageWithName:(NSString *)name {
     return [[NSImage imageNamed:name] extractAsImageRepresentationOfSize:0];

@@ -4,13 +4,13 @@
 
 
 #import "FileSystemMonitor.h"
-#include "FileMD5Hash.h"
+#import "FileMD5Hash.h"
 
 static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
     FileSystemMonitor *fileSystemMonitor = (FileSystemMonitor *) userData;
     size_t i;
     for (i = 0; i < numEvents; i++) {
-        if (eventIds[i] <= [fileSystemMonitor.lastEventId unsignedLongLongValue]) {
+        if ([fileSystemMonitor.lastEventId integerValue] > 0 && eventIds[i] <= [fileSystemMonitor.lastEventId unsignedLongLongValue]) {
             continue;
         }
 
@@ -118,6 +118,7 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
     }
 
     return result;
+
 }
 
 - (void)handleFileSystemEventWithId:(uint64_t)eventId path:(NSString *)path {
