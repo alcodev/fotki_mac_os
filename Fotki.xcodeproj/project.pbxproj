@@ -38,6 +38,20 @@
 		E1EE7F8414AC79AA003AD916 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD915 /* AFURLConnectionOperation.m */; };
 		E1EE7F8414AC79AA003AD919 /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD918 /* AFXMLRequestOperation.m */; };
 		E1EE7F8414AC79AA003AD91C /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD91B /* UIImageView+AFNetworking.m */; };
+		E1EE7F8414AC79AA003AD922 /* CXMLDocument_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD921 /* CXMLDocument_CreationExtensions.m */; };
+		E1EE7F8414AC79AA003AD925 /* CXMLNode_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD924 /* CXMLNode_CreationExtensions.m */; };
+		E1EE7F8414AC79AA003AD928 /* CXHTMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD927 /* CXHTMLDocument.m */; };
+		E1EE7F8414AC79AA003AD92B /* CXMLDocument_PrivateExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD92A /* CXMLDocument_PrivateExtensions.m */; };
+		E1EE7F8414AC79AA003AD92E /* CXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD92D /* CXMLDocument.m */; };
+		E1EE7F8414AC79AA003AD931 /* CXMLElement_CreationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD930 /* CXMLElement_CreationExtensions.m */; };
+		E1EE7F8414AC79AA003AD934 /* CXMLElement_ElementTreeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD933 /* CXMLElement_ElementTreeExtensions.m */; };
+		E1EE7F8414AC79AA003AD937 /* CXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD936 /* CXMLElement.m */; };
+		E1EE7F8414AC79AA003AD93A /* CXMLNamespaceNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD939 /* CXMLNamespaceNode.m */; };
+		E1EE7F8414AC79AA003AD93D /* CXMLNode_PrivateExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD93C /* CXMLNode_PrivateExtensions.m */; };
+		E1EE7F8414AC79AA003AD940 /* CXMLNode_XPathExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD93F /* CXMLNode_XPathExtensions.m */; };
+		E1EE7F8414AC79AA003AD943 /* CXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD942 /* CXMLNode.m */; };
+		E1EE7F8414AC79AA003AD947 /* CTidy.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD946 /* CTidy.m */; };
+		E1EE7F8414AC79AA003AD94B /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD94A /* Album.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +125,36 @@
 		E1EE7F8414AC79AA003AD918 /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLRequestOperation.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD91A /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD91B /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD91D /* Consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Consts.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD920 /* CXMLDocument_CreationExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLDocument_CreationExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD921 /* CXMLDocument_CreationExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLDocument_CreationExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD923 /* CXMLNode_CreationExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLNode_CreationExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD924 /* CXMLNode_CreationExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLNode_CreationExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD926 /* CXHTMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXHTMLDocument.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD927 /* CXHTMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXHTMLDocument.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD929 /* CXMLDocument_PrivateExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLDocument_PrivateExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD92A /* CXMLDocument_PrivateExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLDocument_PrivateExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD92C /* CXMLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLDocument.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD92D /* CXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLDocument.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD92F /* CXMLElement_CreationExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLElement_CreationExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD930 /* CXMLElement_CreationExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLElement_CreationExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD932 /* CXMLElement_ElementTreeExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLElement_ElementTreeExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD933 /* CXMLElement_ElementTreeExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLElement_ElementTreeExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD935 /* CXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLElement.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD936 /* CXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLElement.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD938 /* CXMLNamespaceNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLNamespaceNode.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD939 /* CXMLNamespaceNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLNamespaceNode.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD93B /* CXMLNode_PrivateExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLNode_PrivateExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD93C /* CXMLNode_PrivateExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLNode_PrivateExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD93E /* CXMLNode_XPathExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLNode_XPathExtensions.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD93F /* CXMLNode_XPathExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLNode_XPathExtensions.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD941 /* CXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CXMLNode.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD942 /* CXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CXMLNode.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD945 /* CTidy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTidy.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD946 /* CTidy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTidy.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD948 /* TouchXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchXML.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD94A /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Album.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD94C /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +223,7 @@
 		E1EA4A2B14A59F0400EE9703 /* Fotki */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD91D /* Consts.h */,
 				E1EA4A3714A59F0400EE9703 /* AppDelegate.h */,
 				E1EA4A3814A59F0400EE9703 /* AppDelegate.m */,
 				E1EA4A3A14A59F0400EE9703 /* MainMenu.xib */,
@@ -245,6 +290,7 @@
 				E1EE7F8414AC79AA003AD8F3 /* FileMD5Hash */,
 				E1EE7F8414AC79AA003AD8F8 /* FotkiService */,
 				E1EE7F8414AC79AA003AD8FC /* AFNetworking */,
+				E1EE7F8414AC79AA003AD91E /* TouchXML */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -264,6 +310,7 @@
 			children = (
 				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
 				E1EE7F8414AC79AA003AD8F9 /* FotkiServiceFacade.m */,
+				E1EE7F8414AC79AA003AD949 /* Data */,
 			);
 			path = FotkiService;
 			sourceTree = "<group>";
@@ -295,6 +342,65 @@
 				E1EE7F8414AC79AA003AD8FD /* AFHTTPClient.h */,
 			);
 			path = AFNetworking;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD91E /* TouchXML */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD948 /* TouchXML.h */,
+				E1EE7F8414AC79AA003AD942 /* CXMLNode.m */,
+				E1EE7F8414AC79AA003AD941 /* CXMLNode.h */,
+				E1EE7F8414AC79AA003AD93F /* CXMLNode_XPathExtensions.m */,
+				E1EE7F8414AC79AA003AD93E /* CXMLNode_XPathExtensions.h */,
+				E1EE7F8414AC79AA003AD93C /* CXMLNode_PrivateExtensions.m */,
+				E1EE7F8414AC79AA003AD93B /* CXMLNode_PrivateExtensions.h */,
+				E1EE7F8414AC79AA003AD939 /* CXMLNamespaceNode.m */,
+				E1EE7F8414AC79AA003AD938 /* CXMLNamespaceNode.h */,
+				E1EE7F8414AC79AA003AD936 /* CXMLElement.m */,
+				E1EE7F8414AC79AA003AD935 /* CXMLElement.h */,
+				E1EE7F8414AC79AA003AD933 /* CXMLElement_ElementTreeExtensions.m */,
+				E1EE7F8414AC79AA003AD932 /* CXMLElement_ElementTreeExtensions.h */,
+				E1EE7F8414AC79AA003AD930 /* CXMLElement_CreationExtensions.m */,
+				E1EE7F8414AC79AA003AD92F /* CXMLElement_CreationExtensions.h */,
+				E1EE7F8414AC79AA003AD92D /* CXMLDocument.m */,
+				E1EE7F8414AC79AA003AD92C /* CXMLDocument.h */,
+				E1EE7F8414AC79AA003AD92A /* CXMLDocument_PrivateExtensions.m */,
+				E1EE7F8414AC79AA003AD929 /* CXMLDocument_PrivateExtensions.h */,
+				E1EE7F8414AC79AA003AD927 /* CXHTMLDocument.m */,
+				E1EE7F8414AC79AA003AD926 /* CXHTMLDocument.h */,
+				E1EE7F8414AC79AA003AD91F /* Creation */,
+				E1EE7F8414AC79AA003AD944 /* Tidy */,
+			);
+			path = TouchXML;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD91F /* Creation */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD924 /* CXMLNode_CreationExtensions.m */,
+				E1EE7F8414AC79AA003AD923 /* CXMLNode_CreationExtensions.h */,
+				E1EE7F8414AC79AA003AD921 /* CXMLDocument_CreationExtensions.m */,
+				E1EE7F8414AC79AA003AD920 /* CXMLDocument_CreationExtensions.h */,
+			);
+			path = Creation;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD944 /* Tidy */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD946 /* CTidy.m */,
+				E1EE7F8414AC79AA003AD945 /* CTidy.h */,
+			);
+			path = Tidy;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD949 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD94C /* Album.h */,
+				E1EE7F8414AC79AA003AD94A /* Album.m */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -426,6 +532,20 @@
 				E1EE7F8414AC79AA003AD916 /* AFURLConnectionOperation.m in Sources */,
 				E1EE7F8414AC79AA003AD919 /* AFXMLRequestOperation.m in Sources */,
 				E1EE7F8414AC79AA003AD91C /* UIImageView+AFNetworking.m in Sources */,
+				E1EE7F8414AC79AA003AD922 /* CXMLDocument_CreationExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD925 /* CXMLNode_CreationExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD928 /* CXHTMLDocument.m in Sources */,
+				E1EE7F8414AC79AA003AD92B /* CXMLDocument_PrivateExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD92E /* CXMLDocument.m in Sources */,
+				E1EE7F8414AC79AA003AD931 /* CXMLElement_CreationExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD934 /* CXMLElement_ElementTreeExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD937 /* CXMLElement.m in Sources */,
+				E1EE7F8414AC79AA003AD93A /* CXMLNamespaceNode.m in Sources */,
+				E1EE7F8414AC79AA003AD93D /* CXMLNode_PrivateExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD940 /* CXMLNode_XPathExtensions.m in Sources */,
+				E1EE7F8414AC79AA003AD943 /* CXMLNode.m in Sources */,
+				E1EE7F8414AC79AA003AD947 /* CTidy.m in Sources */,
+				E1EE7F8414AC79AA003AD94B /* Album.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,7 +653,13 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fotki/Fotki-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "Fotki/Fotki-Info.plist";
+				OTHER_LDFLAGS = (
+					"-lxml2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -544,7 +670,13 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fotki/Fotki-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					/usr/include/libxml2,
+				);
 				INFOPLIST_FILE = "Fotki/Fotki-Info.plist";
+				OTHER_LDFLAGS = (
+					"-lxml2",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

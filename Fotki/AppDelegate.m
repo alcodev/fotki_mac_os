@@ -13,6 +13,7 @@
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
+#import "Album.h"
 
 #define APP_NAME @"Fotki"
 #define FOTKI_PATH @"/Users/aistomin/tmp/fotki"
@@ -38,8 +39,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
 @end
 
-@implementation AppDelegate
-
+@implementation AppDelegate {
+    FotkiServiceFacade *_fotkiServiceFacade;
+}
 @synthesize window = _window;
 @synthesize lastEventId = _lastEventId;
 
@@ -56,6 +58,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusMenu release];
     [statusItem release];
     [loginButton release];
+    [getAlbumsButton release];
 
     [_files release];
     [_filesHashes release];
@@ -65,6 +68,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     [_fileSystemMonitor release];
 
+    [_fotkiServiceFacade release];
     [super dealloc];
 }
 
@@ -81,9 +85,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (void)putBadge:(NSImage *)badge onFileIconAtPath:(NSString *)path {
     NSImage *fileIcon = [FileSystemHelper imageWithPreviewOfFileAtPath:path ofSize:NSMakeSize(64, 64) asIcon:YES];
     //NSImage *fileIcon = [[NSWorkspace sharedWorkspace] iconForFile:path];
-    NSImage *badgedIcon = [[fileIcon putOtherImage:badge] retain];    
+    NSImage *badgedIcon = [[fileIcon putOtherImage:badge] retain];
     [[NSWorkspace sharedWorkspace] setIcon:badgedIcon forFile:path options:nil];
-    
+
     [badgedIcon release];
 }
 
@@ -102,8 +106,8 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (void)registerDefaults {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *appDefaults = [NSDictionary
-        dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:kFSEventStreamEventIdSinceNow], [NSMutableDictionary new], nil]
-                      forKeys:[NSArray arrayWithObjects:@"lastEventId", @"filesHashes", nil]];
+            dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:kFSEventStreamEventIdSinceNow], [NSMutableDictionary new], nil]
+                          forKeys:[NSArray arrayWithObjects:@"lastEventId", @"filesHashes", nil]];
     [defaults registerDefaults:appDefaults];
 }
 
@@ -113,6 +117,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setTitle:APP_NAME];
     [statusItem setHighlightMode:YES];
     [loginButton setTitle:@"Login"];
+    [getAlbumsButton setTitle:@"Get Albums"];
 
     [self registerDefaults];
 
@@ -129,11 +134,11 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         [defaults setObject:sender.lastEventId forKey:@"lastEventId"];
         [defaults setObject:sender.filesHashes forKey:@"filesHashes"];
         [defaults synchronize];
-    } doOnFileAdded:^(NSString *path){
+    }                            doOnFileAdded:^(NSString *path) {
         [self handleFileAdd:path];
-    } doOnFileUpdated:^(NSString *path){
+    }                          doOnFileUpdated:^(NSString *path) {
 
-    } doOnFileDeleted:^(NSString *path){
+    }                          doOnFileDeleted:^(NSString *path) {
 
     }];
 }
@@ -164,8 +169,22 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (IBAction)loginButtonClicked:(id)sender {
-    FotkiServiceFacade *fotkiServiceFacade = [[[FotkiServiceFacade alloc] init]autorelease];
-    [fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"];
+    _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
+    [_fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"];
+}
+
+- (IBAction)getAlbumsButtonClicked:(id)sender {
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
+            for (Album *album in (NSArray *) albums) {
+                LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
+            }
+        }];
+
+    } else {
+        LOG(@"Press login button first");
+    }
+
 }
 
 

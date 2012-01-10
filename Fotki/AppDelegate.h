@@ -13,6 +13,7 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     IBOutlet NSMenu *statusMenu;
     IBOutlet NSButton *loginButton;
+    IBOutlet NSButton *getAlbumsButton;
     NSStatusItem *statusItem;
 
     NSFileManager *_fm;
@@ -36,6 +37,8 @@
 - (IBAction)exitMenuItemClicked:(id)sender;
 
 - (IBAction)loginButtonClicked:(id)sender;
+
+- (IBAction)getAlbumsButtonClicked:(id)sender;
 
 - (void)synchronizeData;
 

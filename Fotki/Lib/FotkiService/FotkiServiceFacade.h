@@ -7,7 +7,13 @@
 
 #import <Foundation/Foundation.h>
 
+typedef void (^ServiceFacadeCallback)(id);
 
-@interface FotkiServiceFacade : NSObject
+
+@interface FotkiServiceFacade : NSObject {
+    NSString *_sessionId;
+}
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
+
+- (void)getAlbumsPlain:(ServiceFacadeCallback)onFinish;
 @end
