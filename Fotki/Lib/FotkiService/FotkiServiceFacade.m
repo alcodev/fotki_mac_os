@@ -80,5 +80,52 @@
 
 }
 
+- (void)uploadPicture:(NSString *)path toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+            album.id, @"album_id",
+            _sessionId, @"session_id",
+            nil];
+    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
+
+
+    NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST"
+                                                                         path:@"/upload"
+                                                                   parameters:params
+                                                    constructingBodyWithBlock:^(id <AFMultipartFormData> formData) {
+                                                        NSData *data = [NSData dataWithContentsOfFile:path];
+                                                        [formData appendPartWithFileData:data name:@"photo" fileName:path mimeType:@"application/octet-stream"];
+                                                    }];
+
+    AFHTTPRequestOperation *requestOperation = [[[AFHTTPRequestOperation alloc] initWithRequest:request
+    ] autorelease];
+
+    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObjec) {
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseObjec options:0 error:nil] autorelease];
+        NSArray *nodes = [document nodesForXPath:@"//result" error:nil];
+        NSXMLElement *element = [nodes objectAtIndex:0];
+        NSString *resultValue = [element stringValue];
+        if ([@"error" isEqualToString:resultValue]) {
+            nodes = [document nodesForXPath:@"//message" error:nil];
+            element = [nodes objectAtIndex:0];
+            NSString *errorMessageValue = [element stringValue];
+            LOG(@"Error message: ", errorMessageValue);
+            if (onError) {
+                onError(errorMessageValue);
+            }
+        } else {
+            if (onSuccess && [@"ok" isEqualToString:resultValue]) {
+                onSuccess(nil);
+            } else {
+                LOG(@"Unknown response received: ", resultValue);
+            }
+        }
+    }                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        LOG(@"Upload failure", error);
+    }];
+    NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
+    [queue addOperation:requestOperation];
+}
+
 
 @end

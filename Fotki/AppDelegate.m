@@ -178,6 +178,11 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
             for (Album *album in (NSArray *) albums) {
                 LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
+                [_fotkiServiceFacade uploadPicture:@"/Users/aistomin/Pictures/7973801.jpg" toTheAlbum:[albums lastObject] onSuccess:^(id object) {
+                    LOG(@"File successfully uploaded");
+                }                          onError:^(id object) {
+                    LOG(@"Error uploading file: ", object);
+                }];
             }
         }];
 

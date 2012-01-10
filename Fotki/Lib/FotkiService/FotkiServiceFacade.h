@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class Album;
+
 typedef void (^ServiceFacadeCallback)(id);
 
 
@@ -16,4 +18,6 @@ typedef void (^ServiceFacadeCallback)(id);
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onFinish;
+
+- (void)uploadPicture:(NSString *)path toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 @end
