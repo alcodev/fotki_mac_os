@@ -33,8 +33,8 @@
         if (!folder.childAlbums) {
             folder.childAlbums = [[[NSMutableArray alloc] init] autorelease];
         }
-        NSString *albumName = [[[albumElement nodesForXPath:@"./name"] lastObject] stringValue];
-        NSString *albumId = [[[albumElement nodesForXPath:@"./id"] lastObject] stringValue];
+        NSString *albumName = [[[albumElement nodesForXPath:@"./name" error:nil] lastObject] stringValue];
+        NSString *albumId = [[[albumElement nodesForXPath:@"./id" error:nil] lastObject] stringValue];
         Album *album = [[[Album alloc] initWithId:albumId andName:albumName] autorelease];
         [folder.childAlbums addObject:album];
     }
