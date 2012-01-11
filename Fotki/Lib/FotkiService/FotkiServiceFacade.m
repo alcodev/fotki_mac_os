@@ -11,7 +11,7 @@
 #import "Consts.h"
 #import "CXMLDocument.h"
 #import "Album.h"
-#import "FoldersAnAlbumsTreeBuilder.h"
+#import "FoldersAndAlbumsTreeBuilder.h"
 
 
 @implementation FotkiServiceFacade {
@@ -116,7 +116,7 @@
     [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
     [httpClient getPath:@"/get_albums" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
         CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        _rootFolders = [[FoldersAnAlbumsTreeBuilder buildTreeFromXmlDocument:document] retain];
+        _rootFolders = [[FoldersAndAlbumsTreeBuilder buildTreeFromXmlDocument:document] retain];
         if (onSuccess) {
             onSuccess(_rootFolders);
         }

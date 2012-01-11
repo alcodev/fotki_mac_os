@@ -5,13 +5,13 @@
 //
 
 
-#import "FoldersAnAlbumsTreeBuilder.h"
+#import "FoldersAndAlbumsTreeBuilder.h"
 #import "CXMLDocument.h"
 #import "Folder.h"
 #import "Album.h"
 
 
-@implementation FoldersAnAlbumsTreeBuilder {
+@implementation FoldersAndAlbumsTreeBuilder {
 
 }
 

@@ -10,6 +10,6 @@
 @class CXMLDocument;
 
 
-@interface FoldersAnAlbumsTreeBuilder : NSObject
+@interface FoldersAndAlbumsTreeBuilder : NSObject
 + (NSArray *)buildTreeFromXmlDocument:(CXMLDocument *)document;
 @end

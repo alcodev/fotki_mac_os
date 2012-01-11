@@ -207,8 +207,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (IBAction)buildFoldersTreeButtonClicked:(id)sender {
     if (_fotkiServiceFacade) {
         [_fotkiServiceFacade getAlbums:^(id rootFolders) {
-
+            LOG(@"Folders Tree built successfully");
         }                      onError:^(id error) {
+            LOG(@"Error building folders tree: %@", error);
         }];
     }
 
