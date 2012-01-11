@@ -12,8 +12,8 @@
     NSString *_id;
     NSString *_name;
 }
-@property(nonatomic, retain) NSString *name;
 @property(nonatomic, retain) NSString *id;
+@property(nonatomic, retain) NSString *name;
 
 - (Album *)initWithId:(NSString *)id andName:(NSString *)name;
 @end

@@ -118,6 +118,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setHighlightMode:YES];
     [loginButton setTitle:@"Login"];
     [getAlbumsButton setTitle:@"Get Albums"];
+    [buildFoldersTreeButton setTitle:@"Get Folders Tree"];
 
     [self registerDefaults];
 
@@ -170,24 +171,45 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
 - (IBAction)loginButtonClicked:(id)sender {
     _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
-    [_fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"];
+    [_fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"
+                                     onSuccess:^(id sessionId) {
+                                         LOG(@"Session ID is: %@", sessionId);
+                                     }
+                                       onError:^(id error) {
+                                           LOG(@"Authentication error: %@", error);
+                                       }];
 }
 
 - (IBAction)getAlbumsButtonClicked:(id)sender {
     if (_fotkiServiceFacade) {
         [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
-            for (Album *album in (NSArray *) albums) {
+            Album *album = [albums firstItem];
+            if (album) {
                 LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
                 [_fotkiServiceFacade uploadPicture:@"/Users/aistomin/Pictures/7973801.jpg" toTheAlbum:[albums lastObject] onSuccess:^(id object) {
                     LOG(@"File successfully uploaded");
                 }                          onError:^(id object) {
-                    LOG(@"Error uploading file: ", object);
+                    LOG(@"Error uploading file: %@", object);
                 }];
+            } else {
+                LOG(@"Create album first");
             }
+        }                           onError:^(id error) {
+            LOG(@"Error getting albums");
         }];
 
     } else {
         LOG(@"Press login button first");
+    }
+
+}
+
+- (IBAction)buildFoldersTreeButtonClicked:(id)sender {
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade getAlbums:^(id rootFolders) {
+
+        }                      onError:^(id error) {
+        }];
     }
 
 }

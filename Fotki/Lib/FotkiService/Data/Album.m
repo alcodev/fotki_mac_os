@@ -11,8 +11,8 @@
 @implementation Album {
 
 }
-@synthesize name = _name;
 @synthesize id = _id;
+@synthesize name = _name;
 
 
 - (void)dealloc {

@@ -14,6 +14,7 @@
     IBOutlet NSMenu *statusMenu;
     IBOutlet NSButton *loginButton;
     IBOutlet NSButton *getAlbumsButton;
+    IBOutlet NSButton *buildFoldersTreeButton;
     NSStatusItem *statusItem;
 
     NSFileManager *_fm;
@@ -39,6 +40,8 @@
 - (IBAction)loginButtonClicked:(id)sender;
 
 - (IBAction)getAlbumsButtonClicked:(id)sender;
+
+- (IBAction)buildFoldersTreeButtonClicked:(id)sender;
 
 - (void)synchronizeData;
 

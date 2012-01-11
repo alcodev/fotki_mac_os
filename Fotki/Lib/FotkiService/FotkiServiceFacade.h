@@ -14,10 +14,14 @@ typedef void (^ServiceFacadeCallback)(id);
 
 @interface FotkiServiceFacade : NSObject {
     NSString *_sessionId;
+    NSArray *_rootFolders;
 }
-- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
+- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
-- (void)getAlbumsPlain:(ServiceFacadeCallback)onFinish;
+- (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
+- (void)getAlbums:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)uploadPicture:(NSString *)path toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
 @end
