@@ -12,6 +12,7 @@
 #import "CXMLDocument.h"
 #import "Album.h"
 #import "FoldersAndAlbumsTreeBuilder.h"
+#import "Photo.h"
 
 
 @implementation FotkiServiceFacade {
@@ -62,7 +63,7 @@
         }
     }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
         if (onError) {
-            onError([error localizedDescription]);
+            onError(error);
         }
     }];
 }
@@ -96,7 +97,9 @@
         }
 
     }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        LOG(@"error: %@", error);
+        if (onError) {
+            onError(error);
+        }
     }];
 
 }
@@ -121,7 +124,9 @@
             onSuccess(_rootFolders);
         }
     }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        LOG(@"error: %@", error);
+        if (onError) {
+            onError(error);
+        }
     }];
 
 }
@@ -161,7 +166,7 @@
             nodes = [document nodesForXPath:@"//message" error:nil];
             element = [nodes objectAtIndex:0];
             NSString *errorMessageValue = [element stringValue];
-            LOG(@"Error message: ", errorMessageValue);
+            LOG(@"Error message: %@", errorMessageValue);
             if (onError) {
                 onError(errorMessageValue);
             }
@@ -181,6 +186,66 @@
     }];
     NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
     [queue addOperation:requestOperation];
+}
+
+- (void)getPhotosFromTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    if (!_sessionId) {
+        if (onError) {
+            onError(@"User is not authorized");
+        }
+        return;
+    }
+    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+            _sessionId, @"session_id",
+            album.id, @"album_id",
+            nil];
+    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
+    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
+    [httpClient getPath:@"/get_photos" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
+        NSArray *nodes = [document nodesForXPath:@"//result" error:nil];
+        NSXMLElement *element = [nodes objectAtIndex:0];
+        NSString *resultValue = [element stringValue];
+        if ([@"ok" isEqualToString:resultValue]) {
+            NSMutableArray *photos = [[[NSMutableArray alloc] init] autorelease];
+            nodes = [document nodesForXPath:@"//album/@id" error:nil];
+            element = [nodes objectAtIndex:0];
+            NSString *albumId = [element stringValue];
+
+            nodes = [document nodesForXPath:@"///photo" error:nil];
+            for (NSXMLElement *photoElement in nodes) {
+                NSXMLElement *idElement = [[photoElement nodesForXPath:@"./@id" error:nil] objectAtIndex:0];
+                NSString *id = [idElement stringValue];
+                NSXMLElement *titleElement = [[photoElement nodesForXPath:@"./title" error:nil] objectAtIndex:0];
+                NSString *title = [titleElement stringValue];
+                NSXMLElement *originalUrlElement = [[photoElement nodesForXPath:@"./view_url" error:nil] objectAtIndex:0];
+                NSString *originalUrl = [originalUrlElement stringValue];
+                Photo *photo = [[[Photo alloc] initWithId:id title:title originalUrl:originalUrl albumId:albumId] autorelease];
+                [photos addObject:photo];
+            }
+
+            if (onSuccess) {
+                onSuccess(photos);
+            }
+        } else {
+            if ([@"error" isEqualToString:resultValue]) {
+                nodes = [document nodesForXPath:@"//message" error:nil];
+                element = [nodes objectAtIndex:0];
+                NSString *errorMessage = [element stringValue];
+                if (onError) {
+                    onError(errorMessage);
+                }
+            } else {
+                if (onError) {
+                    onError([NSString stringWithFormat:@"Unknown result: %@", resultValue]);;
+                }
+            }
+        }
+
+    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
+        LOG(@"error: %@", error);
+    }];
 }
 
 

@@ -14,6 +14,8 @@
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
 #import "Album.h"
+#import "Photo.h"
+#import "ImageDownloader.h"
 
 #define APP_NAME @"Fotki"
 #define FOTKI_PATH @"/Users/aistomin/tmp/fotki"
@@ -59,6 +61,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem release];
     [loginButton release];
     [getAlbumsButton release];
+    [downloadButton release];
 
     [_files release];
     [_filesHashes release];
@@ -119,6 +122,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [loginButton setTitle:@"Login"];
     [getAlbumsButton setTitle:@"Get Albums"];
     [buildFoldersTreeButton setTitle:@"Get Folders Tree"];
+    [downloadButton setTitle:@"Download"];
 
     [self registerDefaults];
 
@@ -213,6 +217,36 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         }];
     }
 
+}
+
+- (IBAction)downloadButtonClicked:(id)sender {
+
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
+            for (Album *album in albums) {
+                [_fotkiServiceFacade getPhotosFromTheAlbum:album onSuccess:^(id photos) {
+                    for (Photo *photo in photos) {
+                        LOG(@"Photo id=%@; title=%@; original_url=%@; album_id=%@",
+                        photo.id,
+                        photo.title,
+                        photo.originalUrl,
+                        photo.albumId);
+                        NSString *filePath = [NSString stringWithFormat:@"/Users/aistomin/tmp/%@.%@",
+                                                                        photo.title,
+                                                                        [photo.originalUrl pathExtension]];
+                        [ImageDownloader downloadImageFromUrl:photo.originalUrl toFile:filePath];
+                    }
+                }                                  onError:^(id error) {
+                    LOG(@"Error building folders tree: %@", error);
+                }];
+            }
+        }                           onError:^(id error) {
+            LOG(@"Error getting albums");
+        }];
+
+    } else {
+        LOG(@"Press login button first");
+    }
 }
 
 

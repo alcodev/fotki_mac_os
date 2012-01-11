@@ -54,6 +54,8 @@
 		E1EE7F8414AC79AA003AD94B /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD94A /* Album.m */; };
 		E1EE7F8414AC79AA003AD94F /* Folder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD94E /* Folder.m */; };
 		E1EE7F8414AC79AA003AD952 /* FoldersAndAlbumsTreeBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */; };
+		E1EE7F8414AC79AA003AD954 /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD953 /* Photo.m */; };
+		E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +163,10 @@
 		E1EE7F8414AC79AA003AD94E /* Folder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Folder.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD950 /* FoldersAndAlbumsTreeBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldersAndAlbumsTreeBuilder.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldersAndAlbumsTreeBuilder.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD953 /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD955 /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloader.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +320,8 @@
 		E1EE7F8414AC79AA003AD8F8 /* FotkiService */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */,
+				E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */,
 				E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */,
 				E1EE7F8414AC79AA003AD950 /* FoldersAndAlbumsTreeBuilder.h */,
 				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
@@ -405,6 +413,8 @@
 		E1EE7F8414AC79AA003AD949 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD955 /* Photo.h */,
+				E1EE7F8414AC79AA003AD953 /* Photo.m */,
 				E1EE7F8414AC79AA003AD94E /* Folder.m */,
 				E1EE7F8414AC79AA003AD94D /* Folder.h */,
 				E1EE7F8414AC79AA003AD94C /* Album.h */,
@@ -558,6 +568,8 @@
 				E1EE7F8414AC79AA003AD94B /* Album.m in Sources */,
 				E1EE7F8414AC79AA003AD94F /* Folder.m in Sources */,
 				E1EE7F8414AC79AA003AD952 /* FoldersAndAlbumsTreeBuilder.m in Sources */,
+				E1EE7F8414AC79AA003AD954 /* Photo.m in Sources */,
+				E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
