@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 
 @class Album;
+@class Folder;
 
 typedef void (^ServiceFacadeCallback)(id);
 
@@ -25,5 +26,7 @@ typedef void (^ServiceFacadeCallback)(id);
 - (void)uploadPicture:(NSString *)path toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)getPhotosFromTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
+- (void)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 @end

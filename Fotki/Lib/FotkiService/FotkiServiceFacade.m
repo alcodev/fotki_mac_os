@@ -248,5 +248,54 @@
     }];
 }
 
+- (void)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    if (!_sessionId) {
+        if (onError) {
+            onError(@"User is not authorized");
+        }
+        return;
+    }
+    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+            _sessionId, @"session_id",
+            parentFolderId, @"folder_id",
+            name, @"name",
+            nil];
+    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
+    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
+    [httpClient getPath:@"/create_folder" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
+        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
+        NSArray *nodes = [document nodesForXPath:@"create_folder/result" error:nil];
+        NSXMLElement *element = [nodes objectAtIndex:0];
+        NSString *resultValue = [element stringValue];
+        if ([@"ok" isEqualToString:resultValue]) {
+            nodes = [document nodesForXPath:@"//folder_id" error:nil];
+            element = [nodes objectAtIndex:0];
+            NSString *folderIdValue = [element stringValue];
+            _sessionId = [[NSString alloc] initWithString:folderIdValue];
+            if (onSuccess) {
+                onSuccess(folderIdValue);
+            }
+        } else {
+            if ([@"error" isEqualToString:resultValue]) {
+                nodes = [document nodesForXPath:@"//message" error:nil];
+                element = [nodes objectAtIndex:0];
+                NSString *errorMessage = [element stringValue];
+                if (onError) {
+                    onError(errorMessage);
+                }
+            } else {
+                if (onError) {
+                    onError(@"Unknown result");
+                }
+            }
+        }
+    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
+        if (onError) {
+            onError(error);
+        }
+    }];
+}
+
 
 @end

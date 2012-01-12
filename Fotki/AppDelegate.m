@@ -62,6 +62,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [loginButton release];
     [getAlbumsButton release];
     [downloadButton release];
+    [createFolderButton release];
 
     [_files release];
     [_filesHashes release];
@@ -123,6 +124,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [getAlbumsButton setTitle:@"Get Albums"];
     [buildFoldersTreeButton setTitle:@"Get Folders Tree"];
     [downloadButton setTitle:@"Download"];
+    [createFolderButton setTitle:@"Create Folder"];
 
     [self registerDefaults];
 
@@ -246,6 +248,17 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     } else {
         LOG(@"Press login button first");
+    }
+}
+
+- (IBAction)createFolderButtonClicked:(id)sender {
+
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade createFolder:@"TestFolderCreatedByApp" parentFolderId:@"4293823877" onSuccess:^(id folderId) {
+            LOG(@"Folder successfully created, folder id: %@", folderId);
+        }                         onError:^(id error) {
+            LOG(@"Error building folders tree: %@", error);
+        }];
     }
 }
 
