@@ -56,6 +56,8 @@
 		E1EE7F8414AC79AA003AD952 /* FoldersAndAlbumsTreeBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */; };
 		E1EE7F8414AC79AA003AD954 /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD953 /* Photo.m */; };
 		E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */; };
+		E1EE7F8414AC79AA003AD95B /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95A /* Error.m */; };
+		E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +169,10 @@
 		E1EE7F8414AC79AA003AD955 /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDownloader.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDownloader.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD95A /* Error.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Error.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD95C /* Error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Error.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorResponseParser.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD95F /* ErrorResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorResponseParser.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,13 +326,11 @@
 		E1EE7F8414AC79AA003AD8F8 /* FotkiService */ = {
 			isa = PBXGroup;
 			children = (
-				E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */,
-				E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */,
-				E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */,
-				E1EE7F8414AC79AA003AD950 /* FoldersAndAlbumsTreeBuilder.h */,
-				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
-				E1EE7F8414AC79AA003AD8F9 /* FotkiServiceFacade.m */,
 				E1EE7F8414AC79AA003AD949 /* Data */,
+				E1EE7F8414AC79AA003AD959 /* Errors */,
+				E1EE7F8414AC79AA003AD960 /* Facade */,
+				E1EE7F8414AC79AA003AD961 /* FoldersTree */,
+				E1EE7F8414AC79AA003AD962 /* Downloaders */,
 			);
 			path = FotkiService;
 			sourceTree = "<group>";
@@ -421,6 +425,44 @@
 				E1EE7F8414AC79AA003AD94A /* Album.m */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD959 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD95F /* ErrorResponseParser.h */,
+				E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */,
+				E1EE7F8414AC79AA003AD95C /* Error.h */,
+				E1EE7F8414AC79AA003AD95A /* Error.m */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD960 /* Facade */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD8F9 /* FotkiServiceFacade.m */,
+				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
+			);
+			path = Facade;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD961 /* FoldersTree */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD951 /* FoldersAndAlbumsTreeBuilder.m */,
+				E1EE7F8414AC79AA003AD950 /* FoldersAndAlbumsTreeBuilder.h */,
+			);
+			path = FoldersTree;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD962 /* Downloaders */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */,
+				E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */,
+			);
+			path = Downloaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -570,6 +612,8 @@
 				E1EE7F8414AC79AA003AD952 /* FoldersAndAlbumsTreeBuilder.m in Sources */,
 				E1EE7F8414AC79AA003AD954 /* Photo.m in Sources */,
 				E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */,
+				E1EE7F8414AC79AA003AD95B /* Error.m in Sources */,
+				E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@
 #import "Album.h"
 #import "FoldersAndAlbumsTreeBuilder.h"
 #import "Photo.h"
+#import "ErrorResponseParser.h"
 
 
 @implementation FotkiServiceFacade {
@@ -49,11 +50,9 @@
             }
         } else {
             if ([@"error" isEqualToString:resultValue]) {
-                nodes = [document nodesForXPath:@"//message" error:nil];
-                element = [nodes objectAtIndex:0];
-                NSString *errorMessage = [element stringValue];
+                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
                 if (onError) {
-                    onError(errorMessage);
+                    onError(error);
                 }
             } else {
                 if (onError) {
@@ -163,12 +162,9 @@
         NSXMLElement *element = [nodes objectAtIndex:0];
         NSString *resultValue = [element stringValue];
         if ([@"error" isEqualToString:resultValue]) {
-            nodes = [document nodesForXPath:@"//message" error:nil];
-            element = [nodes objectAtIndex:0];
-            NSString *errorMessageValue = [element stringValue];
-            LOG(@"Error message: %@", errorMessageValue);
+            Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
             if (onError) {
-                onError(errorMessageValue);
+                onError(error);
             }
         } else {
             if (onSuccess && [@"ok" isEqualToString:resultValue]) {
@@ -230,11 +226,9 @@
             }
         } else {
             if ([@"error" isEqualToString:resultValue]) {
-                nodes = [document nodesForXPath:@"//message" error:nil];
-                element = [nodes objectAtIndex:0];
-                NSString *errorMessage = [element stringValue];
+                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
                 if (onError) {
-                    onError(errorMessage);
+                    onError(error);
                 }
             } else {
                 if (onError) {
@@ -278,11 +272,9 @@
             }
         } else {
             if ([@"error" isEqualToString:resultValue]) {
-                nodes = [document nodesForXPath:@"//message" error:nil];
-                element = [nodes objectAtIndex:0];
-                NSString *errorMessage = [element stringValue];
+                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
                 if (onError) {
-                    onError(errorMessage);
+                    onError(error);
                 }
             } else {
                 if (onError) {
@@ -307,7 +299,7 @@
     NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
             _sessionId, @"session_id",
-            parentFolderId, @"folder_id",
+//            parentFolderId, @"folder_id",
             name, @"name",
             nil];
     AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
@@ -327,11 +319,9 @@
             }
         } else {
             if ([@"error" isEqualToString:resultValue]) {
-                nodes = [document nodesForXPath:@"//message" error:nil];
-                element = [nodes objectAtIndex:0];
-                NSString *errorMessage = [element stringValue];
+                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
                 if (onError) {
-                    onError(errorMessage);
+                    onError(error);
                 }
             } else {
                 if (onError) {
