@@ -1,20 +1,23 @@
 //
 //  Created by aistomin on 1/9/12.
 //
-// To change the template use AppCode | Preferences | File Templates.
 //
 
 
 #import "FotkiServiceFacade.h"
-#import "AFHTTPRequestOperation.h"
-#import "AFHTTPClient.h"
 #import "Consts.h"
 #import "CXMLDocument.h"
 #import "Album.h"
 #import "FoldersAndAlbumsTreeBuilder.h"
 #import "Photo.h"
-#import "ErrorResponseParser.h"
+#import "ServiceUtils.h"
+#import "ServiceFacadeCallbackCaller.h"
 
+
+@interface FotkiServiceFacade ()
+- (BOOL)checkIsUserAuthenticated:(ServiceFacadeCallback)onError;
+
+@end
 
 @implementation FotkiServiceFacade {
 
@@ -27,186 +30,74 @@
 }
 
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
             login, @"login",
             password, @"password",
             nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/new_session" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"session/result" error:nil];
+    [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/new_session" andParams:params onSuccess:^(id document) {
+        NSArray *nodes = [document nodesForXPath:@"//session_id" error:nil];
         NSXMLElement *element = [nodes objectAtIndex:0];
-        NSString *resultValue = [element stringValue];
-        if ([@"ok" isEqualToString:resultValue]) {
-            nodes = [document nodesForXPath:@"//session_id" error:nil];
-            element = [nodes objectAtIndex:0];
-            NSString *sessionIdValue = [element stringValue];
-            _sessionId = [[NSString alloc] initWithString:sessionIdValue];
-            if (onSuccess) {
-                onSuccess(sessionIdValue);
-            }
-        } else {
-            if ([@"error" isEqualToString:resultValue]) {
-                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
-                if (onError) {
-                    onError(error);
-                }
-            } else {
-                if (onError) {
-                    onError(@"Unknown result");
-                }
-            }
-        }
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
+        NSString *sessionIdValue = [element stringValue];
+        _sessionId = [[NSString alloc] initWithString:sessionIdValue];
+        [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
+    }                             onError:onError];
 }
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    if (!_sessionId) {
-        if (onError) {
-            onError(@"User is not authorized");
-        }
-        return;
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/get_albums_plain" andParams:params onSuccess:^(id document) {
+            NSArray *nodes = [document nodesForXPath:@"//album" error:nil];
+            NSMutableArray *albums = [[[NSMutableArray alloc] init] autorelease];
+            for (NSXMLElement *element in nodes) {
+                NSString *albumName = [element stringValue];
+                NSString *albumId = [[element attributeForName:@"id"] stringValue];
+                Album *album = [[[Album alloc] initWithId:albumId andName:albumName] autorelease];
+                [albums addObject:album];
+            }
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:albums];
+        }                             onError:onError];
     }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            _sessionId, @"session_id",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/get_albums_plain" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"//album" error:nil];
-        NSMutableArray *albums = [[[NSMutableArray alloc] init] autorelease];
-        for (NSXMLElement *element in nodes) {
-            NSString *albumName = [element stringValue];
-            NSString *albumId = [[element attributeForName:@"id"] stringValue];
-            Album *album = [[[Album alloc] initWithId:albumId andName:albumName] autorelease];
-            [albums addObject:album];
-        }
-
-        if (onSuccess) {
-            onSuccess(albums);
-        }
-
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
-
 }
 
 - (void)getAlbums:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    if (!_sessionId) {
-        if (onError) {
-            onError(@"User is not authorized");
-        }
-        return;
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/get_albums" andParams:params onSuccess:^(id document) {
+            _rootFolders = [[FoldersAndAlbumsTreeBuilder buildTreeFromXmlDocument:document] retain];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:_rootFolders];
+        }                             onError:onError];
     }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            _sessionId, @"session_id",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/get_albums" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        _rootFolders = [[FoldersAndAlbumsTreeBuilder buildTreeFromXmlDocument:document] retain];
-        if (onSuccess) {
-            onSuccess(_rootFolders);
-        }
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
-
 }
 
 - (void)uploadPicture:(NSString *)path toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    if (!_sessionId) {
-        if (onError) {
-            onError(@"User is not authorized");
-        }
-        return;
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                album.id, @"album_id",
+                _sessionId, @"session_id",
+                nil];
+        [ServiceUtils processImageRequestForUrl:FOTKI_SERVER_PATH path:@"/upload"
+                                         params:params
+                                           name:@"photo"
+                                      imagePath:path
+                                      onSuccess:onSuccess onError:onError];
     }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            album.id, @"album_id",
-            _sessionId, @"session_id",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-
-
-    NSMutableURLRequest *request = [httpClient multipartFormRequestWithMethod:@"POST"
-                                                                         path:@"/upload"
-                                                                   parameters:params
-                                                    constructingBodyWithBlock:^(id <AFMultipartFormData> formData) {
-                                                        NSData *data = [NSData dataWithContentsOfFile:path];
-                                                        [formData appendPartWithFileData:data name:@"photo" fileName:path mimeType:@"application/octet-stream"];
-                                                    }];
-
-    AFHTTPRequestOperation *requestOperation = [[[AFHTTPRequestOperation alloc] initWithRequest:request
-    ] autorelease];
-
-    [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObjec) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:responseObjec options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"//result" error:nil];
-        NSXMLElement *element = [nodes objectAtIndex:0];
-        NSString *resultValue = [element stringValue];
-        if ([@"error" isEqualToString:resultValue]) {
-            Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
-            if (onError) {
-                onError(error);
-            }
-        } else {
-            if (onSuccess && [@"ok" isEqualToString:resultValue]) {
-                onSuccess(nil);
-            } else {
-                if (onError) {
-                    onError([NSString stringWithFormat:@"Unknown result: %@", resultValue]);
-                }
-            }
-        }
-    }                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
-    NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-    [queue addOperation:requestOperation];
 }
 
 - (void)getPhotosFromTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    if (!_sessionId) {
-        if (onError) {
-            onError(@"User is not authorized");
-        }
-        return;
-    }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            _sessionId, @"session_id",
-            album.id, @"album_id",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/get_photos" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"//result" error:nil];
-        NSXMLElement *element = [nodes objectAtIndex:0];
-        NSString *resultValue = [element stringValue];
-        if ([@"ok" isEqualToString:resultValue]) {
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                album.id, @"album_id",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/get_photos" andParams:params onSuccess:^(id document) {
             NSMutableArray *photos = [[[NSMutableArray alloc] init] autorelease];
-            nodes = [document nodesForXPath:@"//album/@id" error:nil];
-            element = [nodes objectAtIndex:0];
+            NSArray *nodes = [document nodesForXPath:@"//album/@id" error:nil];
+            NSXMLElement *element = [nodes objectAtIndex:0];
             NSString *albumId = [element stringValue];
 
             nodes = [document nodesForXPath:@"///photo" error:nil];
@@ -220,120 +111,51 @@
                 Photo *photo = [[[Photo alloc] initWithId:id title:title originalUrl:originalUrl albumId:albumId] autorelease];
                 [photos addObject:photo];
             }
-
-            if (onSuccess) {
-                onSuccess(photos);
-            }
-        } else {
-            if ([@"error" isEqualToString:resultValue]) {
-                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
-                if (onError) {
-                    onError(error);
-                }
-            } else {
-                if (onError) {
-                    onError([NSString stringWithFormat:@"Unknown result: %@", resultValue]);;
-                }
-            }
-        }
-
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        LOG(@"error: %@", error);
-    }];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:photos];
+        }                             onError:onError];
+    }
 }
 
 - (void)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    if (!_sessionId) {
-        if (onError) {
-            onError(@"User is not authorized");
-        }
-        return;
-    }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            _sessionId, @"session_id",
-            parentFolderId, @"folder_id",
-            name, @"name",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/create_folder" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"create_folder/result" error:nil];
-        NSXMLElement *element = [nodes objectAtIndex:0];
-        NSString *resultValue = [element stringValue];
-        if ([@"ok" isEqualToString:resultValue]) {
-            nodes = [document nodesForXPath:@"//folder_id" error:nil];
-            element = [nodes objectAtIndex:0];
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                parentFolderId, @"folder_id",
+                name, @"name",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/create_folder" andParams:params onSuccess:^(id document) {
+            NSArray *nodes = [document nodesForXPath:@"//folder_id" error:nil];
+            NSXMLElement *element = [nodes objectAtIndex:0];
             NSString *folderIdValue = [element stringValue];
-            _sessionId = [[NSString alloc] initWithString:folderIdValue];
-            if (onSuccess) {
-                onSuccess(folderIdValue);
-            }
-        } else {
-            if ([@"error" isEqualToString:resultValue]) {
-                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
-                if (onError) {
-                    onError(error);
-                }
-            } else {
-                if (onError) {
-                    onError(@"Unknown result");
-                }
-            }
-        }
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:folderIdValue];
+        }                             onError:onError];
+    }
 }
 
 - (void)createAlbum:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                parentFolderId, @"folder_id",
+                name, @"name",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/create_album" andParams:params onSuccess:^(id document) {
+            NSArray *nodes = [document nodesForXPath:@"//album_id" error:nil];
+            NSXMLElement *element = [nodes objectAtIndex:0];
+            NSString *albumIdValue = [element stringValue];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:albumIdValue];
+        }                             onError:onError];
+    }
+}
+
+- (BOOL)checkIsUserAuthenticated:(ServiceFacadeCallback)onError {
     if (!_sessionId) {
         if (onError) {
             onError(@"User is not authorized");
         }
-        return;
+        return (NO);
+    } else {
+        return (YES);
     }
-    NSURL *url = [NSURL URLWithString:FOTKI_SERVER_PATH];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            _sessionId, @"session_id",
-//            parentFolderId, @"folder_id",
-            name, @"name",
-            nil];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
-    [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
-    [httpClient getPath:@"/create_album" parameters:params success:^(__unused AFHTTPRequestOperation *operation, id response) {
-        CXMLDocument *document = [[[CXMLDocument alloc] initWithData:response options:0 error:nil] autorelease];
-        NSArray *nodes = [document nodesForXPath:@"create_album/result" error:nil];
-        NSXMLElement *element = [nodes objectAtIndex:0];
-        NSString *resultValue = [element stringValue];
-        if ([@"ok" isEqualToString:resultValue]) {
-            nodes = [document nodesForXPath:@"//album_id" error:nil];
-            element = [nodes objectAtIndex:0];
-            NSString *folderIdValue = [element stringValue];
-            _sessionId = [[NSString alloc] initWithString:folderIdValue];
-            if (onSuccess) {
-                onSuccess(folderIdValue);
-            }
-        } else {
-            if ([@"error" isEqualToString:resultValue]) {
-                Error *error = [ErrorResponseParser extractErrorFromXmlDocument:document];
-                if (onError) {
-                    onError(error);
-                }
-            } else {
-                if (onError) {
-                    onError(@"Unknown result");
-                }
-            }
-        }
-    }           failure:^(__unused AFHTTPRequestOperation *operation, NSError *error) {
-        if (onError) {
-            onError(error);
-        }
-    }];
 }
-
 @end

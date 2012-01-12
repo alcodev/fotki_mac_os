@@ -58,6 +58,8 @@
 		E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD956 /* ImageDownloader.m */; };
 		E1EE7F8414AC79AA003AD95B /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95A /* Error.m */; };
 		E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */; };
+		E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */; };
+		E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +175,10 @@
 		E1EE7F8414AC79AA003AD95C /* Error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Error.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorResponseParser.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD95F /* ErrorResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorResponseParser.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceUtils.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceUtils.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceFacadeCallbackCaller.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD969 /* ServiceFacadeCallbackCaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceFacadeCallbackCaller.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -331,6 +337,7 @@
 				E1EE7F8414AC79AA003AD960 /* Facade */,
 				E1EE7F8414AC79AA003AD961 /* FoldersTree */,
 				E1EE7F8414AC79AA003AD962 /* Downloaders */,
+				E1EE7F8414AC79AA003AD963 /* ServiceUtils */,
 			);
 			path = FotkiService;
 			sourceTree = "<group>";
@@ -441,6 +448,8 @@
 		E1EE7F8414AC79AA003AD960 /* Facade */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD969 /* ServiceFacadeCallbackCaller.h */,
+				E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */,
 				E1EE7F8414AC79AA003AD8F9 /* FotkiServiceFacade.m */,
 				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
 			);
@@ -463,6 +472,15 @@
 				E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */,
 			);
 			path = Downloaders;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD963 /* ServiceUtils */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */,
+				E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */,
+			);
+			path = ServiceUtils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -614,6 +632,8 @@
 				E1EE7F8414AC79AA003AD957 /* ImageDownloader.m in Sources */,
 				E1EE7F8414AC79AA003AD95B /* Error.m in Sources */,
 				E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */,
+				E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */,
+				E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

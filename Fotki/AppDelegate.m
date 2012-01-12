@@ -60,7 +60,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusMenu release];
     [statusItem release];
     [loginButton release];
-    [getAlbumsButton release];
+    [uploadPhotoButton release];
     [downloadButton release];
     [createFolderButton release];
     [createAlbumButton release];
@@ -122,7 +122,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setTitle:APP_NAME];
     [statusItem setHighlightMode:YES];
     [loginButton setTitle:@"Login"];
-    [getAlbumsButton setTitle:@"Get Albums"];
+    [uploadPhotoButton setTitle:@"Upload"];
     [buildFoldersTreeButton setTitle:@"Get Folders Tree"];
     [downloadButton setTitle:@"Download"];
     [createFolderButton setTitle:@"Create Folder"];
@@ -188,19 +188,21 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
                                        }];
 }
 
-- (IBAction)getAlbumsButtonClicked:(id)sender {
+- (IBAction)uploadPhotoButtonClicked:(id)sender {
     if (_fotkiServiceFacade) {
         [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
-            Album *album = [albums firstItem];
-            if (album) {
-                LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
-                [_fotkiServiceFacade uploadPicture:@"/Users/aistomin/Pictures/7973801.jpg" toTheAlbum:[albums lastObject] onSuccess:^(id object) {
-                    LOG(@"File successfully uploaded");
-                }                          onError:^(id object) {
-                    LOG(@"Error uploading file: %@", object);
-                }];
-            } else {
-                LOG(@"Create album first");
+            if (albums && [albums count] > 0) {
+                Album *album = (Album *) [albums objectAtIndex:0];
+                if (album) {
+                    LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
+                    [_fotkiServiceFacade uploadPicture:@"/Users/aistomin/Pictures/7973801.jpg" toTheAlbum:[albums lastObject] onSuccess:^(id object) {
+                        LOG(@"File successfully uploaded");
+                    }                          onError:^(id object) {
+                        LOG(@"Error uploading file: %@", object);
+                    }];
+                } else {
+                    LOG(@"Create album first");
+                }
             }
         }                           onError:^(id error) {
             LOG(@"Error getting albums");
