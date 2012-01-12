@@ -1404,7 +1404,7 @@
 							<string key="NSFrame">{{97, 223}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="849369688"/>
+							<reference key="NSNextKeyView" ref="40370316"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="116046200">
@@ -1422,22 +1422,46 @@
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
-						<object class="NSButton" id="849369688">
+						<object class="NSButton" id="40370316">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{97, 191}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
+							<reference key="NSNextKeyView" ref="430328785"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="510411933">
+							<object class="NSButtonCell" key="NSCell" id="625806157">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">134217728</int>
 								<string key="NSContents">Button</string>
 								<reference key="NSSupport" ref="21247431"/>
 								<string key="NSCellIdentifier">_NS:687</string>
-								<reference key="NSControlView" ref="849369688"/>
+								<reference key="NSControlView" ref="40370316"/>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">129</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
+						<object class="NSButton" id="430328785">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{97, 159}, {82, 32}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
+							<string key="NSReuseIdentifierKey">_NS:687</string>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="73108333">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Button</string>
+								<reference key="NSSupport" ref="21247431"/>
+								<string key="NSCellIdentifier">_NS:687</string>
+								<reference key="NSControlView" ref="430328785"/>
 								<int key="NSButtonFlags">-2038284033</int>
 								<int key="NSButtonFlags2">129</int>
 								<string key="NSAlternateContents"/>
@@ -2292,7 +2316,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">createFolderButton</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="849369688"/>
+						<reference key="destination" ref="40370316"/>
 					</object>
 					<int key="connectionID">570</int>
 				</object>
@@ -2300,9 +2324,25 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">createFolderButtonClicked:</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="849369688"/>
+						<reference key="destination" ref="40370316"/>
 					</object>
 					<int key="connectionID">571</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">createAlbumButton</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="430328785"/>
+					</object>
+					<int key="connectionID">574</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">createAlbumButtonClicked:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="430328785"/>
+					</object>
+					<int key="connectionID">575</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2835,7 +2875,8 @@
 							<reference ref="88082309"/>
 							<reference ref="516752810"/>
 							<reference ref="349744652"/>
-							<reference ref="849369688"/>
+							<reference ref="40370316"/>
+							<reference ref="430328785"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3407,16 +3448,29 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">568</int>
-						<reference key="object" ref="849369688"/>
+						<reference key="object" ref="40370316"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="510411933"/>
+							<reference ref="625806157"/>
 						</array>
 						<reference key="parent" ref="439893737"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">569</int>
-						<reference key="object" ref="510411933"/>
-						<reference key="parent" ref="849369688"/>
+						<reference key="object" ref="625806157"/>
+						<reference key="parent" ref="40370316"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">572</int>
+						<reference key="object" ref="430328785"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="73108333"/>
+						</array>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">573</int>
+						<reference key="object" ref="73108333"/>
+						<reference key="parent" ref="430328785"/>
 					</object>
 				</array>
 			</object>
@@ -3586,6 +3640,9 @@
 				<string key="568.userInterfaceItemIdentifier">createFolderButton</string>
 				<string key="569.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="57.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="572.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="572.userInterfaceItemIdentifier">deleteFolderButton</string>
+				<string key="573.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="58.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3603,7 +3660,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">571</int>
+			<int key="maxID">575</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3613,6 +3670,7 @@
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="buildFoldersTreeButtonClicked:">id</string>
 						<string key="createFolderButtonClicked:">id</string>
+						<string key="deleteFolderButtonClicked:">id</string>
 						<string key="downloadButtonClicked:">id</string>
 						<string key="exitMenuItemClicked:">id</string>
 						<string key="getAlbumsButtonClicked:">id</string>
@@ -3628,6 +3686,10 @@
 						</object>
 						<object class="IBActionInfo" key="createFolderButtonClicked:">
 							<string key="name">createFolderButtonClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteFolderButtonClicked:">
+							<string key="name">deleteFolderButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="downloadButtonClicked:">
@@ -3662,6 +3724,7 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="buildFoldersTreeButton">NSButton</string>
 						<string key="createFolderButton">NSButton</string>
+						<string key="deleteFolderButton">NSButton</string>
 						<string key="downloadButton">NSButton</string>
 						<string key="getAlbumsButton">NSButton</string>
 						<string key="loginButton">NSButton</string>
@@ -3675,6 +3738,10 @@
 						</object>
 						<object class="IBToOneOutletInfo" key="createFolderButton">
 							<string key="name">createFolderButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="deleteFolderButton">
+							<string key="name">deleteFolderButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="downloadButton">
