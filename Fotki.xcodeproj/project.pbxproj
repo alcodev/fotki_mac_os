@@ -21,7 +21,6 @@
 		E1EE7F8214AC79AA003AD8DF /* check.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F7F14AC79AA003AD8DF /* check.icns */; };
 		E1EE7F8314AC79AA003AD8DF /* nosync.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8014AC79AA003AD8DF /* nosync.icns */; };
 		E1EE7F8414AC79AA003AD8DF /* updated.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8114AC79AA003AD8DF /* updated.icns */; };
-		E1EE7F8414AC79AA003AD8E3 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */; };
 		E1EE7F8414AC79AA003AD8E5 /* FileSystemMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */; };
 		E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8E7 /* Finder.m */; };
 		E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD8EA /* NSImage+Helper.m */; };
@@ -60,6 +59,9 @@
 		E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */; };
 		E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */; };
 		E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */; };
+		E1EE7F8414AC79AA003AD96C /* CheckoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD96B /* CheckoutManager.m */; };
+		E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD973 /* Async2SyncLock.m */; };
+		E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,8 +98,6 @@
 		E1EE7F7F14AC79AA003AD8DF /* check.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = check.icns; path = Resources/check.icns; sourceTree = "<group>"; };
 		E1EE7F8014AC79AA003AD8DF /* nosync.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = nosync.icns; path = Resources/nosync.icns; sourceTree = "<group>"; };
 		E1EE7F8114AC79AA003AD8DF /* updated.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = updated.icns; path = Resources/updated.icns; sourceTree = "<group>"; };
-		E1EE7F8414AC79AA003AD8E1 /* NSThread+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSThread+Helper.h"; path = "Extensions/NSThread+Helper.h"; sourceTree = "<group>"; };
-		E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSThread+Helper.m"; path = "Extensions/NSThread+Helper.m"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSystemMonitor.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD8E6 /* FileSystemMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSystemMonitor.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD8E7 /* Finder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Finder.m; sourceTree = "<group>"; };
@@ -179,6 +179,12 @@
 		E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceFacadeCallbackCaller.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD969 /* ServiceFacadeCallbackCaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceFacadeCallbackCaller.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD96B /* CheckoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckoutManager.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD96D /* CheckoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckoutManager.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD972 /* Async2SyncLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Async2SyncLock.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD973 /* Async2SyncLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Async2SyncLock.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD975 /* NSThread+Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+Helper.h"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSThread+Helper.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,12 +315,11 @@
 				E1EE7F8414AC79AA003AD8E7 /* Finder.m */,
 				E1EE7F8414AC79AA003AD8E6 /* FileSystemMonitor.h */,
 				E1EE7F8414AC79AA003AD8E4 /* FileSystemMonitor.m */,
-				E1EE7F8414AC79AA003AD8E2 /* NSThread+Helper.m */,
-				E1EE7F8414AC79AA003AD8E1 /* NSThread+Helper.h */,
 				E1EE7F8414AC79AA003AD8F3 /* FileMD5Hash */,
 				E1EE7F8414AC79AA003AD8F8 /* FotkiService */,
 				E1EE7F8414AC79AA003AD8FC /* AFNetworking */,
 				E1EE7F8414AC79AA003AD91E /* TouchXML */,
+				E1EE7F8414AC79AA003AD96E /* Extensions */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				E1EE7F8414AC79AA003AD961 /* FoldersTree */,
 				E1EE7F8414AC79AA003AD962 /* Downloaders */,
 				E1EE7F8414AC79AA003AD963 /* ServiceUtils */,
+				E1EE7F8414AC79AA003AD96A /* Checkout */,
 			);
 			path = FotkiService;
 			sourceTree = "<group>";
@@ -483,6 +489,26 @@
 			path = ServiceUtils;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD96A /* Checkout */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD96D /* CheckoutManager.h */,
+				E1EE7F8414AC79AA003AD96B /* CheckoutManager.m */,
+			);
+			path = Checkout;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD96E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */,
+				E1EE7F8414AC79AA003AD975 /* NSThread+Helper.h */,
+				E1EE7F8414AC79AA003AD973 /* Async2SyncLock.m */,
+				E1EE7F8414AC79AA003AD972 /* Async2SyncLock.h */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -595,7 +621,6 @@
 			files = (
 				E1EA4A3214A59F0400EE9703 /* main.m in Sources */,
 				E1EA4A3914A59F0400EE9703 /* AppDelegate.m in Sources */,
-				E1EE7F8414AC79AA003AD8E3 /* NSThread+Helper.m in Sources */,
 				E1EE7F8414AC79AA003AD8E5 /* FileSystemMonitor.m in Sources */,
 				E1EE7F8414AC79AA003AD8E8 /* Finder.m in Sources */,
 				E1EE7F8414AC79AA003AD8EB /* NSImage+Helper.m in Sources */,
@@ -634,6 +659,9 @@
 				E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */,
 				E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */,
+				E1EE7F8414AC79AA003AD96C /* CheckoutManager.m in Sources */,
+				E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */,
+				E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

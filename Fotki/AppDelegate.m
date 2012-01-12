@@ -16,9 +16,11 @@
 #import "Album.h"
 #import "Photo.h"
 #import "ImageDownloader.h"
+#import "Consts.h"
+#import "CheckoutManager.h"
 
 #define APP_NAME @"Fotki"
-#define FOTKI_PATH @"/Users/aistomin/tmp/fotki"
+
 
 void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
     AppDelegate *appDelegate = (AppDelegate *) userData;
@@ -64,6 +66,8 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [downloadButton release];
     [createFolderButton release];
     [createAlbumButton release];
+
+    [checkoutButton release];
 
     [_files release];
     [_filesHashes release];
@@ -127,6 +131,8 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [downloadButton setTitle:@"Download"];
     [createFolderButton setTitle:@"Create Folder"];
     [createAlbumButton setTitle:@"Create Album"];
+
+    [checkoutButton setTitle:@"Checkout"];
 
     [self registerDefaults];
 
@@ -271,6 +277,24 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
             LOG(@"Album successfully created, album id: %@", folderId);
         }                        onError:^(id error) {
             LOG(@"Album creating folder: %@", error);
+        }];
+    }
+}
+
+- (IBAction)checkoutButtonClicked:(id)sender {
+    [checkoutButton setTitle:@"Wait..."];
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade getAlbums:^(id rootFolders) {
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            [NSThread doInNewThread:^{
+                [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
+                [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+                }];
+                LOG(@"Folders' hierarchy created successfully.");
+                [checkoutButton setTitle:@"Checkout"];
+            }];
+        }                      onError:^(id error) {
+            LOG(@"Checkout error: %@", error);
         }];
     }
 }

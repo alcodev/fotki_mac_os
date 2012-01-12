@@ -23,8 +23,8 @@
 #import "AFHTTPRequestOperation.h"
 
 @interface AFHTTPRequestOperation ()
-@property (readwrite, nonatomic, retain) NSError *HTTPError;
-@property (readonly, nonatomic, assign) BOOL hasContent;
+@property(readwrite, nonatomic, retain) NSError *HTTPError;
+@property(readonly, nonatomic, assign) BOOL hasContent;
 @end
 
 @implementation AFHTTPRequestOperation
@@ -37,9 +37,9 @@
     if (!self) {
         return nil;
     }
-    
+
     self.acceptableStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(200, 100)];
-    
+
     return self;
 }
 
@@ -51,7 +51,7 @@
 }
 
 - (NSHTTPURLResponse *)response {
-    return (NSHTTPURLResponse *)[super response];
+    return (NSHTTPURLResponse *) [super response];
 }
 
 - (NSError *)error {
@@ -60,17 +60,17 @@
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected status code %@, got %d", nil), self.acceptableStatusCodes, [self.response statusCode]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
+
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorBadServerResponse userInfo:userInfo] autorelease];
         } else if ([self hasContent] && ![self hasAcceptableContentType]) { // Don't invalidate content type if there is no content
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             [userInfo setValue:[NSString stringWithFormat:NSLocalizedString(@"Expected content type %@, got %@", nil), self.acceptableContentTypes, [self.response MIMEType]] forKey:NSLocalizedDescriptionKey];
             [userInfo setValue:[self.request URL] forKey:NSURLErrorFailingURLErrorKey];
-            
+
             self.HTTPError = [[[NSError alloc] initWithDomain:AFNetworkingErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo] autorelease];
         }
     }
-    
+
     if (_HTTPError) {
         return _HTTPError;
     } else {
@@ -91,24 +91,23 @@
 }
 
 - (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
-{
-    self.completionBlock = ^ {
+                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+    self.completionBlock = ^{
         if ([self isCancelled]) {
             return;
         }
-        
+
         if (self.error) {
             if (failure) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    failure(self, self.error);
-                });
+                //dispatch_async(dispatch_get_main_queue(), ^(void) {
+                failure(self, self.error);
+                //});
             }
         } else {
             if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    success(self, self.responseData);
-                });
+                //dispatch_async(dispatch_get_main_queue(), ^{
+                success(self, self.responseData);
+                //});
             }
         }
     };
@@ -118,6 +117,6 @@
 
 + (BOOL)canProcessRequest:(NSURLRequest *)request {
     return YES;
-}     
+}
 
 @end

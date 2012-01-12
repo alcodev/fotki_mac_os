@@ -18,6 +18,7 @@
     IBOutlet NSButton *downloadButton;
     IBOutlet NSButton *createFolderButton;
     IBOutlet NSButton *createAlbumButton;
+    IBOutlet NSButton *checkoutButton;
     NSStatusItem *statusItem;
 
     NSFileManager *_fm;
@@ -51,6 +52,8 @@
 - (IBAction)createFolderButtonClicked:(id)sender;
 
 - (IBAction)createAlbumButtonClicked:(id)sender;
+
+- (IBAction)checkoutButtonClicked:(id)sender;
 
 - (void)synchronizeData;
 

@@ -1328,7 +1328,7 @@
 							<string key="NSFrame">{{97, 319}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="88082309"/>
+							<reference key="NSNextKeyView" ref="154814207"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="888210046">
@@ -1462,6 +1462,30 @@
 								<reference key="NSSupport" ref="21247431"/>
 								<string key="NSCellIdentifier">_NS:687</string>
 								<reference key="NSControlView" ref="430328785"/>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">129</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
+						<object class="NSButton" id="154814207">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{233, 319}, {82, 32}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="88082309"/>
+							<string key="NSReuseIdentifierKey">_NS:687</string>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="877049642">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Button</string>
+								<reference key="NSSupport" ref="21247431"/>
+								<string key="NSCellIdentifier">_NS:687</string>
+								<reference key="NSControlView" ref="154814207"/>
 								<int key="NSButtonFlags">-2038284033</int>
 								<int key="NSButtonFlags2">129</int>
 								<string key="NSAlternateContents"/>
@@ -2344,6 +2368,22 @@
 					</object>
 					<int key="connectionID">575</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">checkoutButton</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="154814207"/>
+					</object>
+					<int key="connectionID">578</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">checkoutButtonClicked:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="154814207"/>
+					</object>
+					<int key="connectionID">579</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -2877,6 +2917,7 @@
 							<reference ref="349744652"/>
 							<reference ref="40370316"/>
 							<reference ref="430328785"/>
+							<reference ref="154814207"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3472,6 +3513,19 @@
 						<reference key="object" ref="73108333"/>
 						<reference key="parent" ref="430328785"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">576</int>
+						<reference key="object" ref="154814207"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="877049642"/>
+						</array>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">577</int>
+						<reference key="object" ref="877049642"/>
+						<reference key="parent" ref="154814207"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -3643,6 +3697,9 @@
 				<string key="572.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="572.userInterfaceItemIdentifier">deleteFolderButton</string>
 				<string key="573.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="576.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="576.userInterfaceItemIdentifier">checkoutButton</string>
+				<string key="577.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="58.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3660,7 +3717,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">575</int>
+			<int key="maxID">579</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3669,27 +3726,32 @@
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="buildFoldersTreeButtonClicked:">id</string>
+						<string key="checkoutButtonClicked:">id</string>
+						<string key="createAlbumButtonClicked:">id</string>
 						<string key="createFolderButtonClicked:">id</string>
-						<string key="deleteFolderButtonClicked:">id</string>
 						<string key="downloadButtonClicked:">id</string>
 						<string key="exitMenuItemClicked:">id</string>
-						<string key="getAlbumsButtonClicked:">id</string>
 						<string key="itemClicked:">id</string>
 						<string key="loginButtonClicked:">id</string>
 						<string key="settingsMenuItemClicked:">id</string>
 						<string key="testMenuItemClicked:">id</string>
+						<string key="uploadPhotoButtonClicked:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="buildFoldersTreeButtonClicked:">
 							<string key="name">buildFoldersTreeButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="createFolderButtonClicked:">
-							<string key="name">createFolderButtonClicked:</string>
+						<object class="IBActionInfo" key="checkoutButtonClicked:">
+							<string key="name">checkoutButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="deleteFolderButtonClicked:">
-							<string key="name">deleteFolderButtonClicked:</string>
+						<object class="IBActionInfo" key="createAlbumButtonClicked:">
+							<string key="name">createAlbumButtonClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="createFolderButtonClicked:">
+							<string key="name">createFolderButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="downloadButtonClicked:">
@@ -3698,10 +3760,6 @@
 						</object>
 						<object class="IBActionInfo" key="exitMenuItemClicked:">
 							<string key="name">exitMenuItemClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="getAlbumsButtonClicked:">
-							<string key="name">getAlbumsButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="itemClicked:">
@@ -3720,15 +3778,20 @@
 							<string key="name">testMenuItemClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="uploadPhotoButtonClicked:">
+							<string key="name">uploadPhotoButtonClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="buildFoldersTreeButton">NSButton</string>
+						<string key="checkoutButton">NSButton</string>
+						<string key="createAlbumButton">NSButton</string>
 						<string key="createFolderButton">NSButton</string>
-						<string key="deleteFolderButton">NSButton</string>
 						<string key="downloadButton">NSButton</string>
-						<string key="getAlbumsButton">NSButton</string>
 						<string key="loginButton">NSButton</string>
 						<string key="statusMenu">NSMenu</string>
+						<string key="uploadPhotoButton">NSButton</string>
 						<string key="window">NSWindow</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
@@ -3736,20 +3799,20 @@
 							<string key="name">buildFoldersTreeButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="checkoutButton">
+							<string key="name">checkoutButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="createAlbumButton">
+							<string key="name">createAlbumButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="createFolderButton">
 							<string key="name">createFolderButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="deleteFolderButton">
-							<string key="name">deleteFolderButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="downloadButton">
 							<string key="name">downloadButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="getAlbumsButton">
-							<string key="name">getAlbumsButton</string>
 							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="loginButton">
@@ -3759,6 +3822,10 @@
 						<object class="IBToOneOutletInfo" key="statusMenu">
 							<string key="name">statusMenu</string>
 							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="uploadPhotoButton">
+							<string key="name">uploadPhotoButton</string>
+							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="window">
 							<string key="name">window</string>

@@ -19,8 +19,8 @@
 }
 
 
-+ (void)processXmlRequestForUrl:(NSString *)url andPath:(NSString *)path andParams:(NSDictionary *)params onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    NSURL *url = [NSURL URLWithString:url];
++ (void)processXmlRequestForUrl:(NSString *)servideUrl andPath:(NSString *)path andParams:(NSDictionary *)params onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    NSURL *url = [NSURL URLWithString:servideUrl];
 
     AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
     [httpClient setDefaultHeader:@"Accept" value:@"text/xml"];
@@ -47,8 +47,8 @@
 
 }
 
-+ (void)processImageRequestForUrl:(NSString *)url path:(NSString *)path params:(NSDictionary *)params name:(NSString *)name imagePath:(NSString *)imagePath onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    NSURL *url = [NSURL URLWithString:url];
++ (void)processImageRequestForUrl:(NSString *)serviceUrl path:(NSString *)path params:(NSDictionary *)params name:(NSString *)name imagePath:(NSString *)imagePath onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    NSURL *url = [NSURL URLWithString:serviceUrl];
 
     AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:url] autorelease];
 
