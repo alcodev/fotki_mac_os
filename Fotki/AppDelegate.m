@@ -226,7 +226,8 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (IBAction)exitMenuItemClicked:(id)sender {
-    //exit
+    LOG(@"Application finished with exit code 0");
+    exit(0);
 }
 
 - (void)showSuccessAccountSavedNotification {
