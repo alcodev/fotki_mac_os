@@ -63,6 +63,7 @@
 		E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD973 /* Async2SyncLock.m */; };
 		E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */; };
 		E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD979 /* BadgeUtils.m */; };
+		E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,6 +189,8 @@
 		E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSThread+Helper.m"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD979 /* BadgeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BadgeUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD97B /* BadgeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgeUtils.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageWithSiteSynchronizator.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageWithSiteSynchronizator.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -348,6 +351,7 @@
 				E1EE7F8414AC79AA003AD962 /* Downloaders */,
 				E1EE7F8414AC79AA003AD963 /* ServiceUtils */,
 				E1EE7F8414AC79AA003AD96A /* Checkout */,
+				E1EE7F8414AC79AA003AD97C /* Synchronization */,
 			);
 			path = FotkiService;
 			sourceTree = "<group>";
@@ -522,6 +526,15 @@
 			path = ImageUtils;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD97C /* Synchronization */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */,
+				E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */,
+			);
+			path = Synchronization;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -676,6 +689,7 @@
 				E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */,
 				E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */,
 				E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */,
+				E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

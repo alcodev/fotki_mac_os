@@ -19,6 +19,9 @@
 #import "Consts.h"
 #import "CheckoutManager.h"
 #import "BadgeUtils.h"
+#import "ImageWithSiteSynchronizator.h"
+#import "Error.h"
+#import "Folder.h"
 
 #define APP_NAME @"Fotki"
 
@@ -44,6 +47,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
 @implementation AppDelegate {
     FotkiServiceFacade *_fotkiServiceFacade;
+    BOOL _isCheckoutMode;
 }
 @synthesize window = _window;
 @synthesize lastEventId = _lastEventId;
@@ -53,6 +57,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     if (self != nil) {
         _fm = [NSFileManager defaultManager];
         _files = [NSMutableArray new];
+        _isCheckoutMode = NO;
     }
     return self;
 }
@@ -92,14 +97,14 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
 
 - (void)handleFileAdd:(NSString *)path {
-    if (![FileSystemHelper isImageFileAtPath:path]) {
+    BOOL isUserAuthenticated = _fotkiServiceFacade && _fotkiServiceFacade.sessionId;
+    if (!isUserAuthenticated || ![FileSystemHelper isImageFileAtPath:path] || _isCheckoutMode) {
         return;
     }
 
     [NSThread doInNewThread:^{
         [BadgeUtils putUpdatedBadgeOnFileIconAtPath:path];
-        [NSThread sleepForTimeInterval:5];
-        [BadgeUtils putCheckBadgeOnFileIconAtPath:path];
+        [ImageWithSiteSynchronizator synchronize:path serviceFacade:_fotkiServiceFacade];
     }];
 }
 
@@ -273,20 +278,44 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (IBAction)checkoutButtonClicked:(id)sender {
+    _isCheckoutMode = YES;
     [checkoutButton setTitle:@"Wait..."];
     if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbums:^(id rootFolders) {
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [NSThread doInNewThread:^{
-                [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
-                [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+        [_fotkiServiceFacade getAlbumsPlain:^(NSMutableArray *albums) {
+            if ([albums count] > 0) {
+                [_fotkiServiceFacade getAlbums:^(id rootFolders) {
+                    NSFileManager *fileManager = [NSFileManager defaultManager];
+                    [NSThread doInNewThread:^{
+                        [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
+                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+                        }];
+                        LOG(@"Folders' hierarchy created successfully.");
+                        [checkoutButton setTitle:@"Checkout"];
+                        _isCheckoutMode = NO;
+                    }];
+                }                      onError:^(Error *error) {
+                    LOG(@"Checkout error: %@", error);
+                    _isCheckoutMode = NO;
                 }];
-                LOG(@"Folders' hierarchy created successfully.");
-                [checkoutButton setTitle:@"Checkout"];
-            }];
-        }                      onError:^(id error) {
-            LOG(@"Checkout error: %@", error);
+            } else {
+                [_fotkiServiceFacade getPublicHomeFolder:^(Folder *publicHomeFolder) {
+                    [_fotkiServiceFacade createAlbum:@"Mac album" parentFolderId:publicHomeFolder.id onSuccess:^(id object) {
+                        LOG(@"Mac album successfully created");
+                        [self checkoutButtonClicked:sender];
+                    }                        onError:^(Error *error) {
+                        LOG(@"Error creating Mac album: %@", error);
+                        _isCheckoutMode = NO;
+                    }];
+                }                                onError:^(Error *error) {
+                    LOG(@"Error getting public home folder: %@", error);
+                    _isCheckoutMode = NO;
+                }];
+            }
+        }                           onError:^(Error *error) {
+            LOG(@"Error getting albums plain: %@", error);
+            _isCheckoutMode = NO;
         }];
+
     }
 }
 @end

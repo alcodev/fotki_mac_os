@@ -11,4 +11,6 @@
 + (void)putUpdatedBadgeOnFileIconAtPath:(NSString *)path;
 
 + (void)putCheckBadgeOnFileIconAtPath:(NSString *)path;
+
++ (void)putErrorBadgeOnFileIconAtPath:(NSString *)path;
 @end

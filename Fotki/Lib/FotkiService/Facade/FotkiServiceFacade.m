@@ -12,6 +12,7 @@
 #import "Photo.h"
 #import "ServiceUtils.h"
 #import "ServiceFacadeCallbackCaller.h"
+#import "Folder.h"
 
 
 @interface FotkiServiceFacade ()
@@ -22,6 +23,8 @@
 @implementation FotkiServiceFacade {
 
 }
+
+@synthesize sessionId = _sessionId;
 
 - (void)dealloc {
     [_sessionId release];
@@ -157,5 +160,17 @@
     } else {
         return (YES);
     }
+}
+
+- (void)getPublicHomeFolder:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    [self getAlbums:^(NSMutableArray *rootFolders) {
+        for (Folder *folder in rootFolders) {
+            if ([DEFAULT_FOLDER_NAME isEqualToString:folder.name]) {
+                [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:folder];
+                return;
+            }
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:nil];
+        }
+    }       onError:onError];
 }
 @end

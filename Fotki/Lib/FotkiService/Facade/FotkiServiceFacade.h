@@ -17,6 +17,8 @@ typedef void (^ServiceFacadeCallback)(id);
     NSString *_sessionId;
     NSArray *_rootFolders;
 }
+@property(nonatomic, retain, readonly) NSString *sessionId;
+
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
@@ -31,5 +33,5 @@ typedef void (^ServiceFacadeCallback)(id);
 
 - (void)createAlbum:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
-
+- (void)getPublicHomeFolder:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 @end

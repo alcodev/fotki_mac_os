@@ -35,4 +35,7 @@
 
 }
 
++ (void)putErrorBadgeOnFileIconAtPath:(NSString *)path {
+    [self putBadge:[self getBadgeImageWithName:@"updated.icns"] onFileIconAtPath:path];
+}
 @end
