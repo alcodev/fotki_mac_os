@@ -36,6 +36,6 @@
 }
 
 + (void)putErrorBadgeOnFileIconAtPath:(NSString *)path {
-    [self putBadge:[self getBadgeImageWithName:@"updated.icns"] onFileIconAtPath:path];
+    [self putBadge:[self getBadgeImageWithName:@"nosync.icns"] onFileIconAtPath:path];
 }
 @end
