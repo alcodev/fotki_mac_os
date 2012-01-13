@@ -12,6 +12,7 @@
 #import "Photo.h"
 #import "NSThread+Helper.h"
 #import "Async2SyncLock.h"
+#import "BadgeUtils.h"
 
 
 @implementation CheckoutManager {
@@ -22,6 +23,7 @@
     for (Album *album in albums) {
         NSString *albumsDirectory = [NSString stringWithFormat:@"%@/%@", directory, album.name];
         [fileManager createDirectoryAtPath:albumsDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        [BadgeUtils putCheckBadgeOnFileIconAtPath:albumsDirectory];
         LOG(@"Run async block synchronously");
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             LOG(@"Loading photos' list from album %@", album.name);
@@ -34,6 +36,7 @@
                                                                     [photo.originalUrl pathExtension]];
                     LOG(@"Downloading photo %@ in album %@.", photo.title, album.name);
                     [ImageDownloader downloadImageFromUrl:photo.originalUrl toFile:filePath];
+                    [BadgeUtils putCheckBadgeOnFileIconAtPath:filePath];
                     LOG(@"Photo %@ in album %@ successfully downloaded.", photo.title, album.name);
                 }
 
@@ -50,6 +53,7 @@
     for (Folder *folder in folders) {
         NSString *foldersDirectory = [NSString stringWithFormat:@"%@/%@", directory, folder.name];
         [fileManager createDirectoryAtPath:foldersDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        [BadgeUtils putCheckBadgeOnFileIconAtPath:foldersDirectory];
         [self createFoldersHierarchyOnHardDisk:folder.childFolders inDirectory:foldersDirectory withFileManager:fileManager serviceFacade:serviceFacade onFinish:onFinish];
         [self createAlbums:folder.childAlbums inDirectory:foldersDirectory withFileManager:fileManager serviceFacade:serviceFacade];
     }

@@ -18,6 +18,7 @@
 #import "ImageDownloader.h"
 #import "Consts.h"
 #import "CheckoutManager.h"
+#import "BadgeUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -38,8 +39,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 @interface AppDelegate ()
-
-- (NSImage *)getBadgeImageWithName:(NSString *)name;
 
 @end
 
@@ -91,14 +90,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     return NSTerminateNow;
 }
 
-- (void)putBadge:(NSImage *)badge onFileIconAtPath:(NSString *)path {
-    NSImage *fileIcon = [FileSystemHelper imageWithPreviewOfFileAtPath:path ofSize:NSMakeSize(64, 64) asIcon:YES];
-    //NSImage *fileIcon = [[NSWorkspace sharedWorkspace] iconForFile:path];
-    NSImage *badgedIcon = [[fileIcon putOtherImage:badge] retain];
-    [[NSWorkspace sharedWorkspace] setIcon:badgedIcon forFile:path options:nil];
-
-    [badgedIcon release];
-}
 
 - (void)handleFileAdd:(NSString *)path {
     if (![FileSystemHelper isImageFileAtPath:path]) {
@@ -106,9 +97,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     }
 
     [NSThread doInNewThread:^{
-        [self putBadge:[self getBadgeImageWithName:@"updated.icns"] onFileIconAtPath:path];
+        [BadgeUtils putUpdatedBadgeOnFileIconAtPath:path];
         [NSThread sleepForTimeInterval:5];
-        [self putBadge:[self getBadgeImageWithName:@"check.icns"] onFileIconAtPath:path];
+        [BadgeUtils putCheckBadgeOnFileIconAtPath:path];
     }];
 }
 
@@ -298,10 +289,4 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         }];
     }
 }
-
-
-- (NSImage *)getBadgeImageWithName:(NSString *)name {
-    return [[NSImage imageNamed:name] extractAsImageRepresentationOfSize:0];
-}
-
 @end
