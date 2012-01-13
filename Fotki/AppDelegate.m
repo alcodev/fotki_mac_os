@@ -106,7 +106,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (void)registerDefaults {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *appDefaults = [NSDictionary
-            dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:kFSEventStreamEventIdSinceNow], [NSMutableDictionary new], nil]
+            dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:0], [NSMutableDictionary new], nil]
                           forKeys:[NSArray arrayWithObjects:@"lastEventId", @"filesHashes", nil]];
     [defaults registerDefaults:appDefaults];
 }
@@ -129,7 +129,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     _appStartedTimestamp = [[NSDate date] retain];
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
-    _lastEventId = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastEventId"];
+    _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
 
     NSArray *pathsToWatch = [NSArray arrayWithObject:FOTKI_PATH];
     _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];

@@ -68,12 +68,12 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
 
     FSEventStreamContext context = {0, (void *) self, NULL, NULL, NULL};
     _stream = FSEventStreamCreate(NULL,
-        &fsevents_callback,
-        &context,
-        (CFArrayRef) _paths,
-        [_lastEventId unsignedLongLongValue],
-        (CFAbsoluteTime) _latency,
-        kFSEventStreamCreateFlagUseCFTypes
+            &fsevents_callback,
+            &context,
+            (CFArrayRef) _paths,
+            kFSEventStreamEventIdSinceNow,
+            (CFAbsoluteTime) _latency,
+            kFSEventStreamCreateFlagUseCFTypes
     );
 
     FSEventStreamScheduleWithRunLoop(_stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
