@@ -12,13 +12,13 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     IBOutlet NSMenu *statusMenu;
+
     IBOutlet NSButton *loginButton;
-    IBOutlet NSButton *uploadPhotoButton;
-    IBOutlet NSButton *buildFoldersTreeButton;
-    IBOutlet NSButton *downloadButton;
-    IBOutlet NSButton *createFolderButton;
-    IBOutlet NSButton *createAlbumButton;
     IBOutlet NSButton *checkoutButton;
+    IBOutlet NSTextField *loginTextField;
+    IBOutlet NSSecureTextField *passwordSecureTextField;
+    IBOutlet NSTextFieldCell *notificationLabel;
+
     NSStatusItem *statusItem;
 
     NSFileManager *_fm;
@@ -42,16 +42,6 @@
 - (IBAction)exitMenuItemClicked:(id)sender;
 
 - (IBAction)loginButtonClicked:(id)sender;
-
-- (IBAction)uploadPhotoButtonClicked:(id)sender;
-
-- (IBAction)buildFoldersTreeButtonClicked:(id)sender;
-
-- (IBAction)downloadButtonClicked:(id)sender;
-
-- (IBAction)createFolderButtonClicked:(id)sender;
-
-- (IBAction)createAlbumButtonClicked:(id)sender;
 
 - (IBAction)checkoutButtonClicked:(id)sender;
 

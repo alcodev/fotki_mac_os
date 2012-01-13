@@ -13,9 +13,6 @@
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
-#import "Album.h"
-#import "Photo.h"
-#import "ImageDownloader.h"
 #import "Consts.h"
 #import "CheckoutManager.h"
 #import "BadgeUtils.h"
@@ -57,6 +54,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     if (self != nil) {
         _fm = [NSFileManager defaultManager];
         _files = [NSMutableArray new];
+        _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
         _isCheckoutMode = NO;
     }
     return self;
@@ -66,10 +64,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusMenu release];
     [statusItem release];
     [loginButton release];
-    [uploadPhotoButton release];
-    [downloadButton release];
-    [createFolderButton release];
-    [createAlbumButton release];
+    [loginTextField release];
+    [passwordSecureTextField release];
+    [notificationLabel release];
 
     [checkoutButton release];
 
@@ -121,14 +118,12 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setMenu:statusMenu];
     [statusItem setTitle:APP_NAME];
     [statusItem setHighlightMode:YES];
+
     [loginButton setTitle:@"Login"];
-    [uploadPhotoButton setTitle:@"Upload"];
-    [buildFoldersTreeButton setTitle:@"Get Folders Tree"];
-    [downloadButton setTitle:@"Download"];
-    [createFolderButton setTitle:@"Create Folder"];
-    [createAlbumButton setTitle:@"Create Album"];
 
     [checkoutButton setTitle:@"Checkout"];
+
+    [notificationLabel setTitle:@""];
 
     [self registerDefaults];
 
@@ -152,6 +147,28 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     }                          doOnFileDeleted:^(NSString *path) {
 
     }];
+    __block NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *login = [defaults objectForKey:@"login"];
+    NSString *password = [defaults objectForKey:@"password"];
+    [loginTextField setStringValue:login];
+    [passwordSecureTextField setStringValue:login];
+    if (login) {
+        [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
+                                         onSuccess:^(id sessionId) {
+                                             LOG(@"Session ID is: %@", sessionId);
+                                             defaults = [NSUserDefaults standardUserDefaults];
+                                             [defaults setObject:login forKey:@"login"];
+                                             [defaults setObject:password forKey:@"password"];
+                                             [defaults synchronize];
+                                         }
+                                           onError:^(id error) {
+                                               LOG(@"Authentication error: %@", error);
+                                               [self.window makeKeyAndOrderFront:self];
+                                           }];
+    } else {
+        LOG(@"User's login and password not assigned yet.");
+        [self.window makeKeyAndOrderFront:self];
+    }
 }
 
 - (IBAction)testMenuItemClicked:(id)sender {
@@ -179,102 +196,37 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     //exit
 }
 
-- (IBAction)loginButtonClicked:(id)sender {
-    _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
-    [_fotkiServiceFacade authenticateWithLogin:@"alcodev" andPassword:@"alcodev"
+- (void)showSuccessAccountSavedNotification {
+    [notificationLabel setTextColor:[NSColor greenColor]];
+    [notificationLabel setTitle:@"Authentification success"];
+}
+
+- (void)showErrorAccountNotification {
+    [notificationLabel setTextColor:[NSColor redColor]];
+    [notificationLabel setTitle:@"Authentification failed"];
+}
+
+- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password {
+    [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                      onSuccess:^(id sessionId) {
                                          LOG(@"Session ID is: %@", sessionId);
+                                         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                         [defaults setObject:login forKey:@"login"];
+                                         [defaults setObject:password forKey:@"password"];
+                                         [defaults synchronize];
+                                         [self showSuccessAccountSavedNotification];
                                      }
                                        onError:^(id error) {
                                            LOG(@"Authentication error: %@", error);
+                                           [self showErrorAccountNotification];
                                        }];
 }
 
-- (IBAction)uploadPhotoButtonClicked:(id)sender {
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
-            if (albums && [albums count] > 0) {
-                Album *album = (Album *) [albums objectAtIndex:0];
-                if (album) {
-                    LOG(@"Album: id - %@ name - %@ \n", album.id, album.name);
-                    [_fotkiServiceFacade uploadPicture:@"/Users/aistomin/Pictures/7973801.jpg" toTheAlbum:[albums lastObject] onSuccess:^(id object) {
-                        LOG(@"File successfully uploaded");
-                    }                          onError:^(id object) {
-                        LOG(@"Error uploading file: %@", object);
-                    }];
-                } else {
-                    LOG(@"Create album first");
-                }
-            }
-        }                           onError:^(id error) {
-            LOG(@"Error getting albums");
-        }];
+- (IBAction)loginButtonClicked:(id)sender {
+    NSString *login = [loginTextField stringValue];
+    NSString *password = [passwordSecureTextField stringValue];
 
-    } else {
-        LOG(@"Press login button first");
-    }
-
-}
-
-- (IBAction)buildFoldersTreeButtonClicked:(id)sender {
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbums:^(id rootFolders) {
-            LOG(@"Folders Tree built successfully");
-        }                      onError:^(id error) {
-            LOG(@"Error building folders tree: %@", error);
-        }];
-    }
-
-}
-
-- (IBAction)downloadButtonClicked:(id)sender {
-
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbumsPlain:^(id albums) {
-            for (Album *album in albums) {
-                [_fotkiServiceFacade getPhotosFromTheAlbum:album onSuccess:^(id photos) {
-                    for (Photo *photo in photos) {
-                        LOG(@"Photo id=%@; title=%@; original_url=%@; album_id=%@",
-                        photo.id,
-                        photo.title,
-                        photo.originalUrl,
-                        photo.albumId);
-                        NSString *filePath = [NSString stringWithFormat:@"/Users/aistomin/tmp/%@.%@",
-                                                                        photo.title,
-                                                                        [photo.originalUrl pathExtension]];
-                        [ImageDownloader downloadImageFromUrl:photo.originalUrl toFile:filePath];
-                    }
-                }                                  onError:^(id error) {
-                    LOG(@"Error building folders tree: %@", error);
-                }];
-            }
-        }                           onError:^(id error) {
-            LOG(@"Error getting albums");
-        }];
-
-    } else {
-        LOG(@"Press login button first");
-    }
-}
-
-- (IBAction)createFolderButtonClicked:(id)sender {
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade createFolder:@"TestFolderCreatedByApp" parentFolderId:@"4293823877" onSuccess:^(id folderId) {
-            LOG(@"Folder successfully created, folder id: %@", folderId);
-        }                         onError:^(id error) {
-            LOG(@"Error creating folder: %@", error);
-        }];
-    }
-}
-
-- (IBAction)createAlbumButtonClicked:(id)sender {
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade createAlbum:@"TestAlbumCreatedByApp" parentFolderId:@"4293823877" onSuccess:^(id folderId) {
-            LOG(@"Album successfully created, album id: %@", folderId);
-        }                        onError:^(id error) {
-            LOG(@"Album creating folder: %@", error);
-        }];
-    }
+    [self authenticateWithLogin:login andPassword:password];
 }
 
 - (IBAction)checkoutButtonClicked:(id)sender {
