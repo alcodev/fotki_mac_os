@@ -10,7 +10,6 @@
 #import "NSThread+Helper.h"
 #import "FileSystemMonitor.h"
 #import "Finder.h"
-#import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
 #import "Consts.h"
@@ -67,6 +66,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [loginTextField release];
     [passwordSecureTextField release];
     [notificationLabel release];
+    [synchronizeMenuItem release];
 
     [checkoutButton release];
 
@@ -120,8 +120,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [statusItem setHighlightMode:YES];
 
     [loginButton setTitle:@"Login"];
-
-    [checkoutButton setTitle:@"Checkout"];
 
     [notificationLabel setTitle:@""];
 
@@ -180,16 +178,51 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [self.window makeKeyAndOrderFront:self];
 }
 
-- (IBAction)itemClicked:(id)sender {
-    [Finder addPathToFavourites:FOTKI_PATH];
-    return;
-    NSImage *badge = [[NSImage imageNamed:@"check.icns"] extractAsImageRepresentationOfSize:0];
+- (IBAction)synchronizeMenuItemClicked:(id)sender {
+    _isCheckoutMode = YES;
+    [synchronizeMenuItem setTitle:@"Synchronizing"];
+    if (_fotkiServiceFacade) {
+        [_fotkiServiceFacade getAlbumsPlain:^(NSMutableArray *albums) {
+            if ([albums count] > 0) {
+                [_fotkiServiceFacade getAlbums:^(id rootFolders) {
+                    NSFileManager *fileManager = [NSFileManager defaultManager];
+                    [NSThread doInNewThread:^{
+                        [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
+                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+                        }];
+                        LOG(@"Folders' hierarchy created successfully.");
+                        [synchronizeMenuItem setTitle:@"Synchronize"];
+                        _isCheckoutMode = NO;
+                    }];
+                }                      onError:^(Error *error) {
+                    LOG(@"Checkout error: %@", error);
+                    [synchronizeMenuItem setTitle:@"Synchronize"];
+                    _isCheckoutMode = NO;
+                }];
+            } else {
+                [_fotkiServiceFacade getPublicHomeFolder:^(Folder *publicHomeFolder) {
+                    [_fotkiServiceFacade createAlbum:@"Mac album" parentFolderId:publicHomeFolder.id onSuccess:^(id object) {
+                        LOG(@"Mac album successfully created");
+                        [synchronizeMenuItem setTitle:@"Synchronize"];
+                        [self checkoutButtonClicked:sender];
+                    }                        onError:^(Error *error) {
+                        LOG(@"Error creating Mac album: %@", error);
+                        [synchronizeMenuItem setTitle:@"Synchronize"];
+                        _isCheckoutMode = NO;
+                    }];
+                }                                onError:^(Error *error) {
+                    LOG(@"Error getting public home folder: %@", error);
+                    [synchronizeMenuItem setTitle:@"Synchronize"];
+                    _isCheckoutMode = NO;
+                }];
+            }
+        }                           onError:^(Error *error) {
+            LOG(@"Error getting albums plain: %@", error);
+            [synchronizeMenuItem setTitle:@"Synchronize"];
+            _isCheckoutMode = NO;
+        }];
 
-    NSImage *fileIcon = [[[NSWorkspace sharedWorkspace] iconForFile:@"/Users/vavaka/tmp/fotki/alcodev.png"] copy];
-    NSImage *badgedIcon = [fileIcon putOtherImage:badge];
-    [fileIcon release];
-
-    [[NSWorkspace sharedWorkspace] setIcon:badgedIcon forFile:@"/Users/vavaka/tmp/fotki/en2.yml" options:nil];
+    }
 }
 
 - (IBAction)exitMenuItemClicked:(id)sender {

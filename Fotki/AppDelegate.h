@@ -12,6 +12,7 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     IBOutlet NSMenu *statusMenu;
+    IBOutlet NSMenuItem *synchronizeMenuItem;
 
     IBOutlet NSButton *loginButton;
     IBOutlet NSButton *checkoutButton;
@@ -37,7 +38,7 @@
 
 - (IBAction)settingsMenuItemClicked:(id)sender;
 
-- (IBAction)itemClicked:(id)sender;
+- (IBAction)synchronizeMenuItemClicked:(id)sender;
 
 - (IBAction)exitMenuItemClicked:(id)sender;
 
