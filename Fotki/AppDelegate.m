@@ -148,9 +148,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     __block NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *login = [defaults objectForKey:@"login"];
     NSString *password = [defaults objectForKey:@"password"];
-    [loginTextField setStringValue:login];
-    [passwordSecureTextField setStringValue:login];
     if (login) {
+        [loginTextField setStringValue:login];
+        [passwordSecureTextField setStringValue:password];
         [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                          onSuccess:^(id sessionId) {
                                              LOG(@"Session ID is: %@", sessionId);
