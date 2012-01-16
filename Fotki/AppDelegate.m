@@ -12,12 +12,12 @@
 #import "Finder.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
-#import "Consts.h"
 #import "CheckoutManager.h"
 #import "BadgeUtils.h"
 #import "ImageWithSiteSynchronizator.h"
 #import "Error.h"
 #import "Folder.h"
+#import "DirectoryUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -113,6 +113,15 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [defaults registerDefaults:appDefaults];
 }
 
+- (void)addFotkiPathToFavourites {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL isFotkiPathAlreadyExists = [fileManager fileExistsAtPath:[DirectoryUtils getFotkiPath]];
+    if (!isFotkiPathAlreadyExists) {
+        [fileManager createDirectoryAtPath:[DirectoryUtils getFotkiPath] withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
+}
+
 - (void)awakeFromNib {
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
     [statusItem setMenu:statusMenu];
@@ -125,11 +134,13 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     [self registerDefaults];
 
+    [self addFotkiPathToFavourites];
+
     _appStartedTimestamp = [[NSDate date] retain];
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
     _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
 
-    NSArray *pathsToWatch = [NSArray arrayWithObject:FOTKI_PATH];
+    NSArray *pathsToWatch = [NSArray arrayWithObject:[DirectoryUtils getFotkiPath]];
     _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
     [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
         LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
@@ -170,7 +181,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (IBAction)testMenuItemClicked:(id)sender {
-    [Finder addPathToFavourites:FOTKI_PATH];
+    [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
 }
 
 - (IBAction)settingsMenuItemClicked:(id)sender {
@@ -187,8 +198,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
                 [_fotkiServiceFacade getAlbums:^(id rootFolders) {
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     [NSThread doInNewThread:^{
-                        [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
-                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+                        NSString *fotkiPath = [DirectoryUtils getFotkiPath];
+                        [CheckoutManager clearDirectory:fotkiPath withFileManager:fileManager];
+                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:fotkiPath withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
                         }];
                         LOG(@"Folders' hierarchy created successfully.");
                         [synchronizeMenuItem setTitle:@"Synchronize"];
@@ -272,8 +284,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
                 [_fotkiServiceFacade getAlbums:^(id rootFolders) {
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     [NSThread doInNewThread:^{
-                        [CheckoutManager clearDirectory:FOTKI_PATH withFileManager:fileManager];
-                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:FOTKI_PATH withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
+                        NSString *fotkiPath = [DirectoryUtils getFotkiPath];
+                        [CheckoutManager clearDirectory:fotkiPath withFileManager:fileManager];
+                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:fotkiPath withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
                         }];
                         LOG(@"Folders' hierarchy created successfully.");
                         [checkoutButton setTitle:@"Checkout"];

@@ -5,12 +5,12 @@
 
 
 #import "ImageWithSiteSynchronizator.h"
-#import "Consts.h"
 #import "FotkiServiceFacade.h"
 #import "Error.h"
 #import "Folder.h"
 #import "Album.h"
 #import "BadgeUtils.h"
+#import "DirectoryUtils.h"
 
 
 @implementation ImageWithSiteSynchronizator {
@@ -36,7 +36,7 @@
 }
 
 + (void)synchronize:(NSString *)filePath serviceFacade:(FotkiServiceFacade *)fotkiServiceFacade {
-    NSString *relativeFilePath = [filePath stringByReplacingOccurrencesOfString:FOTKI_PATH withString:@""];
+    NSString *relativeFilePath = [filePath stringByReplacingOccurrencesOfString:[DirectoryUtils getFotkiPath] withString:@""];
     relativeFilePath = [relativeFilePath substringFromIndex:1]; //remove first "/" in the path
     NSArray *foldersWithAlbumInRelativePath = [[relativeFilePath stringByDeletingLastPathComponent] pathComponents];
     [fotkiServiceFacade getAlbums:^(NSMutableArray *rootFolders) {

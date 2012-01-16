@@ -64,6 +64,7 @@
 		E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */; };
 		E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD979 /* BadgeUtils.m */; };
 		E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */; };
+		E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -191,6 +192,8 @@
 		E1EE7F8414AC79AA003AD97B /* BadgeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BadgeUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageWithSiteSynchronizator.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageWithSiteSynchronizator.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryUtils.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +330,7 @@
 				E1EE7F8414AC79AA003AD91E /* TouchXML */,
 				E1EE7F8414AC79AA003AD96E /* Extensions */,
 				E1EE7F8414AC79AA003AD978 /* ImageUtils */,
+				E1EE7F8414AC79AA003AD980 /* Utils */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -535,6 +539,15 @@
 			path = Synchronization;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD980 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */,
+				E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -690,6 +703,7 @@
 				E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */,
 				E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */,
+				E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
