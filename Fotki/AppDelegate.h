@@ -15,7 +15,6 @@
     IBOutlet NSMenuItem *synchronizeMenuItem;
 
     IBOutlet NSButton *loginButton;
-    IBOutlet NSButton *checkoutButton;
     IBOutlet NSTextField *loginTextField;
     IBOutlet NSSecureTextField *passwordSecureTextField;
     IBOutlet NSTextFieldCell *notificationLabel;
@@ -44,18 +43,6 @@
 
 - (IBAction)loginButtonClicked:(id)sender;
 
-- (IBAction)checkoutButtonClicked:(id)sender;
-
-- (void)synchronizeData;
-
 - (void)registerDefaults;
-
-- (void)initializeEventStream;
-
-- (void)addModifiedImagesAtPath:(NSString *)path;
-
-- (void)updateLastEventId:(uint64_t)eventId;
-
-- (BOOL)fileIsImage:(NSString *)path;
 
 @end

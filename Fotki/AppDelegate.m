@@ -31,9 +31,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         }
 
         LOG(@"Handling fs event %lu", eventIds[i]);
-        [appDelegate addModifiedImagesAtPath:[(NSArray *) eventPaths objectAtIndex:i]];
-        [appDelegate updateLastEventId:eventIds[i]];
-        [appDelegate synchronizeData];
     }
 }
 
@@ -67,8 +64,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [passwordSecureTextField release];
     [notificationLabel release];
     [synchronizeMenuItem release];
-
-    [checkoutButton release];
 
     [_files release];
     [_filesHashes release];
@@ -125,6 +120,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 - (void)awakeFromNib {
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
     [statusItem setMenu:statusMenu];
+    [statusMenu setAutoenablesItems:NO];
     [statusItem setTitle:APP_NAME];
     [statusItem setHighlightMode:YES];
 
@@ -189,9 +185,22 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [self.window makeKeyAndOrderFront:self];
 }
 
-- (IBAction)synchronizeMenuItemClicked:(id)sender {
+- (void)synchronizationStart {
     _isCheckoutMode = YES;
-    [synchronizeMenuItem setTitle:@"Synchronizing"];
+    [synchronizeMenuItem setTitle:@"Synchronizing..."];
+    [synchronizeMenuItem setEnabled:NO];
+    [loginButton setEnabled:NO];
+}
+
+- (void)synchronizationFinished {
+    [synchronizeMenuItem setTitle:@"Synchronize"];
+    [synchronizeMenuItem setEnabled:YES];
+    [loginButton setEnabled:YES];
+    _isCheckoutMode = NO;
+}
+
+- (IBAction)synchronizeMenuItemClicked:(id)sender {
+    [self synchronizationStart];
     if (_fotkiServiceFacade) {
         [_fotkiServiceFacade getAlbumsPlain:^(NSMutableArray *albums) {
             if ([albums count] > 0) {
@@ -203,35 +212,30 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
                         [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:fotkiPath withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
                         }];
                         LOG(@"Folders' hierarchy created successfully.");
-                        [synchronizeMenuItem setTitle:@"Synchronize"];
-                        _isCheckoutMode = NO;
+                        [self synchronizationFinished];
                     }];
                 }                      onError:^(Error *error) {
                     LOG(@"Checkout error: %@", error);
-                    [synchronizeMenuItem setTitle:@"Synchronize"];
-                    _isCheckoutMode = NO;
+                    [self synchronizationFinished];
                 }];
             } else {
                 [_fotkiServiceFacade getPublicHomeFolder:^(Folder *publicHomeFolder) {
                     [_fotkiServiceFacade createAlbum:@"Mac album" parentFolderId:publicHomeFolder.id onSuccess:^(id object) {
                         LOG(@"Mac album successfully created");
-                        [synchronizeMenuItem setTitle:@"Synchronize"];
-                        [self checkoutButtonClicked:sender];
+                        [self synchronizationFinished];
+                        [self synchronizeMenuItemClicked:sender];
                     }                        onError:^(Error *error) {
                         LOG(@"Error creating Mac album: %@", error);
-                        [synchronizeMenuItem setTitle:@"Synchronize"];
-                        _isCheckoutMode = NO;
+                        [self synchronizationFinished];
                     }];
                 }                                onError:^(Error *error) {
                     LOG(@"Error getting public home folder: %@", error);
-                    [synchronizeMenuItem setTitle:@"Synchronize"];
-                    _isCheckoutMode = NO;
+                    [self synchronizationFinished];
                 }];
             }
         }                           onError:^(Error *error) {
             LOG(@"Error getting albums plain: %@", error);
-            [synchronizeMenuItem setTitle:@"Synchronize"];
-            _isCheckoutMode = NO;
+            [self synchronizationFinished];
         }];
 
     }
@@ -275,46 +279,4 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [self authenticateWithLogin:login andPassword:password];
 }
 
-- (IBAction)checkoutButtonClicked:(id)sender {
-    _isCheckoutMode = YES;
-    [checkoutButton setTitle:@"Wait..."];
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbumsPlain:^(NSMutableArray *albums) {
-            if ([albums count] > 0) {
-                [_fotkiServiceFacade getAlbums:^(id rootFolders) {
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    [NSThread doInNewThread:^{
-                        NSString *fotkiPath = [DirectoryUtils getFotkiPath];
-                        [CheckoutManager clearDirectory:fotkiPath withFileManager:fileManager];
-                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:fotkiPath withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
-                        }];
-                        LOG(@"Folders' hierarchy created successfully.");
-                        [checkoutButton setTitle:@"Checkout"];
-                        _isCheckoutMode = NO;
-                    }];
-                }                      onError:^(Error *error) {
-                    LOG(@"Checkout error: %@", error);
-                    _isCheckoutMode = NO;
-                }];
-            } else {
-                [_fotkiServiceFacade getPublicHomeFolder:^(Folder *publicHomeFolder) {
-                    [_fotkiServiceFacade createAlbum:@"Mac album" parentFolderId:publicHomeFolder.id onSuccess:^(id object) {
-                        LOG(@"Mac album successfully created");
-                        [self checkoutButtonClicked:sender];
-                    }                        onError:^(Error *error) {
-                        LOG(@"Error creating Mac album: %@", error);
-                        _isCheckoutMode = NO;
-                    }];
-                }                                onError:^(Error *error) {
-                    LOG(@"Error getting public home folder: %@", error);
-                    _isCheckoutMode = NO;
-                }];
-            }
-        }                           onError:^(Error *error) {
-            LOG(@"Error getting albums plain: %@", error);
-            _isCheckoutMode = NO;
-        }];
-
-    }
-}
 @end
