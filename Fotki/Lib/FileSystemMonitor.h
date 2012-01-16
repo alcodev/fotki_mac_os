@@ -6,6 +6,7 @@
 #import <Foundation/Foundation.h>
 
 typedef void (^FileSystemSyncCallback)(id sender);
+
 typedef void (^FileSystemEventCallback)(NSString *path);
 
 @interface FileSystemMonitor : NSObject {
@@ -29,7 +30,12 @@ typedef void (^FileSystemEventCallback)(NSString *path);
 
 - (void)startAndDoOnSyncNeeded:(FileSystemSyncCallback)syncNeededCallback doOnFileAdded:(FileSystemEventCallback)addCallback doOnFileUpdated:(FileSystemEventCallback)updateCallback doOnFileDeleted:(FileSystemEventCallback)deleteCallback;
 
+- (void)start;
+
 - (void)stop;
+
+- (void)shutDown;
+
 
 - (void)handleFileSystemEventWithId:(uint64_t)eventId path:(NSString *)path;
 @end

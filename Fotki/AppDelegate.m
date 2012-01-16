@@ -22,25 +22,12 @@
 #define APP_NAME @"Fotki"
 
 
-void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
-    AppDelegate *appDelegate = (AppDelegate *) userData;
-    size_t i;
-    for (i = 0; i < numEvents; i++) {
-        if (eventIds[i] <= [appDelegate.lastEventId unsignedLongLongValue]) {
-            continue;
-        }
-
-        LOG(@"Handling fs event %lu", eventIds[i]);
-    }
-}
-
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate {
     FotkiServiceFacade *_fotkiServiceFacade;
-    BOOL _isCheckoutMode;
 }
 @synthesize window = _window;
 @synthesize lastEventId = _lastEventId;
@@ -51,7 +38,6 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
         _fm = [NSFileManager defaultManager];
         _files = [NSMutableArray new];
         _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
-        _isCheckoutMode = NO;
     }
     return self;
 }
@@ -77,20 +63,19 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [super dealloc];
 }
 
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
 }
 
+
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)app {
-    [_fileSystemMonitor stop];
+    [_fileSystemMonitor shutDown];
     return NSTerminateNow;
 }
 
-
 - (void)handleFileAdd:(NSString *)path {
     BOOL isUserAuthenticated = _fotkiServiceFacade && _fotkiServiceFacade.sessionId;
-    if (!isUserAuthenticated || ![FileSystemHelper isImageFileAtPath:path] || _isCheckoutMode) {
+    if (!isUserAuthenticated || ![FileSystemHelper isImageFileAtPath:path]) {
         return;
     }
 
@@ -117,6 +102,28 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
     [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
 }
 
+- (void)fileMonitorCreateAndStart {
+
+    _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
+
+    NSArray *pathsToWatch = [NSArray arrayWithObject:[DirectoryUtils getFotkiPath]];
+    _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
+    [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
+        _lastEventId = sender.lastEventId;
+        LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:sender.lastEventId forKey:@"lastEventId"];
+        [defaults setObject:sender.filesHashes forKey:@"filesHashes"];
+        [defaults synchronize];
+    }                            doOnFileAdded:^(NSString *path) {
+        [self handleFileAdd:path];
+    }                          doOnFileUpdated:^(NSString *path) {
+
+    }                          doOnFileDeleted:^(NSString *path) {
+
+    }];
+}
+
 - (void)awakeFromNib {
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
     [statusItem setMenu:statusMenu];
@@ -134,24 +141,9 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
     _appStartedTimestamp = [[NSDate date] retain];
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
-    _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
 
-    NSArray *pathsToWatch = [NSArray arrayWithObject:[DirectoryUtils getFotkiPath]];
-    _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
-    [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
-        LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
+    [self fileMonitorCreateAndStart];
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:sender.lastEventId forKey:@"lastEventId"];
-        [defaults setObject:sender.filesHashes forKey:@"filesHashes"];
-        [defaults synchronize];
-    }                            doOnFileAdded:^(NSString *path) {
-        [self handleFileAdd:path];
-    }                          doOnFileUpdated:^(NSString *path) {
-
-    }                          doOnFileDeleted:^(NSString *path) {
-
-    }];
     __block NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *login = [defaults objectForKey:@"login"];
     NSString *password = [defaults objectForKey:@"password"];
@@ -186,17 +178,17 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 }
 
 - (void)synchronizationStart {
-    _isCheckoutMode = YES;
     [synchronizeMenuItem setTitle:@"Synchronizing..."];
     [synchronizeMenuItem setEnabled:NO];
     [loginButton setEnabled:NO];
+    [_fileSystemMonitor stop];
 }
 
 - (void)synchronizationFinished {
     [synchronizeMenuItem setTitle:@"Synchronize"];
     [synchronizeMenuItem setEnabled:YES];
     [loginButton setEnabled:YES];
-    _isCheckoutMode = NO;
+    [_fileSystemMonitor start];
 }
 
 - (IBAction)synchronizeMenuItemClicked:(id)sender {
@@ -243,6 +235,7 @@ void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t n
 
 - (IBAction)exitMenuItemClicked:(id)sender {
     LOG(@"Application finished with exit code 0");
+    [_fileSystemMonitor shutDown];
     exit(0);
 }
 

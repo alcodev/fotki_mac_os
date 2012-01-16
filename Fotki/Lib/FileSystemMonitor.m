@@ -7,15 +7,80 @@
 #import "FileMD5Hash.h"
 
 static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, size_t numEvents, void *eventPaths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) {
+    LOG(@"Events received");
+
     FileSystemMonitor *fileSystemMonitor = (FileSystemMonitor *) userData;
     size_t i;
     for (i = 0; i < numEvents; i++) {
         if ([fileSystemMonitor.lastEventId integerValue] > 0 && eventIds[i] <= [fileSystemMonitor.lastEventId unsignedLongLongValue]) {
             continue;
         }
-
+        FSEventStreamEventFlags flag = eventFlags[i];
+        LOG(@"Flags for %d", i);
+        if (flag & kFSEventStreamEventFlagNone) {
+            LOG(@"kFSEventStreamEventFlagNone");
+        }
+        if (flag & kFSEventStreamEventFlagMustScanSubDirs) {
+            LOG(@"kFSEventStreamEventFlagMustScanSubDirs");
+        }
+        if (flag & kFSEventStreamEventFlagUserDropped) {
+            LOG(@"kFSEventStreamEventFlagUserDropped");
+        }
+        if (flag & kFSEventStreamEventFlagKernelDropped) {
+            LOG(@"kFSEventStreamEventFlagKernelDropped");
+        }
+        if (flag & kFSEventStreamEventFlagEventIdsWrapped) {
+            LOG(@"kFSEventStreamEventFlagEventIdsWrapped");
+        }
+        if (flag & kFSEventStreamEventFlagHistoryDone) {
+            LOG(@"kFSEventStreamEventFlagHistoryDone");
+        }
+        if (flag & kFSEventStreamEventFlagRootChanged) {
+            LOG(@"kFSEventStreamEventFlagRootChanged");
+        }
+        if (flag & kFSEventStreamEventFlagMount) {
+            LOG(@"kFSEventStreamEventFlagMount");
+        }
+        if (flag & kFSEventStreamEventFlagUnmount) {
+            LOG(@"kFSEventStreamEventFlagUnmount");
+        }
+        if (flag & kFSEventStreamEventFlagItemCreated) {
+            LOG(@"kFSEventStreamEventFlagItemCreated");
+        }
+        if (flag & kFSEventStreamEventFlagItemRemoved) {
+            LOG(@"kFSEventStreamEventFlagItemRemoved");
+        }
+        if (flag & kFSEventStreamEventFlagItemInodeMetaMod) {
+            LOG(@"kFSEventStreamEventFlagItemInodeMetaMod");
+        }
+        if (flag & kFSEventStreamEventFlagItemRenamed) {
+            LOG(@"kFSEventStreamEventFlagItemRenamed");
+        }
+        if (flag & kFSEventStreamEventFlagItemModified) {
+            LOG(@"kFSEventStreamEventFlagItemModified");
+        }
+        if (flag & kFSEventStreamEventFlagItemFinderInfoMod) {
+            LOG(@"kFSEventStreamEventFlagItemFinderInfoMod");
+        }
+        if (flag & kFSEventStreamEventFlagItemChangeOwner) {
+            LOG(@"kFSEventStreamEventFlagItemChangeOwner");
+        }
+        if (flag & kFSEventStreamEventFlagItemXattrMod) {
+            LOG(@"kFSEventStreamEventFlagItemXattrMod");
+        }
+        if (flag & kFSEventStreamEventFlagItemIsFile) {
+            LOG(@"kFSEventStreamEventFlagItemIsFile");
+        }
+        if (flag & kFSEventStreamEventFlagItemIsDir) {
+            LOG(@"kFSEventStreamEventFlagItemIsDir");
+        }
+        if (flag & kFSEventStreamEventFlagItemIsSymlink) {
+            LOG(@"kFSEventStreamEventFlagItemIsSymlink");
+        }
         LOG(@"Handling fs event %lu", eventIds[i]);
-        [fileSystemMonitor handleFileSystemEventWithId:eventIds[i] path:[(NSArray *) eventPaths objectAtIndex:i]];
+        if (eventPaths) {
+            [fileSystemMonitor handleFileSystemEventWithId:eventIds[i] path:[(NSArray *) eventPaths objectAtIndex:i]];
+        }
     }
 }
 
@@ -73,16 +138,29 @@ static void fsevents_callback(ConstFSEventStreamRef streamRef, void *userData, s
             (CFArrayRef) _paths,
             kFSEventStreamEventIdSinceNow,
             (CFAbsoluteTime) _latency,
-            kFSEventStreamCreateFlagUseCFTypes
+            kFSEventStreamCreateFlagIgnoreSelf | kFSEventStreamCreateFlagUseCFTypes
     );
 
     FSEventStreamScheduleWithRunLoop(_stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
     FSEventStreamStart(_stream);
 }
 
+- (void)start {
+    if (_stream) {
+        FSEventStreamScheduleWithRunLoop(_stream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        FSEventStreamStart(_stream);
+        FSEventStreamFlushSync(_stream);
+    }
+}
+
 - (void)stop {
     FSEventStreamStop(_stream);
+}
+
+- (void)shutDown {
+    FSEventStreamStop(_stream);
     FSEventStreamInvalidate(_stream);
+    FSEventStreamRelease(_stream);
 }
 
 - (void)callSyncNeededCallback {
