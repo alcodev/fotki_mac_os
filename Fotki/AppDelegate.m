@@ -178,6 +178,7 @@
 }
 
 - (void)synchronizationStart {
+    [BadgeUtils putUpdatedBadgeOnFileIconAtPath:[DirectoryUtils getFotkiPath]];
     [synchronizeMenuItem setTitle:@"Synchronizing..."];
     [synchronizeMenuItem setEnabled:NO];
     [loginButton setEnabled:NO];
@@ -185,6 +186,7 @@
 }
 
 - (void)synchronizationFinished {
+    [BadgeUtils putCheckBadgeOnFileIconAtPath:[DirectoryUtils getFotkiPath]];
     [synchronizeMenuItem setTitle:@"Synchronize"];
     [synchronizeMenuItem setEnabled:YES];
     [loginButton setEnabled:YES];
