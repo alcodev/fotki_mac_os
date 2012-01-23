@@ -81,8 +81,13 @@
 
     [NSThread doInNewThread:^{
         [BadgeUtils putUpdatedBadgeOnFileIconAtPath:path];
-        [ImageWithSiteSynchronizator synchronize:path serviceFacade:_fotkiServiceFacade];
+        [ImageWithSiteSynchronizator addFile:path serviceFacade:_fotkiServiceFacade];
     }];
+}
+
+- (void)handleFileDelete:(NSString *)path {
+    LOG(@"File to delete: %@", path);
+
 }
 
 - (void)registerDefaults {
@@ -102,6 +107,7 @@
     [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
 }
 
+
 - (void)fileMonitorCreateAndStart {
 
     _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
@@ -120,7 +126,7 @@
     }                          doOnFileUpdated:^(NSString *path) {
 
     }                          doOnFileDeleted:^(NSString *path) {
-
+        [self handleFileDelete:path];
     }];
 }
 

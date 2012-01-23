@@ -65,6 +65,7 @@
 		E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD979 /* BadgeUtils.m */; };
 		E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */; };
 		E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */; };
+		E1EE7F8414AC79AA003AD985 /* FoldersAndAlbumsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD984 /* FoldersAndAlbumsProvider.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -194,6 +195,8 @@
 		E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageWithSiteSynchronizator.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD984 /* FoldersAndAlbumsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldersAndAlbumsProvider.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD986 /* FoldersAndAlbumsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldersAndAlbumsProvider.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -533,6 +536,8 @@
 		E1EE7F8414AC79AA003AD97C /* Synchronization */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD986 /* FoldersAndAlbumsProvider.h */,
+				E1EE7F8414AC79AA003AD984 /* FoldersAndAlbumsProvider.m */,
 				E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */,
 				E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */,
 			);
@@ -704,6 +709,7 @@
 				E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */,
 				E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */,
+				E1EE7F8414AC79AA003AD985 /* FoldersAndAlbumsProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
