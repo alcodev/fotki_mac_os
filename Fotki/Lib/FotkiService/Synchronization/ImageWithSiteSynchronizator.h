@@ -11,4 +11,6 @@
 
 @interface ImageWithSiteSynchronizator : NSObject
 + (void)addFile:(NSString *)filePath serviceFacade:(FotkiServiceFacade *)fotkiServiceFacade;
+
++ (void)deleteFile:(NSString *)filePath serviceFacade:(FotkiServiceFacade *)fotkiServiceFacade;
 @end

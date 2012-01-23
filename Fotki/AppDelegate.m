@@ -86,8 +86,7 @@
 }
 
 - (void)handleFileDelete:(NSString *)path {
-    LOG(@"File to delete: %@", path);
-
+    [ImageWithSiteSynchronizator deleteFile:path serviceFacade:_fotkiServiceFacade];
 }
 
 - (void)registerDefaults {

@@ -32,4 +32,14 @@
     }];
 
 }
+
++ (void)deleteFile:(NSString *)filePath serviceFacade:(FotkiServiceFacade *)fotkiServiceFacade {
+    NSString *fileName = [filePath lastPathComponent];
+    [fotkiServiceFacade deletePhoto:fileName onSuccess:^(id object) {
+        LOG(@"Photo successfully deleted.");
+    }                       onError:^(Error *error) {
+        LOG(@"Error occurred while deleting photo: %@", error);
+    }];
+}
+
 @end

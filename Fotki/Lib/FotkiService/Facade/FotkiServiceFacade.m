@@ -13,6 +13,7 @@
 #import "ServiceUtils.h"
 #import "ServiceFacadeCallbackCaller.h"
 #import "Folder.h"
+#import "Error.h"
 
 
 @interface FotkiServiceFacade ()
@@ -172,5 +173,12 @@
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:nil];
         }
     }       onError:onError];
+}
+
+- (void)deletePhoto:(NSString *)fileName onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    NSString *errorMessage = @"Deleting photo not implemented for Fotki service";
+    LOG(errorMessage);
+    Error *error = [[[Error alloc] initWithId:DEFAULT_ERROR_CODE andMessage:errorMessage] autorelease];
+    [ServiceFacadeCallbackCaller callServiceFacadeCallback:onError withObject:error];
 }
 @end
