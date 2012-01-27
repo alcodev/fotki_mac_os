@@ -158,10 +158,13 @@
                                              [defaults setObject:password forKey:@"password"];
                                              [defaults synchronize];
                                          }
-                                           onError:^(id error) {
-                                               LOG(@"Authentication error: %@", error);
-                                               [self.window makeKeyAndOrderFront:self];
-                                           }];
+                                                 onError:^(id error) {
+                                                     LOG(@"Authentication error: %@", error);
+                                                     [self.window makeKeyAndOrderFront:self];
+                                                 } onForbidden:^(id object) {
+            LOG(@"Access is forbidden");
+            [self.window makeKeyAndOrderFront:self];
+        }];
     } else {
         LOG(@"User's login and password not assigned yet.");
         [self.window makeKeyAndOrderFront:self];
@@ -251,6 +254,11 @@
     [notificationLabel setTitle:@"Authentification failed"];
 }
 
+- (void)showForbiddenAccessNotification {
+    [notificationLabel setTextColor:[NSColor redColor]];
+    [notificationLabel setTitle:@"This is a demo version. You should log in only from test account"];
+}
+
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password {
     [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                      onSuccess:^(id sessionId) {
@@ -261,10 +269,12 @@
                                          [defaults synchronize];
                                          [self showSuccessAccountSavedNotification];
                                      }
-                                       onError:^(id error) {
-                                           LOG(@"Authentication error: %@", error);
-                                           [self showErrorAccountNotification];
-                                       }];
+                                             onError:^(id error) {
+                                                 LOG(@"Authentication error: %@", error);
+                                                 [self showErrorAccountNotification];
+                                             } onForbidden:^(id object) {
+               [self showForbiddenAccessNotification];
+    }];
 }
 
 - (IBAction)loginButtonClicked:(id)sender {

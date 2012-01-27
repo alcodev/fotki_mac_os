@@ -1318,7 +1318,7 @@
 			<object class="NSWindowTemplate" id="972006081">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{335, 390}, {333, 257}}</string>
+				<string key="NSWindowRect">{{335, 390}, {488, 257}}</string>
 				<int key="NSWTFlags">1685585920</int>
 				<string key="NSWindowTitle">Fotki</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -1331,9 +1331,10 @@
 						<object class="NSTabView" id="627804466">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">18</int>
-							<string key="NSFrame">{{13, 10}, {307, 241}}</string>
+							<string key="NSFrame">{{13, 10}, {462, 241}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="503828637"/>
 							<string key="NSReuseIdentifierKey">_NS:608</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="322017723">
@@ -1345,7 +1346,7 @@
 											<object class="NSButton" id="37364433">
 												<reference key="NSNextResponder" ref="503828637"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{96, 34}, {82, 32}}</string>
+												<string key="NSFrame">{{172, 20}, {82, 32}}</string>
 												<reference key="NSSuperview" ref="503828637"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView"/>
@@ -1372,8 +1373,8 @@
 											</object>
 											<object class="NSTextField" id="417399648">
 												<reference key="NSNextResponder" ref="503828637"/>
-												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{13, 146}, {260, 22}}</string>
+												<int key="NSvFlags">266</int>
+												<string key="NSFrame">{{17, 146}, {408, 22}}</string>
 												<reference key="NSSuperview" ref="503828637"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="359366263"/>
@@ -1410,7 +1411,7 @@
 											<object class="NSTextField" id="1071284808">
 												<reference key="NSNextResponder" ref="503828637"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{118, 176}, {50, 17}}</string>
+												<string key="NSFrame">{{196, 176}, {50, 17}}</string>
 												<reference key="NSSuperview" ref="503828637"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="417399648"/>
@@ -1442,8 +1443,8 @@
 											</object>
 											<object class="NSSecureTextField" id="359366263">
 												<reference key="NSNextResponder" ref="503828637"/>
-												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{13, 93}, {260, 22}}</string>
+												<int key="NSvFlags">266</int>
+												<string key="NSFrame">{{17, 93}, {408, 22}}</string>
 												<reference key="NSSuperview" ref="503828637"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="864151023"/>
@@ -1466,8 +1467,8 @@
 											</object>
 											<object class="NSTextField" id="864151023">
 												<reference key="NSNextResponder" ref="503828637"/>
-												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{10, 70}, {266, 17}}</string>
+												<int key="NSvFlags">266</int>
+												<string key="NSFrame">{{3, 63}, {430, 17}}</string>
 												<reference key="NSSuperview" ref="503828637"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="37364433"/>
@@ -1485,7 +1486,7 @@
 												</object>
 											</object>
 										</array>
-										<string key="NSFrame">{{10, 33}, {287, 195}}</string>
+										<string key="NSFrame">{{10, 33}, {442, 195}}</string>
 										<reference key="NSSuperview" ref="627804466"/>
 										<reference key="NSWindow"/>
 										<reference key="NSNextKeyView" ref="1071284808"/>
@@ -1506,7 +1507,7 @@
 							</array>
 						</object>
 					</array>
-					<string key="NSFrameSize">{333, 257}</string>
+					<string key="NSFrameSize">{488, 257}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="627804466"/>
@@ -3397,10 +3398,10 @@
 						<reference key="object" ref="503828637"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="417399648"/>
-							<reference ref="1071284808"/>
 							<reference ref="359366263"/>
-							<reference ref="37364433"/>
 							<reference ref="864151023"/>
+							<reference ref="37364433"/>
+							<reference ref="1071284808"/>
 						</array>
 						<reference key="parent" ref="322017723"/>
 					</object>
@@ -3665,7 +3666,6 @@
 					<string key="className">AppDelegate</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="checkoutButtonClicked:">id</string>
 						<string key="exitMenuItemClicked:">id</string>
 						<string key="loginButtonClicked:">id</string>
 						<string key="settingsMenuItemClicked:">id</string>
@@ -3673,10 +3673,6 @@
 						<string key="testMenuItemClicked:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="checkoutButtonClicked:">
-							<string key="name">checkoutButtonClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exitMenuItemClicked:">
 							<string key="name">exitMenuItemClicked:</string>
 							<string key="candidateClassName">id</string>
@@ -3699,7 +3695,6 @@
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="checkoutButton">NSButton</string>
 						<string key="loginButton">NSButton</string>
 						<string key="loginTextField">NSTextField</string>
 						<string key="notificationLabel">NSTextFieldCell</string>
@@ -3709,10 +3704,6 @@
 						<string key="window">NSWindow</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="checkoutButton">
-							<string key="name">checkoutButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="loginButton">
 							<string key="name">loginButton</string>
 							<string key="candidateClassName">NSButton</string>

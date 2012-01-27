@@ -32,16 +32,22 @@
     [super dealloc];
 }
 
-- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-            login, @"login",
-            password, @"password",
-            nil];
+- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden{
+
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                login, @"login",
+                password, @"password",
+                nil];
     [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/new_session" andParams:params onSuccess:^(id document) {
         NSArray *nodes = [document nodesForXPath:@"//session_id" error:nil];
         NSXMLElement *element = [nodes objectAtIndex:0];
         NSString *sessionIdValue = [element stringValue];
         _sessionId = [[NSString alloc] initWithString:sessionIdValue];
+        if (![@"alcodev" isEqualToString:login]){
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onForbidden withObject:nil];
+            _sessionId = nil;
+            return;
+        }
         [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
     }                             onError:onError];
 }
