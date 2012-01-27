@@ -18,6 +18,7 @@
 #import "Error.h"
 #import "Folder.h"
 #import "DirectoryUtils.h"
+#import "NSImage+Helper.h"
 
 #define APP_NAME @"Fotki"
 
@@ -128,7 +129,8 @@
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
     [statusItem setMenu:statusMenu];
     [statusMenu setAutoenablesItems:NO];
-    [statusItem setTitle:APP_NAME];
+    NSImage *iconImage = [[NSImage imageNamed:@"fotki_icon.png"] extractAsImageRepresentationOfSize:0];
+    [statusItem setImage:iconImage];
     [statusItem setHighlightMode:YES];
 
     [loginButton setTitle:@"Login"];
@@ -268,19 +270,22 @@
                                          [defaults setObject:password forKey:@"password"];
                                          [defaults synchronize];
                                          [self showSuccessAccountSavedNotification];
+                                         [loginButton setTitle:@"Login"];
                                      }
                                              onError:^(id error) {
                                                  LOG(@"Authentication error: %@", error);
                                                  [self showErrorAccountNotification];
+                                                 [loginButton setTitle:@"Login"];
                                              } onForbidden:^(id object) {
-               [self showForbiddenAccessNotification];
+        [self showForbiddenAccessNotification];
+        [loginButton setTitle:@"Login"];
     }];
 }
 
 - (IBAction)loginButtonClicked:(id)sender {
     NSString *login = [loginTextField stringValue];
     NSString *password = [passwordSecureTextField stringValue];
-
+    [loginButton setTitle:@"Logging in..."];
     [self authenticateWithLogin:login andPassword:password];
 }
 
