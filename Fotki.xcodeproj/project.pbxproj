@@ -66,6 +66,7 @@
 		E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */; };
 		E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */; };
 		E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD984 /* fotki_icon.png */; };
+		E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,6 +197,7 @@
 		E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD984 /* fotki_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fotki_icon.png; path = Resources/fotki_icon.png; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fotki_icon.icns; path = Resources/fotki_icon.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,6 +310,7 @@
 		E1EE7F7E14AC798E003AD8DF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */,
 				E1EE7F8414AC79AA003AD984 /* fotki_icon.png */,
 				E1EE7F7F14AC79AA003AD8DF /* check.icns */,
 				E1EE7F8014AC79AA003AD8DF /* nosync.icns */,
@@ -628,6 +631,7 @@
 				E1EE7F8314AC79AA003AD8DF /* nosync.icns in Resources */,
 				E1EE7F8414AC79AA003AD8DF /* updated.icns in Resources */,
 				E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */,
+				E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
