@@ -57,6 +57,7 @@
             NSString *albumName = [foldersWithAlbumInRelativePath objectAtIndex:albumNameIndex];
             Album *album = [self searchAlbumWithName:albumName inAlbums:folder.childAlbums];
             if (album) {
+                [BadgeUtils putUpdatedBadgeOnFileIconAtPath:filePath];
                 [fotkiServiceFacade uploadPicture:filePath toTheAlbum:album onSuccess:^(id object) {
                     [BadgeUtils putCheckBadgeOnFileIconAtPath:filePath];
                 }                         onError:^(Error *error) {
