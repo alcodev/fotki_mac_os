@@ -113,6 +113,7 @@
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
+    [uploadToAlbumComboBox removeAllItems];
     for (Album *album in _albums) {
         [uploadToAlbumComboBox addItemWithObjectValue:album.path];
     }
@@ -317,15 +318,18 @@
                                          }
                                                  onError:^(id error) {
                                                      LOG(@"Authentication error: %@", error);
+                                                     [self.settingsWindow center];
                                                      [self.settingsWindow makeKeyAndOrderFront:self];
                                                      [NSApp activateIgnoringOtherApps:YES];
                                                  } onForbidden:^(id object) {
             LOG(@"Access is forbidden");
+            [self.settingsWindow center];
             [self.settingsWindow makeKeyAndOrderFront:self];
             [NSApp activateIgnoringOtherApps:YES];
         }];
     } else {
         LOG(@"User's login and password not assigned yet.");
+        [self.settingsWindow center];
         [self.settingsWindow makeKeyAndOrderFront:self];
         [NSApp activateIgnoringOtherApps:YES];
     }
@@ -337,6 +341,7 @@
 
 - (IBAction)settingsMenuItemClicked:(id)sender {
     //[self.window orderOut:self];
+    [self.settingsWindow center];
     [self.settingsWindow makeKeyAndOrderFront:self];
     [NSApp activateIgnoringOtherApps:YES];
 }
