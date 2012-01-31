@@ -27,6 +27,7 @@
     IBOutlet NSProgressIndicator *uploadProgressIndicator;
     IBOutlet NSButton *uploadButton;
     IBOutlet NSButton *uploadCancelButton;
+    IBOutlet NSTextField *uploadFilesLabel;
 
 
 
@@ -65,6 +66,8 @@
 - (IBAction)uploadAddFileButtonClicked:(id)sender;
 
 - (IBAction)uploadDeleteFileButtonClicked:(id)sender;
+
+- (void)changeUploadFilesLabelText:(int)current :(int)total;
 
 - (IBAction)uploadButtonClicked:(id)sender;
 

@@ -54,7 +54,7 @@
 			<object class="NSWindowTemplate" id="101421572">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{74, 123}, {481, 378}}</string>
+				<string key="NSWindowRect">{{74, 123}, {481, 303}}</string>
 				<int key="NSWTFlags">1685586944</int>
 				<string key="NSWindowTitle">Upload photos</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -202,7 +202,7 @@
 									<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 									<reference key="NSSuperview" ref="387050529"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="513594957"/>
+									<reference key="NSNextKeyView" ref="957573912"/>
 									<string key="NSReuseIdentifierKey">_NS:1845</string>
 									<reference key="NSTarget" ref="387050529"/>
 									<string key="NSAction">_doScroller:</string>
@@ -239,7 +239,7 @@
 								</object>
 								<reference ref="960042097"/>
 							</array>
-							<string key="NSFrame">{{14, 214}, {452, 135}}</string>
+							<string key="NSFrame">{{14, 139}, {452, 135}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="421043412"/>
@@ -255,10 +255,10 @@
 						<object class="NSComboBox" id="853203897">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">290</int>
-							<string key="NSFrame">{{14, 127}, {455, 26}}</string>
+							<string key="NSFrame">{{14, 52}, {455, 26}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="724308548"/>
+							<reference key="NSNextKeyView" ref="723427780"/>
 							<string key="NSReuseIdentifierKey">_NS:708</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSComboBoxCell" key="NSCell" id="902241427">
@@ -343,10 +343,10 @@
 						<object class="NSButton" id="957573912">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{8, 181}, {40, 32}}</string>
+							<string key="NSFrame">{{8, 106}, {40, 32}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="387050529"/>
+							<reference key="NSNextKeyView" ref="513594957"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="232193530">
@@ -367,7 +367,7 @@
 						<object class="NSButton" id="513594957">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{39, 181}, {40, 32}}</string>
+							<string key="NSFrame">{{39, 106}, {40, 32}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="320821268"/>
@@ -391,7 +391,7 @@
 						<object class="NSButton" id="432640584">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{303, 18}, {82, 32}}</string>
+							<string key="NSFrame">{{308, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1047639071"/>
@@ -415,7 +415,7 @@
 						<object class="NSButton" id="1047639071">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{385, 18}, {82, 32}}</string>
+							<string key="NSFrame">{{390, 8}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
@@ -436,25 +436,13 @@
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
-						<object class="NSProgressIndicator" id="688770499">
-							<reference key="NSNextResponder" ref="119794880"/>
-							<int key="NSvFlags">1314</int>
-							<object class="NSPSMatrix" key="NSDrawMatrix"/>
-							<string key="NSFrame">{{12, 66}, {456, 20}}</string>
-							<reference key="NSSuperview" ref="119794880"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="432640584"/>
-							<string key="NSReuseIdentifierKey">_NS:2352</string>
-							<int key="NSpiFlags">16394</int>
-							<double key="NSMaxValue">100</double>
-						</object>
 						<object class="NSTextField" id="478163590">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{11, 357}, {119, 17}}</string>
+							<string key="NSFrame">{{11, 282}, {119, 17}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="957573912"/>
+							<reference key="NSNextKeyView" ref="387050529"/>
 							<string key="NSReuseIdentifierKey">_NS:3944</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="818307939">
@@ -476,7 +464,7 @@
 						<object class="NSTextField" id="320821268">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{11, 159}, {56, 17}}</string>
+							<string key="NSFrame">{{11, 84}, {56, 17}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="853203897"/>
@@ -493,28 +481,40 @@
 								<reference key="NSTextColor" ref="714720779"/>
 							</object>
 						</object>
-						<object class="NSTextField" id="724308548">
+						<object class="NSProgressIndicator" id="723427780">
 							<reference key="NSNextResponder" ref="119794880"/>
-							<int key="NSvFlags">292</int>
-							<string key="NSFrame">{{11, 94}, {75, 17}}</string>
+							<int key="NSvFlags">1292</int>
+							<object class="NSPSMatrix" key="NSDrawMatrix"/>
+							<string key="NSFrame">{{14, 20}, {16, 16}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="688770499"/>
+							<reference key="NSNextKeyView" ref="836257999"/>
+							<string key="NSReuseIdentifierKey">_NS:3891</string>
+							<int key="NSpiFlags">20746</int>
+							<double key="NSMaxValue">100</double>
+						</object>
+						<object class="NSTextField" id="836257999">
+							<reference key="NSNextResponder" ref="119794880"/>
+							<int key="NSvFlags">-2147483380</int>
+							<string key="NSFrame">{{42, 20}, {129, 17}}</string>
+							<reference key="NSSuperview" ref="119794880"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="432640584"/>
 							<string key="NSReuseIdentifierKey">_NS:3944</string>
 							<bool key="NSEnabled">YES</bool>
-							<object class="NSTextFieldCell" key="NSCell" id="692793501">
+							<object class="NSTextFieldCell" key="NSCell" id="320029207">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
-								<string key="NSContents">Progress:</string>
+								<string key="NSContents">Uploading 1/10</string>
 								<reference key="NSSupport" ref="21247431"/>
 								<string key="NSCellIdentifier">_NS:3944</string>
-								<reference key="NSControlView" ref="724308548"/>
+								<reference key="NSControlView" ref="836257999"/>
 								<reference key="NSBackgroundColor" ref="1013224242"/>
 								<reference key="NSTextColor" ref="714720779"/>
 							</object>
 						</object>
 					</array>
-					<string key="NSFrameSize">{481, 378}</string>
+					<string key="NSFrameSize">{481, 303}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="478163590"/>
@@ -2878,14 +2878,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">uploadProgressIndicator</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="688770499"/>
-					</object>
-					<int key="connectionID">658</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">uploadButton</string>
 						<reference key="source" ref="976324537"/>
 						<reference key="destination" ref="432640584"/>
@@ -2931,6 +2923,22 @@
 						<reference key="destination" ref="513594957"/>
 					</object>
 					<int key="connectionID">664</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">uploadProgressIndicator</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="723427780"/>
+					</object>
+					<int key="connectionID">672</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">uploadFilesLabel</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="836257999"/>
+					</object>
+					<int key="connectionID">673</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -4115,11 +4123,11 @@
 							<reference ref="478163590"/>
 							<reference ref="853203897"/>
 							<reference ref="320821268"/>
+							<reference ref="387050529"/>
 							<reference ref="432640584"/>
 							<reference ref="1047639071"/>
-							<reference ref="688770499"/>
-							<reference ref="724308548"/>
-							<reference ref="387050529"/>
+							<reference ref="723427780"/>
+							<reference ref="836257999"/>
 						</array>
 						<reference key="parent" ref="101421572"/>
 					</object>
@@ -4246,11 +4254,6 @@
 						<reference key="parent" ref="1047639071"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">647</int>
-						<reference key="object" ref="688770499"/>
-						<reference key="parent" ref="119794880"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">648</int>
 						<reference key="object" ref="478163590"/>
 						<array class="NSMutableArray" key="children">
@@ -4277,17 +4280,22 @@
 						<reference key="parent" ref="320821268"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">652</int>
-						<reference key="object" ref="724308548"/>
+						<int key="objectID">669</int>
+						<reference key="object" ref="723427780"/>
+						<reference key="parent" ref="119794880"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">670</int>
+						<reference key="object" ref="836257999"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="692793501"/>
+							<reference ref="320029207"/>
 						</array>
 						<reference key="parent" ref="119794880"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">653</int>
-						<reference key="object" ref="692793501"/>
-						<reference key="parent" ref="724308548"/>
+						<int key="objectID">671</int>
+						<reference key="object" ref="320029207"/>
+						<reference key="parent" ref="836257999"/>
 					</object>
 				</array>
 			</object>
@@ -4493,14 +4501,13 @@
 				<string key="645.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="645.userInterfaceItemIdentifier">cancelButton</string>
 				<string key="646.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="647.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="647.userInterfaceItemIdentifier">uploadingProgressIndicator</string>
 				<string key="648.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="649.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="650.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="651.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="652.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="653.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="669.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="670.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="671.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4517,7 +4524,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">668</int>
+			<int key="maxID">673</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4590,6 +4597,7 @@
 						<string key="uploadCancelButton">NSButton</string>
 						<string key="uploadFilesAddButton">NSButton</string>
 						<string key="uploadFilesDeleteButton">NSButton</string>
+						<string key="uploadFilesLabel">NSTextField</string>
 						<string key="uploadFilesTable">NSTableView</string>
 						<string key="uploadMenuItem">NSMenuItem</string>
 						<string key="uploadProgressIndicator">NSProgressIndicator</string>
@@ -4640,6 +4648,10 @@
 						<object class="IBToOneOutletInfo" key="uploadFilesDeleteButton">
 							<string key="name">uploadFilesDeleteButton</string>
 							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="uploadFilesLabel">
+							<string key="name">uploadFilesLabel</string>
+							<string key="candidateClassName">NSTextField</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="uploadFilesTable">
 							<string key="name">uploadFilesTable</string>

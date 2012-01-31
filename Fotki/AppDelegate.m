@@ -136,7 +136,11 @@
 }
 
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
+    int i = 1;
     for (NSString *filePath in _filesToUpload) {
+        [NSThread doInNewThread:^() {
+            [self changeUploadFilesLabelText:i :[_filesToUpload count]];
+        }];
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade uploadPicture:filePath toTheAlbum:album
                                      onSuccess:^(id object) {
@@ -147,8 +151,18 @@
                 LOG(@"Error uploading file %@. Error: %@", filePath, error);
             }];
         }];
+        i++;
     }
     [uploadProgressIndicator stopAnimation:sender];
+    [uploadButton setEnabled:YES];
+    [uploadCancelButton setEnabled:YES];
+    [uploadFilesLabel setHidden:YES];
+    [_filesToUpload removeAllObjects];
+    [uploadFilesTable reloadData];
+}
+
+- (void)changeUploadFilesLabelText:(int)current:(int)total {
+    [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Uploading %d/%d", current, total]];
 }
 
 - (IBAction)uploadButtonClicked:(id)sender {
@@ -164,6 +178,10 @@
         return;
     }
     [uploadProgressIndicator startAnimation:sender];
+    [uploadFilesLabel setHidden:NO];
+    [uploadButton setEnabled:NO];
+    [uploadCancelButton setEnabled:NO];
+    [self changeUploadFilesLabelText:0 :[_filesToUpload count]];
     [NSThread doInNewThread:^{
         [self uploadSelectedPhotos:sender album:album];
     }];
