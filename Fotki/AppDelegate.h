@@ -55,6 +55,8 @@
 
 - (IBAction)exitMenuItemClicked:(id)sender;
 
+- (void)loadAlbumsList;
+
 - (IBAction)loginButtonClicked:(id)sender;
 
 - (IBAction)uploadMenuClicked:(id)sender;

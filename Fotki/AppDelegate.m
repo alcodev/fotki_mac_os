@@ -20,6 +20,9 @@
 #import "DirectoryUtils.h"
 #import "NSImage+Helper.h"
 #import "DialogUtils.h"
+#import "AlbumsExtracter.h"
+#import "Album.h"
+#import "Async2SyncLock.h"
 
 #define APP_NAME @"Fotki"
 
@@ -33,6 +36,7 @@
     NSMutableArray *_filesToUpload;
 @private
     NSWindow *_uploadWindow;
+    NSMutableArray *_albums;
 }
 @synthesize settingsWindow = _settingsWindow;
 @synthesize lastEventId = _lastEventId;
@@ -69,6 +73,7 @@
     [_fileSystemMonitor release];
 
     [_fotkiServiceFacade release];
+    [_albums release];
     [_filesToUpload release];
     [super dealloc];
 }
@@ -96,8 +101,13 @@
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
+    for (Album *album in _albums) {
+        [uploadToAlbumComboBox addItemWithObjectValue:album.path];
+    }
+    if ([_albums count] > 0) {
+        [uploadToAlbumComboBox selectItemAtIndex:0];
+    }
     [self.uploadWindow makeKeyAndOrderFront:self];
-
 }
 
 - (IBAction)uploadAddFileButtonClicked:(id)sender {
@@ -116,9 +126,47 @@
     }
 }
 
-- (IBAction)uploadButtonClicked:(id)sender {
-    LOG(@"Upload button clicked");
+- (Album *)searchAlbumByPath:(NSString *)albumsPath {
+    for (Album *album in _albums) {
+        if ([albumsPath isEqualToString:album.path]) {
+            return album;
+        }
+    }
+    return nil;
+}
 
+- (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
+    for (NSString *filePath in _filesToUpload) {
+        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+            [_fotkiServiceFacade uploadPicture:filePath toTheAlbum:album
+                                     onSuccess:^(id object) {
+                                         LOG(@"File %@ successfully uploaded.", filePath);
+                                         [lock asyncFinished];
+                                     } onError:^(Error *error) {
+                [lock asyncFinished];
+                LOG(@"Error uploading file %@. Error: %@", filePath, error);
+            }];
+        }];
+    }
+    [uploadProgressIndicator stopAnimation:sender];
+}
+
+- (IBAction)uploadButtonClicked:(id)sender {
+
+    NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
+    if (!selectedAlbumsPath) {
+        LOG(@"Select album to upload");
+        return;
+    }
+    Album *album = [self searchAlbumByPath:selectedAlbumsPath];
+    if (!album) {
+        LOG(@"Album by path %@ not found.", selectedAlbumsPath);
+        return;
+    }
+    [uploadProgressIndicator startAnimation:sender];
+    [NSThread doInNewThread:^{
+        [self uploadSelectedPhotos:sender album:album];
+    }];
 }
 
 - (IBAction)uploadCancelButtonClicked:(id)sender {
@@ -184,16 +232,15 @@
     [statusItem setImage:iconImage];
     [statusItem setHighlightMode:YES];
 
-    [loginButton setTitle:@"Login"];
 
+    [loginButton setTitle:@"Login"];
     [notificationLabel setTitle:@""];
 
     [self registerDefaults];
-
     [self addFotkiPathToFavourites];
 
     [uploadFilesTable setDataSource:self];
-
+    [uploadProgressIndicator setDisplayedWhenStopped:NO];
 
     _appStartedTimestamp = [[NSDate date] retain];
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
@@ -209,6 +256,7 @@
         [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                          onSuccess:^(id sessionId) {
                                              LOG(@"Session ID is: %@", sessionId);
+                                             [self loadAlbumsList];
                                              defaults = [NSUserDefaults standardUserDefaults];
                                              [defaults setObject:login forKey:@"login"];
                                              [defaults setObject:password forKey:@"password"];
@@ -319,6 +367,7 @@
     [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                      onSuccess:^(id sessionId) {
                                          LOG(@"Session ID is: %@", sessionId);
+                                         [self loadAlbumsList];
                                          NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                                          [defaults setObject:login forKey:@"login"];
                                          [defaults setObject:password forKey:@"password"];
@@ -334,6 +383,15 @@
         [self showForbiddenAccessNotification];
         [loginButton setTitle:@"Login"];
     }];
+}
+
+- (void)loadAlbumsList {
+    [_fotkiServiceFacade getAlbums:^(NSArray *rootFolders) {
+        _albums = [[AlbumsExtracter extractAlbums:rootFolders] retain];
+    }
+                           onError:^(Error *error) {
+                               LOG(@"Error loading albums list: %@", error);
+                           }];
 }
 
 - (IBAction)loginButtonClicked:(id)sender {

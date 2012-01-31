@@ -10,14 +10,18 @@
 
 @implementation Album {
 
+@private
+
 }
 @synthesize id = _id;
 @synthesize name = _name;
+@synthesize path = _path;
 
 
 - (void)dealloc {
     [_name release];
     [_id release];
+    [_path release];
     [super dealloc];
 }
 
