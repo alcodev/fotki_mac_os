@@ -100,6 +100,18 @@
     }];
 }
 
+- (void)setUploadWindowStartState {
+    [uploadFilesTable setEnabled:YES];
+    [uploadFilesAddButton setEnabled:YES];
+    [uploadFilesDeleteButton setEnabled:YES];
+    [uploadButton setEnabled:YES];
+    [uploadCancelButton setEnabled:YES];
+    [uploadCancelButton setTitle:@"Cancel"];
+    [uploadFilesLabel setHidden:YES];
+    [uploadFilesLabel setTextColor:[NSColor blackColor]];
+
+}
+
 - (IBAction)uploadMenuClicked:(id)sender {
     for (Album *album in _albums) {
         [uploadToAlbumComboBox addItemWithObjectValue:album.path];
@@ -107,7 +119,10 @@
     if ([_albums count] > 0) {
         [uploadToAlbumComboBox selectItemAtIndex:0];
     }
+    [self setUploadWindowStartState];
+    [self.uploadWindow center];
     [self.uploadWindow makeKeyAndOrderFront:self];
+    [NSApp activateIgnoringOtherApps:YES];
 }
 
 - (IBAction)uploadAddFileButtonClicked:(id)sender {
@@ -135,12 +150,33 @@
     return nil;
 }
 
+- (void)setUploadWindowFinishState:(int)failedFilesCount {
+    if (failedFilesCount > 0) {
+        [uploadFilesLabel setTextColor:[NSColor redColor]];
+        [uploadFilesLabel setStringValue: [NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
+    }else{
+        [uploadFilesLabel setTextColor:[NSColor greenColor]];
+        [uploadFilesLabel setStringValue:@"Files successfully uploaded"];
+    }
+    [uploadProgressIndicator stopAnimation:self];
+    [uploadButton setEnabled:NO];
+    [uploadCancelButton setTitle:@"Close"];
+    [uploadCancelButton setEnabled:YES];
+    [uploadFilesAddButton setEnabled:NO];
+    [uploadFilesDeleteButton setEnabled:NO];
+    [uploadFilesTable setEnabled:NO];
+    [_filesToUpload removeAllObjects];
+    [uploadFilesTable reloadData];
+}
+
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
     int i = 1;
+    __block int failedFilesCount = 0;
     for (NSString *filePath in _filesToUpload) {
-        [NSThread doInNewThread:^() {
+        [NSThread doInMainThread:^(){
             [self changeUploadFilesLabelText:i :[_filesToUpload count]];
-        }];
+        } waitUntilDone:YES];
+
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade uploadPicture:filePath toTheAlbum:album
                                      onSuccess:^(id object) {
@@ -148,17 +184,15 @@
                                          [lock asyncFinished];
                                      } onError:^(Error *error) {
                 [lock asyncFinished];
+                failedFilesCount++;
                 LOG(@"Error uploading file %@. Error: %@", filePath, error);
             }];
         }];
         i++;
     }
-    [uploadProgressIndicator stopAnimation:sender];
-    [uploadButton setEnabled:YES];
-    [uploadCancelButton setEnabled:YES];
-    [uploadFilesLabel setHidden:YES];
-    [_filesToUpload removeAllObjects];
-    [uploadFilesTable reloadData];
+    [NSThread doInMainThread:^(){
+        [self setUploadWindowFinishState:failedFilesCount];
+    } waitUntilDone:YES];
 }
 
 - (void)changeUploadFilesLabelText:(int)current:(int)total {

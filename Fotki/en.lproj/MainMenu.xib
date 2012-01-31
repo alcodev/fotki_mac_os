@@ -258,7 +258,7 @@
 							<string key="NSFrame">{{14, 52}, {455, 26}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="723427780"/>
+							<reference key="NSNextKeyView" ref="139816747"/>
 							<string key="NSReuseIdentifierKey">_NS:708</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSComboBoxCell" key="NSCell" id="902241427">
@@ -481,34 +481,34 @@
 								<reference key="NSTextColor" ref="714720779"/>
 							</object>
 						</object>
-						<object class="NSProgressIndicator" id="723427780">
+						<object class="NSProgressIndicator" id="139816747">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">1292</int>
 							<object class="NSPSMatrix" key="NSDrawMatrix"/>
 							<string key="NSFrame">{{14, 20}, {16, 16}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="836257999"/>
+							<reference key="NSNextKeyView" ref="905873761"/>
 							<string key="NSReuseIdentifierKey">_NS:3891</string>
 							<int key="NSpiFlags">20746</int>
 							<double key="NSMaxValue">100</double>
 						</object>
-						<object class="NSTextField" id="836257999">
+						<object class="NSTextField" id="905873761">
 							<reference key="NSNextResponder" ref="119794880"/>
 							<int key="NSvFlags">-2147483380</int>
-							<string key="NSFrame">{{42, 20}, {129, 17}}</string>
+							<string key="NSFrame">{{42, 20}, {267, 17}}</string>
 							<reference key="NSSuperview" ref="119794880"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="432640584"/>
 							<string key="NSReuseIdentifierKey">_NS:3944</string>
 							<bool key="NSEnabled">YES</bool>
-							<object class="NSTextFieldCell" key="NSCell" id="320029207">
+							<object class="NSTextFieldCell" key="NSCell" id="849623245">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">272630784</int>
 								<string key="NSContents">Uploading 1/10</string>
 								<reference key="NSSupport" ref="21247431"/>
 								<string key="NSCellIdentifier">_NS:3944</string>
-								<reference key="NSControlView" ref="836257999"/>
+								<reference key="NSControlView" ref="905873761"/>
 								<reference key="NSBackgroundColor" ref="1013224242"/>
 								<reference key="NSTextColor" ref="714720779"/>
 							</object>
@@ -2928,7 +2928,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">uploadProgressIndicator</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="723427780"/>
+						<reference key="destination" ref="139816747"/>
 					</object>
 					<int key="connectionID">672</int>
 				</object>
@@ -2936,7 +2936,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">uploadFilesLabel</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="836257999"/>
+						<reference key="destination" ref="905873761"/>
 					</object>
 					<int key="connectionID">673</int>
 				</object>
@@ -4126,8 +4126,8 @@
 							<reference ref="387050529"/>
 							<reference ref="432640584"/>
 							<reference ref="1047639071"/>
-							<reference ref="723427780"/>
-							<reference ref="836257999"/>
+							<reference ref="139816747"/>
+							<reference ref="905873761"/>
 						</array>
 						<reference key="parent" ref="101421572"/>
 					</object>
@@ -4281,21 +4281,21 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">669</int>
-						<reference key="object" ref="723427780"/>
+						<reference key="object" ref="139816747"/>
 						<reference key="parent" ref="119794880"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">670</int>
-						<reference key="object" ref="836257999"/>
+						<reference key="object" ref="905873761"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="320029207"/>
+							<reference ref="849623245"/>
 						</array>
 						<reference key="parent" ref="119794880"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">671</int>
-						<reference key="object" ref="320029207"/>
-						<reference key="parent" ref="836257999"/>
+						<reference key="object" ref="849623245"/>
+						<reference key="parent" ref="905873761"/>
 					</object>
 				</array>
 			</object>

@@ -29,4 +29,8 @@
     [_message release];
     [super dealloc];
 }
+
+-(NSString *)description{
+    return [NSString stringWithFormat:@"%@:%@", self.id, self.message];
+}
 @end
