@@ -29,9 +29,13 @@
 
 @implementation AppDelegate {
     FotkiServiceFacade *_fotkiServiceFacade;
+@private
+    NSWindow *_uploadWindow;
 }
-@synthesize window = _window;
+@synthesize settingsWindow = _settingsWindow;
 @synthesize lastEventId = _lastEventId;
+@synthesize uploadWindow = _uploadWindow;
+
 
 - (id)init {
     self = [super init];
@@ -85,6 +89,30 @@
         [ImageWithSiteSynchronizator synchronize:path serviceFacade:_fotkiServiceFacade];
     }];
 }
+
+- (IBAction)uploadMenuClicked:(id)sender {
+   [self.uploadWindow makeKeyAndOrderFront:self];
+
+}
+
+- (IBAction)uploadAddFileButtonClicked:(id)sender {
+    LOG(@"Upload add button clicked");
+
+}
+
+- (IBAction)uploadDeleteFileButtonClicked:(id)sender {
+    LOG(@"Upload delete button clicked");
+}
+
+- (IBAction)uploadButtonClicked:(id)sender {
+    LOG(@"Upload button clicked");
+
+}
+
+- (IBAction)uploadCancelButtonClicked:(id)sender {
+    LOG(@"Upload cancel button clicked");
+}
+
 
 - (void)registerDefaults {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -162,14 +190,14 @@
                                          }
                                                  onError:^(id error) {
                                                      LOG(@"Authentication error: %@", error);
-                                                     [self.window makeKeyAndOrderFront:self];
+                                                     [self.settingsWindow makeKeyAndOrderFront:self];
                                                  } onForbidden:^(id object) {
             LOG(@"Access is forbidden");
-            [self.window makeKeyAndOrderFront:self];
+            [self.settingsWindow makeKeyAndOrderFront:self];
         }];
     } else {
         LOG(@"User's login and password not assigned yet.");
-        [self.window makeKeyAndOrderFront:self];
+        [self.settingsWindow makeKeyAndOrderFront:self];
     }
 }
 
@@ -179,7 +207,7 @@
 
 - (IBAction)settingsMenuItemClicked:(id)sender {
     //[self.window orderOut:self];
-    [self.window makeKeyAndOrderFront:self];
+    [self.settingsWindow makeKeyAndOrderFront:self];
 }
 
 - (void)synchronizationStart {
