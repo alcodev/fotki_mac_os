@@ -67,6 +67,7 @@
 		E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */; };
 		E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD984 /* fotki_icon.png */; };
 		E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */; };
+		E1EE7F8414AC79AA003AD989 /* DialogUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD988 /* DialogUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -198,6 +199,8 @@
 		E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD984 /* fotki_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fotki_icon.png; path = Resources/fotki_icon.png; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fotki_icon.icns; path = Resources/fotki_icon.icns; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD988 /* DialogUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogUtils.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD98A /* DialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -548,6 +551,8 @@
 		E1EE7F8414AC79AA003AD980 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD98A /* DialogUtils.h */,
+				E1EE7F8414AC79AA003AD988 /* DialogUtils.m */,
 				E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */,
 				E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */,
 			);
@@ -712,6 +717,7 @@
 				E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */,
 				E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */,
+				E1EE7F8414AC79AA003AD989 /* DialogUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

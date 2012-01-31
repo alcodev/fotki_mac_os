@@ -19,6 +19,7 @@
 #import "Folder.h"
 #import "DirectoryUtils.h"
 #import "NSImage+Helper.h"
+#import "DialogUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -29,12 +30,14 @@
 
 @implementation AppDelegate {
     FotkiServiceFacade *_fotkiServiceFacade;
+    NSMutableArray *_filesToUpload;
 @private
     NSWindow *_uploadWindow;
 }
 @synthesize settingsWindow = _settingsWindow;
 @synthesize lastEventId = _lastEventId;
 @synthesize uploadWindow = _uploadWindow;
+@synthesize filesToUpload = _filesToUpload;
 
 
 - (id)init {
@@ -43,6 +46,7 @@
         _fm = [NSFileManager defaultManager];
         _files = [NSMutableArray new];
         _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
+        _filesToUpload = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -65,6 +69,7 @@
     [_fileSystemMonitor release];
 
     [_fotkiServiceFacade release];
+    [_filesToUpload release];
     [super dealloc];
 }
 
@@ -91,17 +96,24 @@
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
-   [self.uploadWindow makeKeyAndOrderFront:self];
+    [self.uploadWindow makeKeyAndOrderFront:self];
 
 }
 
 - (IBAction)uploadAddFileButtonClicked:(id)sender {
-    LOG(@"Upload add button clicked");
-
+    NSArray *filesUrls = [DialogUtils showOpenFileDialog];
+    for (NSURL *url in filesUrls) {
+        [_filesToUpload addObject:[url path]];
+        [uploadFilesTable reloadData];
+    }
 }
 
 - (IBAction)uploadDeleteFileButtonClicked:(id)sender {
-    LOG(@"Upload delete button clicked");
+    NSInteger selectedRowIndex = [uploadFilesTable selectedRow];
+    if (selectedRowIndex >= 0) {
+        [_filesToUpload removeObjectAtIndex:selectedRowIndex];
+        [uploadFilesTable reloadData];
+    }
 }
 
 - (IBAction)uploadButtonClicked:(id)sender {
@@ -110,7 +122,18 @@
 }
 
 - (IBAction)uploadCancelButtonClicked:(id)sender {
-    LOG(@"Upload cancel button clicked");
+    [_filesToUpload removeAllObjects];
+    [uploadFilesTable reloadData];
+    [self.uploadWindow close];
+}
+
+- (int)numberOfRowsInTableView:(NSTableView *)tableView {
+    return [_filesToUpload count];
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex {
+    NSString *valueToDisplay = [_filesToUpload objectAtIndex:rowIndex];
+    return valueToDisplay;
 }
 
 
@@ -168,6 +191,9 @@
     [self registerDefaults];
 
     [self addFotkiPathToFavourites];
+
+    [uploadFilesTable setDataSource:self];
+
 
     _appStartedTimestamp = [[NSDate date] retain];
     _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];

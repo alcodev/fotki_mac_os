@@ -45,6 +45,7 @@
 @property(assign) IBOutlet NSWindow *settingsWindow;
 @property(assign) IBOutlet NSWindow *uploadWindow;
 @property(readonly) NSNumber *lastEventId;
+@property (copy) NSMutableArray *filesToUpload;
 
 - (IBAction)testMenuItemClicked:(id)sender;
 
@@ -66,6 +67,11 @@
 - (IBAction)uploadButtonClicked:(id)sender;
 
 - (IBAction)uploadCancelButtonClicked:(id)sender;
+
+- (int)numberOfRowsInTableView:(NSTableView *)tableView;
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
+
 
 - (void)registerDefaults;
 
