@@ -109,7 +109,7 @@
     [uploadCancelButton setTitle:@"Cancel"];
     [uploadFilesLabel setHidden:YES];
     [uploadFilesLabel setTextColor:[NSColor blackColor]];
-
+    [uploadToAlbumComboBox setEnabled:YES];
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
@@ -167,6 +167,7 @@
     [uploadFilesTable setEnabled:NO];
     [_filesToUpload removeAllObjects];
     [uploadFilesTable reloadData];
+    [uploadToAlbumComboBox setEnabled:NO];
 }
 
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
@@ -183,8 +184,8 @@
                                          LOG(@"File %@ successfully uploaded.", filePath);
                                          [lock asyncFinished];
                                      } onError:^(Error *error) {
-                [lock asyncFinished];
                 failedFilesCount++;
+                [lock asyncFinished];
                 LOG(@"Error uploading file %@. Error: %@", filePath, error);
             }];
         }];
@@ -317,13 +318,16 @@
                                                  onError:^(id error) {
                                                      LOG(@"Authentication error: %@", error);
                                                      [self.settingsWindow makeKeyAndOrderFront:self];
+                                                     [NSApp activateIgnoringOtherApps:YES];
                                                  } onForbidden:^(id object) {
             LOG(@"Access is forbidden");
             [self.settingsWindow makeKeyAndOrderFront:self];
+            [NSApp activateIgnoringOtherApps:YES];
         }];
     } else {
         LOG(@"User's login and password not assigned yet.");
         [self.settingsWindow makeKeyAndOrderFront:self];
+        [NSApp activateIgnoringOtherApps:YES];
     }
 }
 
@@ -334,6 +338,7 @@
 - (IBAction)settingsMenuItemClicked:(id)sender {
     //[self.window orderOut:self];
     [self.settingsWindow makeKeyAndOrderFront:self];
+    [NSApp activateIgnoringOtherApps:YES];
 }
 
 - (void)synchronizationStart {
