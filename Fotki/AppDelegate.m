@@ -23,6 +23,7 @@
 #import "AlbumsExtracter.h"
 #import "Album.h"
 #import "Async2SyncLock.h"
+#import "DragStatusView.h"
 
 #define APP_NAME @"Fotki"
 
@@ -154,8 +155,8 @@
 - (void)setUploadWindowFinishState:(int)failedFilesCount {
     if (failedFilesCount > 0) {
         [uploadFilesLabel setTextColor:[NSColor redColor]];
-        [uploadFilesLabel setStringValue: [NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
-    }else{
+        [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
+    } else {
         [uploadFilesLabel setTextColor:[NSColor greenColor]];
         [uploadFilesLabel setStringValue:@"Files successfully uploaded"];
     }
@@ -175,9 +176,9 @@
     int i = 1;
     __block int failedFilesCount = 0;
     for (NSString *filePath in _filesToUpload) {
-        [NSThread doInMainThread:^(){
+        [NSThread doInMainThread:^() {
             [self changeUploadFilesLabelText:i :[_filesToUpload count]];
-        } waitUntilDone:YES];
+        }          waitUntilDone:YES];
 
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade uploadPicture:filePath toTheAlbum:album
@@ -192,9 +193,9 @@
         }];
         i++;
     }
-    [NSThread doInMainThread:^(){
+    [NSThread doInMainThread:^() {
         [self setUploadWindowFinishState:failedFilesCount];
-    } waitUntilDone:YES];
+    }          waitUntilDone:YES];
 }
 
 - (void)changeUploadFilesLabelText:(int)current:(int)total {
@@ -282,10 +283,18 @@
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
     [statusItem setMenu:statusMenu];
     [statusMenu setAutoenablesItems:NO];
-    NSImage *iconImage = [[NSImage imageNamed:@"fotki_icon.png"] extractAsImageRepresentationOfSize:0];
-    [statusItem setImage:iconImage];
+
     [statusItem setHighlightMode:YES];
 
+    DragStatusView *dragView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24)
+                                                              andMenu:statusMenu
+                                                    andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
+                [_filesToUpload removeAllObjects];
+                [_filesToUpload addObjectsFromArray:files];
+                [uploadFilesTable reloadData];
+                [self uploadMenuClicked:nil];
+            }] autorelease];
+    [statusItem setView:dragView];
 
     [loginButton setTitle:@"Login"];
     [notificationLabel setTitle:@""];

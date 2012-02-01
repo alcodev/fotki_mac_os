@@ -69,6 +69,7 @@
 		E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */; };
 		E1EE7F8414AC79AA003AD989 /* DialogUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD988 /* DialogUtils.m */; };
 		E1EE7F8414AC79AA003AD98C /* AlbumsExtracter.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD98B /* AlbumsExtracter.m */; };
+		E1EE7F8414AC79AA003AD990 /* DragStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD98F /* DragStatusView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,6 +205,8 @@
 		E1EE7F8414AC79AA003AD98A /* DialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD98B /* AlbumsExtracter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlbumsExtracter.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD98D /* AlbumsExtracter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumsExtracter.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD98F /* DragStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DragStatusView.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD991 /* DragStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragStatusView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +346,7 @@
 				E1EE7F8414AC79AA003AD96E /* Extensions */,
 				E1EE7F8414AC79AA003AD978 /* ImageUtils */,
 				E1EE7F8414AC79AA003AD980 /* Utils */,
+				E1EE7F8414AC79AA003AD98E /* DragAndDrop */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -564,6 +568,15 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD98E /* DragAndDrop */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD991 /* DragStatusView.h */,
+				E1EE7F8414AC79AA003AD98F /* DragStatusView.m */,
+			);
+			path = DragAndDrop;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -724,6 +737,7 @@
 				E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD989 /* DialogUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD98C /* AlbumsExtracter.m in Sources */,
+				E1EE7F8414AC79AA003AD990 /* DragStatusView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
