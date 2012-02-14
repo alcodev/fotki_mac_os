@@ -131,7 +131,7 @@
 }
 
 - (IBAction)uploadAddFileButtonClicked:(id)sender {
-    NSArray *filesUrls = [DialogUtils showOpenFileDialog];
+    NSArray *filesUrls = [DialogUtils showOpenImageFileDialog];
     for (NSURL *url in filesUrls) {
         [_filesToUpload addObject:[url path]];
         [uploadFilesTable reloadData];
@@ -242,11 +242,7 @@
     return valueToDisplay;
 }
 
-- (BOOL)tableView:(NSTableView *)tableView
-       acceptDrop:(id <NSDraggingInfo>)info
-              row:(NSInteger)row
-    dropOperation:(NSTableViewDropOperation)operation
-{
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation{
     NSPasteboard *pasteboard;
     pasteboard = [info draggingPasteboard];
 

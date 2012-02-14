@@ -10,11 +10,13 @@
 @implementation DialogUtils {
 
 }
-+ (NSArray *)showOpenFileDialog {
++ (NSArray *)showOpenImageFileDialog {
     NSOpenPanel *openDlg = [NSOpenPanel openPanel];
     [openDlg setCanChooseFiles:YES];
     [openDlg setAllowsMultipleSelection:YES];
-    [openDlg setAllowedFileTypes:[NSImage imageFileTypes]];
+    NSMutableArray *imageTypes = [[NSMutableArray alloc] init];
+    [imageTypes addObject:@"public.image"];
+    [openDlg setAllowedFileTypes:imageTypes];
 
     if ([openDlg runModal] == NSOKButton) {
         NSArray *files = [openDlg URLs];

@@ -8,5 +8,5 @@
 
 
 @interface DialogUtils : NSObject
-+ (NSArray *)showOpenFileDialog;
++ (NSArray *)showOpenImageFileDialog;
 @end
