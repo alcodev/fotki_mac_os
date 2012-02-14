@@ -24,11 +24,16 @@
 #import "Album.h"
 #import "Async2SyncLock.h"
 #import "DragStatusView.h"
+#import "AccountInfo.h"
 
 #define APP_NAME @"Fotki"
 
 
 @interface AppDelegate ()
+- (void)logOuted;
+
+- (void)logined;
+
 
 @end
 
@@ -114,20 +119,57 @@
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
-    [uploadToAlbumComboBox removeAllItems];
-    for (Album *album in _albums) {
-        [uploadToAlbumComboBox addItemWithObjectValue:album.path];
-    }
-    if ([_albums count] > 0) {
-        [uploadToAlbumComboBox selectItemAtIndex:0];
-    }
-    [self setUploadWindowStartState];
-    [self.uploadWindow center];
-    [self.uploadWindow makeKeyAndOrderFront:self];
-    [uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-    [uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
+    NSString *sessionId = _fotkiServiceFacade.sessionId;
+    if (sessionId) {
+        [welcomeLabel setTextColor:[NSColor greenColor]];
+        NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
+        NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", currentUsername];
+        [welcomeLabel setTitleWithMnemonic:welcomeString];
 
-    [NSApp activateIgnoringOtherApps:YES];
+        [uploadToAlbumComboBox removeAllItems];
+        for (Album *album in _albums) {
+            [uploadToAlbumComboBox addItemWithObjectValue:album.path];
+        }
+        if ([_albums count] > 0) {
+            [uploadToAlbumComboBox selectItemAtIndex:0];
+        }
+        [self setUploadWindowStartState];
+        [self.uploadWindow center];
+        [self.uploadWindow makeKeyAndOrderFront:self];
+        [uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+        [uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
+
+        [NSApp activateIgnoringOtherApps:YES];
+
+        NSInteger selectedItem = [uploadToAlbumComboBox indexOfSelectedItem];
+        Album *album = [_albums objectAtIndex:selectedItem];
+        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+            NSString *currentAlbumUrl = [_fotkiServiceFacade getAlbumUrl:album.id
+                    onSuccess:^(id object) {
+                        [lock asyncFinished];
+                        LOG(@"Url Loaded.");
+                    }
+                    onError:^(id error) {
+                        [lock asyncFinished];
+                        LOG(@"Url Not Loaded error: %@"), error;
+                    }];
+        }];
+
+        //NSString *currentAlbumUrl = album.url;
+        //NSData *data = @"<a href =\"http://www.kg\">ТЫК</a>";
+        //NSURL *url = "href =\"http://www.kg\"";
+        NSAttributedString *attrString = [[NSAttributedString alloc]
+                initWithHTML: @"<a href =\"http://www.kg\">ТЫК</a>" documentAttributes: (NSDictionary **) NULL];
+        [[albumLinkLabel textStorage] setAttributedString: attrString];
+        [attrString release];
+    }
+    else {
+        [self.settingsWindow center];
+        [self.settingsWindow makeKeyAndOrderFront:self];
+        [NSApp activateIgnoringOtherApps:YES];
+        [self logOuted];
+    }
+
 }
 
 - (IBAction)uploadAddFileButtonClicked:(id)sender {
@@ -231,6 +273,7 @@
     [_filesToUpload removeAllObjects];
     [uploadFilesTable reloadData];
     [self.uploadWindow close];
+
 }
 
 - (int)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -242,7 +285,7 @@
     return valueToDisplay;
 }
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation{
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
     NSPasteboard *pasteboard;
     pasteboard = [info draggingPasteboard];
 
@@ -255,8 +298,7 @@
     }
 }
 
-- (NSDragOperation)tableView:(NSTableView*)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op
-{
+- (NSDragOperation)tableView:(NSTableView *)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
     // Add code here to validate the drop
     //NSLog(@"validate Drop");
     return NSDragOperationEvery;
@@ -372,9 +414,17 @@
 
 - (IBAction)settingsMenuItemClicked:(id)sender {
     //[self.window orderOut:self];
+
     [self.settingsWindow center];
     [self.settingsWindow makeKeyAndOrderFront:self];
     [NSApp activateIgnoringOtherApps:YES];
+    NSString *sessionId = _fotkiServiceFacade.sessionId;
+    if (sessionId) {
+        [self logined];
+    }
+    else {
+        [self logOuted];
+    }
 }
 
 - (void)synchronizationStart {
@@ -444,6 +494,11 @@
 - (void)showSuccessAccountSavedNotification {
     [notificationLabel setTextColor:[NSColor greenColor]];
     [notificationLabel setTitle:@"Authentification success"];
+    NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
+    NSString *welcomeString = [NSString stringWithFormat:@"Welcome %@!", currentUsername];
+    [notificationLabel setTitle:welcomeString];
+    [loginTextField setEnabled:false];
+    [passwordSecureTextField setEnabled:false];
 }
 
 - (void)showErrorAccountNotification {
@@ -466,7 +521,7 @@
                                          [defaults setObject:password forKey:@"password"];
                                          [defaults synchronize];
                                          [self showSuccessAccountSavedNotification];
-                                         [loginButton setTitle:@"Login"];
+                                         [loginButton setTitle:@"Logout"];
                                      }
                                              onError:^(id error) {
                                                  LOG(@"Authentication error: %@", error);
@@ -474,7 +529,7 @@
                                                  [loginButton setTitle:@"Login"];
                                              } onForbidden:^(id object) {
         [self showForbiddenAccessNotification];
-        [loginButton setTitle:@"Login"];
+
     }];
 }
 
@@ -487,11 +542,39 @@
                            }];
 }
 
+- (void)logined {
+    [notificationLabel setTextColor:[NSColor greenColor]];
+    NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
+    NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", currentUsername];
+    [notificationLabel setTitle:welcomeString];
+    [loginTextField setEnabled:false];
+    [passwordSecureTextField setEnabled:false];
+    [loginButton setTitle:@"Logout"];
+}
+
+- (void)logOuted {
+    [notificationLabel setTitle:@""];
+    [loginTextField setEnabled:true];
+    [passwordSecureTextField setEnabled:true];
+    [loginButton setTitle:@"Login"];
+}
+
 - (IBAction)loginButtonClicked:(id)sender {
-    NSString *login = [loginTextField stringValue];
-    NSString *password = [passwordSecureTextField stringValue];
-    [loginButton setTitle:@"Logging in..."];
-    [self authenticateWithLogin:login andPassword:password];
+    NSString *sessionId = _fotkiServiceFacade.sessionId;
+    if (sessionId) {
+        _fotkiServiceFacade.logOut;
+        [notificationLabel setTitle:@""];
+        [loginTextField setEnabled:true];
+        [passwordSecureTextField setEnabled:true];
+        [loginButton setTitle:@"Login"];
+    }
+    else {
+        NSString *login = [loginTextField stringValue];
+        NSString *password = [passwordSecureTextField stringValue];
+        [loginButton setTitle:@"Logging in..."];
+        [self authenticateWithLogin:login andPassword:password];
+        [notificationLabel setTextColor:[NSColor greenColor]];
+    }
 }
 
 @end

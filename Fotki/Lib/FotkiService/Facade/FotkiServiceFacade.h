@@ -9,6 +9,7 @@
 
 @class Album;
 @class Folder;
+@class AccountInfo;
 
 typedef void (^ServiceFacadeCallback)(id);
 
@@ -18,12 +19,15 @@ typedef void (^ServiceFacadeCallback)(id);
     NSArray *_rootFolders;
 }
 @property(nonatomic, retain, readonly) NSString *sessionId;
+@property(nonatomic, retain) AccountInfo *accountInfo;
 
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden;
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)getAlbums:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
+- (void)getAlbumUrl:(id)AlbumId :(int *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)uploadPicture:(NSString *)path toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
@@ -33,5 +37,10 @@ typedef void (^ServiceFacadeCallback)(id);
 
 - (void)createAlbum:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
+- (void)logOut;
+
 - (void)getPublicHomeFolder:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
+- (NSString *)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
 @end

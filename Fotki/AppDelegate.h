@@ -28,8 +28,8 @@
     IBOutlet NSButton *uploadButton;
     IBOutlet NSButton *uploadCancelButton;
     IBOutlet NSTextField *uploadFilesLabel;
-
-
+    IBOutlet NSTextField *welcomeLabel;
+    IBOutlet NSTextView *albumLinkLabel;
 
 
     NSStatusItem *statusItem;

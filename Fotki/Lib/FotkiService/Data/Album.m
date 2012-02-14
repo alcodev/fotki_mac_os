@@ -30,7 +30,7 @@
     if (self) {
         self.id = id;
         self.name = name;
-    }
+     }
     return (self);
 }
 @end

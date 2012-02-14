@@ -13,9 +13,15 @@
 #import "ServiceUtils.h"
 #import "ServiceFacadeCallbackCaller.h"
 #import "Folder.h"
+#import "AccountInfo.h"
 
 
 @interface FotkiServiceFacade ()
+- (void)getAccountInfo:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden;
+
+- (NSString *)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
+
 - (BOOL)checkIsUserAuthenticated:(ServiceFacadeCallback)onError;
 
 @end
@@ -25,10 +31,13 @@
 }
 
 @synthesize sessionId = _sessionId;
+@synthesize accountInfo = _accountInfo;
+
 
 - (void)dealloc {
     [_sessionId release];
     [_rootFolders release];
+    [_accountInfo release];
     [super dealloc];
 }
 
@@ -48,8 +57,33 @@
             _sessionId = nil;
             return;
         }
-        [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
+        [self getAccountInfo:^(id object){
+            self.accountInfo = object;
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
+        } onError:onError onForbidden:onForbidden];
     }                             onError:onError];
+}
+- (void)getAccountInfo:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden{
+
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+            _sessionId, @"session_id",
+            nil];
+    [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/get_account_info" andParams:params onSuccess:^(id document) {
+        NSArray *nodes = [document nodesForXPath:@"//disp_name" error:nil];
+        NSXMLElement *element = [nodes objectAtIndex:0];
+        NSString *displayName = [element stringValue];
+        nodes = [document nodesForXPath:@"//space_used" error:nil];
+        element = [nodes objectAtIndex:0];
+        NSString *spaceUsed = [element stringValue];
+        nodes = [document nodesForXPath:@"//space_limit" error:nil];
+        element = [nodes objectAtIndex:0];
+        NSString *spaceLimit = [element stringValue];
+
+        AccountInfo *accountInfo = [[AccountInfo alloc] initWithName:displayName spaceLimit:spaceLimit spaceUsed:spaceUsed];
+
+        [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:accountInfo];
+
+    }onError:onError];
 }
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
@@ -81,6 +115,22 @@
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:_rootFolders];
         }                             onError:onError];
     }
+}
+- (NSString *)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    NSString *albumUrl;
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                _sessionId, @"session_id",
+                albumId, @"album_id",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/get_album_url" andParams:params onSuccess:^(id document) {
+            NSMutableArray *photos = [[[NSMutableArray alloc] init] autorelease];
+            NSArray *nodes = [document nodesForXPath:@"//url" error:nil];
+            NSXMLElement *element = [nodes objectAtIndex:0];
+            NSString *albumUrl = [element stringValue];
+        } onError:onError];
+    }
+    return albumUrl;
 }
 
 - (void)uploadPicture:(NSString *)path toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
@@ -165,6 +215,13 @@
         return (NO);
     } else {
         return (YES);
+    }
+}
+- (void)logOut {
+    if (!_sessionId) {
+        LOG(@"User is not authorized");
+    } else {
+        _sessionId = nil;
     }
 }
 
