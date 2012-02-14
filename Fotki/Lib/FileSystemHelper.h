@@ -14,4 +14,6 @@
 
 + (NSImage *)imageWithPreviewOfFileAtPath:(NSString *)path ofSize:(NSSize)size asIcon:(BOOL)icon;
 
++ (NSMutableArray *)getImagesFromFiles:(NSArray *)files;
+
 @end

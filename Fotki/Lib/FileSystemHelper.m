@@ -21,7 +21,6 @@
     return isDirectory;
 }
 
-
 + (NSImage *)imageWithPreviewOfFileAtPath:(NSString *)path ofSize:(NSSize)size asIcon:(BOOL)icon {
     NSURL *fileURL = [NSURL fileURLWithPath:path];
     if (!path || !fileURL) {
@@ -63,4 +62,21 @@
     return nil;
 }
 
++ (NSMutableArray *)getImagesFromFiles:(NSArray *)files {
+    NSMutableArray *filesToUpload = [[[NSMutableArray alloc] init] autorelease];
+    for (NSString *filePath in files) {
+        if ([FileSystemHelper isDirectoryAtPath:filePath]) {
+            NSArray *filesInDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+            for (NSString *filePathInDirectory in filesInDirectory) {
+                NSString *fileInDirectoryFullPath = [NSString stringWithFormat:@"%@/%@", filePath, filePathInDirectory];
+                if ([FileSystemHelper isImageFileAtPath:fileInDirectoryFullPath]) {
+                    [filesToUpload addObject:fileInDirectoryFullPath];
+                }
+            }
+        } else if ([FileSystemHelper isImageFileAtPath:filePath]) {
+            [filesToUpload addObject:filePath];
+        }
+    }
+    return filesToUpload;
+}
 @end

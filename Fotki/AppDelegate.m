@@ -36,7 +36,6 @@
     FotkiServiceFacade *_fotkiServiceFacade;
     NSMutableArray *_filesToUpload;
 @private
-    NSWindow *_uploadWindow;
     NSMutableArray *_albums;
 }
 @synthesize settingsWindow = _settingsWindow;
@@ -52,6 +51,7 @@
         _files = [NSMutableArray new];
         _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
         _filesToUpload = [[NSMutableArray alloc] init];
+        [_uploadWindow registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
     }
     return self;
 }
@@ -124,6 +124,9 @@
     [self setUploadWindowStartState];
     [self.uploadWindow center];
     [self.uploadWindow makeKeyAndOrderFront:self];
+    [uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+    [uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
+
     [NSApp activateIgnoringOtherApps:YES];
 }
 
@@ -239,6 +242,29 @@
     return valueToDisplay;
 }
 
+- (BOOL)tableView:(NSTableView *)tableView
+       acceptDrop:(id <NSDraggingInfo>)info
+              row:(NSInteger)row
+    dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard *pasteboard;
+    pasteboard = [info draggingPasteboard];
+
+    if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
+        NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
+        NSMutableArray *images = [[FileSystemHelper getImagesFromFiles:files] retain];
+        [_filesToUpload addObjectsFromArray:images];
+        [images release];
+        [uploadFilesTable reloadData];
+    }
+}
+
+- (NSDragOperation)tableView:(NSTableView*)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op
+{
+    // Add code here to validate the drop
+    //NSLog(@"validate Drop");
+    return NSDragOperationEvery;
+}
 
 - (void)registerDefaults {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
