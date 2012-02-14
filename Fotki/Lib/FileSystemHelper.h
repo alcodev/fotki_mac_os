@@ -10,6 +10,8 @@
 
 + (BOOL)isImageFileAtPath:(NSString *)path;
 
++ (BOOL)isDirectoryAtPath:(NSString *)path;
+
 + (NSImage *)imageWithPreviewOfFileAtPath:(NSString *)path ofSize:(NSSize)size asIcon:(BOOL)icon;
 
 @end

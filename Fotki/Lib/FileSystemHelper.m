@@ -15,6 +15,13 @@
     return [sharedWorkspace type:[sharedWorkspace typeOfFile:path error:NULL] conformsToType:@"public.image"];
 }
 
++ (BOOL)isDirectoryAtPath:(NSString *)path {
+    BOOL isDirectory;
+    [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+    return isDirectory;
+}
+
+
 + (NSImage *)imageWithPreviewOfFileAtPath:(NSString *)path ofSize:(NSSize)size asIcon:(BOOL)icon {
     NSURL *fileURL = [NSURL fileURLWithPath:path];
     if (!path || !fileURL) {
@@ -24,9 +31,9 @@
     NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:icon]
                                                      forKey:(NSString *) kQLThumbnailOptionIconModeKey];
     CGImageRef ref = QLThumbnailImageCreate(kCFAllocatorDefault,
-        (CFURLRef) fileURL,
-        CGSizeMake(size.width, size.height),
-        (CFDictionaryRef) dict);
+            (CFURLRef) fileURL,
+            CGSizeMake(size.width, size.height),
+            (CFDictionaryRef) dict);
 
     if (ref != NULL) {
         // Take advantage of NSBitmapImageRep's -initWithCGImage: initializer, new in Leopard,

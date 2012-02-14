@@ -5,14 +5,15 @@
 
 #import "DragStatusView.h"
 #import "NSImage+Helper.h"
+#import "FileSystemHelper.h"
 
-@implementation DragStatusView {
-    NSMenu *_menu;
-    NSStatusItem *_statusItem;
+@implementation DragStatusView
 
-    DragFilesCallback _onFilesDragged;
+@synthesize statusItem = _statusItem;
+@synthesize menu = _menu;
+@synthesize onFilesDragged = _onFilesDragged;
 
-}
+
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -22,8 +23,15 @@
     return self;
 }
 
+- (void)dealloc {
+    [_statusItem release];
+    [_onFilesDragged release];
+    [_menu release];
+    [super dealloc];
+}
+
 - (void)mouseDown:(NSEvent *)event {
-    [_statusItem popUpStatusItemMenu:_menu];
+    [self.statusItem popUpStatusItemMenu:self.menu];
 }
 
 
@@ -37,19 +45,32 @@
     return NSDragOperationCopy;
 }
 
-//perform the drag and log the files that are dropped
-- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    NSPasteboard *pboard;
-    NSDragOperation sourceDragMask;
-
-    sourceDragMask = [sender draggingSourceOperationMask];
-    pboard = [sender draggingPasteboard];
-
-    if ([[pboard types] containsObject:NSFilenamesPboardType]) {
-        NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
-        if (_onFilesDragged) {
-            _onFilesDragged(files);
+- (NSMutableArray *)getImagesFromFiles:(NSArray *)files {
+    NSMutableArray *filesToUpload = [[[NSMutableArray alloc] init] autorelease];
+    for (NSString *filePath in files) {
+        if ([FileSystemHelper isDirectoryAtPath:filePath]) {
+            NSArray *filesInDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:filePath error:nil];
+            for (NSString *filePathInDirectory in filesInDirectory) {
+                NSString *fileInDirectoryFullPath = [NSString stringWithFormat:@"%@/%@", filePath, filePathInDirectory];
+                if ([FileSystemHelper isImageFileAtPath:fileInDirectoryFullPath]) {
+                    [filesToUpload addObject:fileInDirectoryFullPath];
+                }
+            }
+        } else if ([FileSystemHelper isImageFileAtPath:filePath]) {
+            [filesToUpload addObject:filePath];
         }
+    }
+    return filesToUpload;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pasteboard;
+    pasteboard = [sender draggingPasteboard];
+
+    if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
+        NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
+        NSMutableArray *filesToUpload = [self getImagesFromFiles:files];
+        self.onFilesDragged(filesToUpload);
     }
     return YES;
 }
@@ -59,9 +80,9 @@
     self = [super initWithFrame:rect];
     if (self) {
         [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-        _menu = menu;
-        _statusItem = statusItem;
-        _onFilesDragged = Block_copy(onFilesDragged);
+        self.menu = menu;
+        self.statusItem = statusItem;
+        self.onFilesDragged = onFilesDragged;
     }
 
     return self;
