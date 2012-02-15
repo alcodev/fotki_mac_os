@@ -31,6 +31,8 @@ typedef void (^ServiceFacadeCallback)(id);
 
 - (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
+- (void)checkCRC:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+
 - (void)getPhotosFromTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 - (void)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;

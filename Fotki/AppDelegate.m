@@ -231,23 +231,38 @@
         }          waitUntilDone:YES];
         __block int attemptCount = 0;
         __block BOOL isFileUploaded = NO;
-        while (attemptCount < 1 && !isFileUploaded) {
-            [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-                NSData *data = [FileSystemHelper getFileData:filePath];
-                uint32_t crc32sum = [CRCUtils _crcFromData:data];
-                NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long)crc32sum];
-                [_fotkiServiceFacade uploadPicture:filePath crc32:crc32String toTheAlbum:album
-                                         onSuccess:^(id object) {
-                                             LOG(@"File %@ successfully uploaded.", filePath);
-                                             isFileUploaded = YES;
-                                             [lock asyncFinished];
-                                         } onError:^(Error *error) {
-                    [lock asyncFinished];
-                    LOG(@"Error uploading file %@. Error: %@", filePath, error);
-                    attemptCount++;
-                }];
+        NSData *data = [FileSystemHelper getFileData:filePath];
+        uint32_t crc32sum = [CRCUtils _crcFromData:data];
+        NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long)crc32sum];
+        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+            [_fotkiServiceFacade checkCRC:crc32String toTheAlbum:album
+                                     onSuccess:^(NSString *exist) {
+                                         LOG(@"File %@ exist on server...", filePath);
+                                         isFileUploaded = YES;
+                                         [lock asyncFinished];
+                                     } onError:^(Error *error) {
+                LOG(@"File %@ not exist on server. Try to upload....", filePath);
+
+                while (attemptCount < 1 && !isFileUploaded) {
+                    [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+                        [_fotkiServiceFacade uploadPicture:filePath crc32:crc32String toTheAlbum:album
+                                                 onSuccess:^(id object) {
+                                                     LOG(@"File %@ successfully uploaded.", filePath);
+                                                     isFileUploaded = YES;
+                                                     [lock asyncFinished];
+                                                 } onError:^(Error *error) {
+                            [lock asyncFinished];
+                            LOG(@"Error uploading file %@. Error: %@", filePath, error);
+                            attemptCount++;
+                        }];
+                    }];
+                }
+                [lock asyncFinished];
+                attemptCount++;
             }];
-        }
+        }];
+        
+
         if (!isFileUploaded){
             failedFilesCount++;
         }

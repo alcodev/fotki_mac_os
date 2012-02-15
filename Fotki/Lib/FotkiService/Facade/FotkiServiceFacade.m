@@ -41,29 +41,30 @@
     [super dealloc];
 }
 
-- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden{
+- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden {
 
-        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                login, @"login",
-                password, @"password",
-                nil];
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+            login, @"login",
+            password, @"password",
+            nil];
     [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/new_session" andParams:params onSuccess:^(id document) {
         NSArray *nodes = [document nodesForXPath:@"//session_id" error:nil];
         NSXMLElement *element = [nodes objectAtIndex:0];
         NSString *sessionIdValue = [element stringValue];
         _sessionId = [[NSString alloc] initWithString:sessionIdValue];
-        if (![@"alcodev" isEqualToString:login]){
+        if (![@"alcodev" isEqualToString:login]) {
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onForbidden withObject:nil];
             _sessionId = nil;
             return;
         }
-        [self getAccountInfo:^(id object){
+        [self getAccountInfo:^(id object) {
             self.accountInfo = object;
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
-        } onError:onError onForbidden:onForbidden];
+        }            onError:onError onForbidden:onForbidden];
     }                             onError:onError];
 }
-- (void)getAccountInfo:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden{
+
+- (void)getAccountInfo:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden {
 
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
             _sessionId, @"session_id",
@@ -83,7 +84,7 @@
 
         [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:accountInfo];
 
-    }onError:onError];
+    }                             onError:onError];
 }
 
 - (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
@@ -116,6 +117,7 @@
         }                             onError:onError];
     }
 }
+
 - (void)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
     if ([self checkIsUserAuthenticated:onError]) {
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -128,7 +130,7 @@
             NSXMLElement *element = [nodes objectAtIndex:0];
             NSString *albumUrl = [element stringValue];
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:albumUrl];
-        } onError:onError];
+        }                             onError:onError];
     }
 }
 
@@ -144,6 +146,22 @@
                                            name:@"photo"
                                       imagePath:path
                                       onSuccess:onSuccess onError:onError];
+    }
+}
+
+- (void)checkCRC:(NSString *)crc32 toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+    if ([self checkIsUserAuthenticated:onError]) {
+        NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                album.id, @"album_id",
+                _sessionId, @"session_id",
+                crc32, @"crc32",
+                nil];
+        [ServiceUtils processXmlRequestForUrl:FOTKI_SERVER_PATH andPath:@"/check_crc32" andParams:params onSuccess:^(id document) {
+            NSArray *nodes = [document nodesForXPath:@"//exists" error:nil];
+            NSXMLElement *element = [nodes objectAtIndex:0];
+            NSString *exist = [element stringValue];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:exist];
+        }                             onError:onError];
     }
 }
 
@@ -217,6 +235,7 @@
         return (YES);
     }
 }
+
 - (void)logOut {
     if (!_sessionId) {
         LOG(@"User is not authorized");
