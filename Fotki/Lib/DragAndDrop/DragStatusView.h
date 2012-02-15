@@ -14,7 +14,6 @@ typedef void (^DragFilesCallback)(id);
 @property(nonatomic, retain)NSMenu *menu;
 @property(nonatomic, copy) DragFilesCallback onFilesDragged;
 
-
 - (DragStatusView *)initWithFrame:(NSRect)rect andMenu:(NSMenu *)menu andStatusMenuItem:(NSStatusItem *)statusItem onFilesDragged:(DragFilesCallback)onFilesDragged;
 
 @end

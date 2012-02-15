@@ -18,19 +18,22 @@
 #import "Error.h"
 #import "Folder.h"
 #import "DirectoryUtils.h"
-#import "NSImage+Helper.h"
 #import "DialogUtils.h"
 #import "AlbumsExtracter.h"
 #import "Album.h"
 #import "Async2SyncLock.h"
 #import "DragStatusView.h"
 #import "AccountInfo.h"
+#import "TextUtils.h"
 
 #define APP_NAME @"Fotki"
 
 
 @interface AppDelegate ()
 - (void)logOuted;
+
+- (void)updateUploadButton;
+
 
 - (void)logined;
 
@@ -40,13 +43,16 @@
 @implementation AppDelegate {
     FotkiServiceFacade *_fotkiServiceFacade;
     NSMutableArray *_filesToUpload;
+
 @private
     NSMutableArray *_albums;
+
 }
 @synthesize settingsWindow = _settingsWindow;
 @synthesize lastEventId = _lastEventId;
 @synthesize uploadWindow = _uploadWindow;
-@synthesize filesToUpload = _filesToUpload;
+@synthesize albumLinkLabel = _albumLinkLabel;
+@synthesize uploadFilesTable = _uploadFilesTable;
 
 
 - (id)init {
@@ -81,6 +87,8 @@
     [_fotkiServiceFacade release];
     [_albums release];
     [_filesToUpload release];
+    [_albumLinkLabel release];
+    [_uploadFilesTable release];
     [super dealloc];
 }
 
@@ -107,7 +115,7 @@
 }
 
 - (void)setUploadWindowStartState {
-    [uploadFilesTable setEnabled:YES];
+    [self.uploadFilesTable setEnabled:YES];
     [uploadFilesAddButton setEnabled:YES];
     [uploadFilesDeleteButton setEnabled:YES];
     [uploadButton setEnabled:YES];
@@ -136,32 +144,13 @@
         [self setUploadWindowStartState];
         [self.uploadWindow center];
         [self.uploadWindow makeKeyAndOrderFront:self];
-        [uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-        [uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
+        [self.uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+        [self.uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
 
         [NSApp activateIgnoringOtherApps:YES];
 
-        NSInteger selectedItem = [uploadToAlbumComboBox indexOfSelectedItem];
-        Album *album = [_albums objectAtIndex:selectedItem];
-        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-            NSString *currentAlbumUrl = [_fotkiServiceFacade getAlbumUrl:album.id
-                    onSuccess:^(id object) {
-                        [lock asyncFinished];
-                        LOG(@"Url Loaded.");
-                    }
-                    onError:^(id error) {
-                        [lock asyncFinished];
-                        LOG(@"Url Not Loaded error: %@"), error;
-                    }];
-        }];
-
-        //NSString *currentAlbumUrl = album.url;
-        //NSData *data = @"<a href =\"http://www.kg\">ТЫК</a>";
-        //NSURL *url = "href =\"http://www.kg\"";
-        NSAttributedString *attrString = [[NSAttributedString alloc]
-                initWithHTML: @"<a href =\"http://www.kg\">ТЫК</a>" documentAttributes: (NSDictionary **) NULL];
-        [[albumLinkLabel textStorage] setAttributedString: attrString];
-        [attrString release];
+        [self.albumLinkLabel setHidden:true];
+        [self updateUploadButton];
     }
     else {
         [self.settingsWindow center];
@@ -176,16 +165,18 @@
     NSArray *filesUrls = [DialogUtils showOpenImageFileDialog];
     for (NSURL *url in filesUrls) {
         [_filesToUpload addObject:[url path]];
-        [uploadFilesTable reloadData];
+        [self.uploadFilesTable reloadData];
     }
+    [self updateUploadButton];
 }
 
 - (IBAction)uploadDeleteFileButtonClicked:(id)sender {
-    NSInteger selectedRowIndex = [uploadFilesTable selectedRow];
+    NSInteger selectedRowIndex = [self.uploadFilesTable selectedRow];
     if (selectedRowIndex >= 0) {
         [_filesToUpload removeObjectAtIndex:selectedRowIndex];
-        [uploadFilesTable reloadData];
+        [self.uploadFilesTable reloadData];
     }
+    [self updateUploadButton];
 }
 
 - (Album *)searchAlbumByPath:(NSString *)albumsPath {
@@ -211,10 +202,23 @@
     [uploadCancelButton setEnabled:YES];
     [uploadFilesAddButton setEnabled:NO];
     [uploadFilesDeleteButton setEnabled:NO];
-    [uploadFilesTable setEnabled:NO];
+    [self.uploadFilesTable setEnabled:NO];
     [_filesToUpload removeAllObjects];
-    [uploadFilesTable reloadData];
+    [self.uploadFilesTable reloadData];
     [uploadToAlbumComboBox setEnabled:NO];
+}
+
+- (void)showUploadedAlbumLink:(NSString *)urlString {
+    [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
+    [self.albumLinkLabel setSelectable:YES];
+    [self.albumLinkLabel setHidden:false];
+
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Click to open your album" withURL:url]];
+
+    [self.albumLinkLabel setAttributedStringValue:attributedString];
+
 }
 
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
@@ -238,6 +242,19 @@
         }];
         i++;
     }
+    [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+        [_fotkiServiceFacade getAlbumUrl:album.id
+                               onSuccess:^(NSString *albumUrl) {
+                                   LOG(@"Url Loaded: %@", albumUrl);
+                                   [self showUploadedAlbumLink:albumUrl];
+                                   [lock asyncFinished];
+                               }
+                                 onError:^(id error) {
+                                     LOG(@"Url Not Loaded error: %@"), error;
+                                     [lock asyncFinished];
+                                 }];
+    }];
+
     [NSThread doInMainThread:^() {
         [self setUploadWindowFinishState:failedFilesCount];
     }          waitUntilDone:YES];
@@ -271,7 +288,7 @@
 
 - (IBAction)uploadCancelButtonClicked:(id)sender {
     [_filesToUpload removeAllObjects];
-    [uploadFilesTable reloadData];
+    [self.uploadFilesTable reloadData];
     [self.uploadWindow close];
 
 }
@@ -294,7 +311,9 @@
         NSMutableArray *images = [[FileSystemHelper getImagesFromFiles:files] retain];
         [_filesToUpload addObjectsFromArray:images];
         [images release];
-        [uploadFilesTable reloadData];
+        [self.uploadFilesTable reloadData];
+
+        [self updateUploadButton];
     }
 }
 
@@ -355,7 +374,8 @@
                                                     andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
                 [_filesToUpload removeAllObjects];
                 [_filesToUpload addObjectsFromArray:files];
-                [uploadFilesTable reloadData];
+                [self.uploadFilesTable reloadData];
+
                 [self uploadMenuClicked:nil];
             }] autorelease];
     [statusItem setView:dragView];
@@ -366,7 +386,7 @@
     [self registerDefaults];
     [self addFotkiPathToFavourites];
 
-    [uploadFilesTable setDataSource:self];
+    [self.uploadFilesTable setDataSource:self];
     [uploadProgressIndicator setDisplayedWhenStopped:NO];
 
     _appStartedTimestamp = [[NSDate date] retain];
@@ -577,4 +597,11 @@
     }
 }
 
+- (void)updateUploadButton {
+    if (self.uploadFilesTable.numberOfRows > 0) {
+        [uploadButton setEnabled:YES];
+    } else {
+        [uploadButton setEnabled:NO];
+    }
+}
 @end

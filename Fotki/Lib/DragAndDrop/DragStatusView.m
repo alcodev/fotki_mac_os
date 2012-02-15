@@ -2,7 +2,6 @@
 //  Created by aistomin on 2/1/12.
 //
 //
-
 #import "DragStatusView.h"
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"

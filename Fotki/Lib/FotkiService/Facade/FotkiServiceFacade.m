@@ -19,7 +19,7 @@
 @interface FotkiServiceFacade ()
 - (void)getAccountInfo:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden;
 
-- (NSString *)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+- (void)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
 
 - (BOOL)checkIsUserAuthenticated:(ServiceFacadeCallback)onError;
@@ -116,7 +116,7 @@
         }                             onError:onError];
     }
 }
-- (NSString *)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+- (void)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
     NSString *albumUrl;
     if ([self checkIsUserAuthenticated:onError]) {
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -128,6 +128,7 @@
             NSArray *nodes = [document nodesForXPath:@"//url" error:nil];
             NSXMLElement *element = [nodes objectAtIndex:0];
             NSString *albumUrl = [element stringValue];
+            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:albumUrl];
         } onError:onError];
     }
     return albumUrl;

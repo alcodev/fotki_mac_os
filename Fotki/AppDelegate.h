@@ -20,7 +20,6 @@
     IBOutlet NSSecureTextField *passwordSecureTextField;
     IBOutlet NSTextFieldCell *notificationLabel;
 
-    IBOutlet NSTableView *uploadFilesTable;
     IBOutlet NSButton *uploadFilesAddButton;
     IBOutlet NSButton *uploadFilesDeleteButton;
     IBOutlet NSComboBox *uploadToAlbumComboBox;
@@ -29,8 +28,6 @@
     IBOutlet NSButton *uploadCancelButton;
     IBOutlet NSTextField *uploadFilesLabel;
     IBOutlet NSTextField *welcomeLabel;
-    IBOutlet NSTextView *albumLinkLabel;
-
 
     NSStatusItem *statusItem;
 
@@ -46,7 +43,8 @@
 @property(assign) IBOutlet NSWindow *settingsWindow;
 @property(assign) IBOutlet NSWindow *uploadWindow;
 @property(readonly) NSNumber *lastEventId;
-@property (copy) NSMutableArray *filesToUpload;
+@property(nonatomic, retain)IBOutlet NSTextField *albumLinkLabel;
+@property(nonatomic, retain)IBOutlet NSTableView *uploadFilesTable;
 
 - (IBAction)testMenuItemClicked:(id)sender;
 
@@ -75,7 +73,6 @@
 - (int)numberOfRowsInTableView:(NSTableView *)tableView;
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
-
 
 - (void)registerDefaults;
 

@@ -71,6 +71,7 @@
 		E1EE7F8414AC79AA003AD98C /* AlbumsExtracter.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD98B /* AlbumsExtracter.m */; };
 		E1EE7F8414AC79AA003AD990 /* DragStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD98F /* DragStatusView.m */; };
 		E1EE7F8414AC79AA003AD993 /* AccountInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD992 /* AccountInfo.m */; };
+		E1EE7F8414AC79AA003AD996 /* TextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD995 /* TextUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,6 +211,8 @@
 		E1EE7F8414AC79AA003AD991 /* DragStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DragStatusView.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD992 /* AccountInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountInfo.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD994 /* AccountInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountInfo.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD995 /* TextUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextUtils.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD997 /* TextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -565,6 +568,8 @@
 		E1EE7F8414AC79AA003AD980 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD997 /* TextUtils.h */,
+				E1EE7F8414AC79AA003AD995 /* TextUtils.m */,
 				E1EE7F8414AC79AA003AD98A /* DialogUtils.h */,
 				E1EE7F8414AC79AA003AD988 /* DialogUtils.m */,
 				E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */,
@@ -744,6 +749,7 @@
 				E1EE7F8414AC79AA003AD98C /* AlbumsExtracter.m in Sources */,
 				E1EE7F8414AC79AA003AD990 /* DragStatusView.m in Sources */,
 				E1EE7F8414AC79AA003AD993 /* AccountInfo.m in Sources */,
+				E1EE7F8414AC79AA003AD996 /* TextUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
