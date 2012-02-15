@@ -117,7 +117,6 @@
     }
 }
 - (void)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
-    NSString *albumUrl;
     if ([self checkIsUserAuthenticated:onError]) {
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                 _sessionId, @"session_id",
@@ -131,14 +130,14 @@
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:albumUrl];
         } onError:onError];
     }
-    return albumUrl;
 }
 
-- (void)uploadPicture:(NSString *)path toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
     if ([self checkIsUserAuthenticated:onError]) {
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                 album.id, @"album_id",
                 _sessionId, @"session_id",
+                crc32, @"crc32",
                 nil];
         [ServiceUtils processImageRequestForUrl:FOTKI_SERVER_PATH path:@"/upload"
                                          params:params

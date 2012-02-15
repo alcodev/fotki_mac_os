@@ -25,6 +25,7 @@
 #import "DragStatusView.h"
 #import "AccountInfo.h"
 #import "TextUtils.h"
+#import "CRCUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -228,18 +229,28 @@
         [NSThread doInMainThread:^() {
             [self changeUploadFilesLabelText:i :[_filesToUpload count]];
         }          waitUntilDone:YES];
-
-        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-            [_fotkiServiceFacade uploadPicture:filePath toTheAlbum:album
-                                     onSuccess:^(id object) {
-                                         LOG(@"File %@ successfully uploaded.", filePath);
-                                         [lock asyncFinished];
-                                     } onError:^(Error *error) {
-                failedFilesCount++;
-                [lock asyncFinished];
-                LOG(@"Error uploading file %@. Error: %@", filePath, error);
+        __block int attemptCount = 0;
+        __block BOOL isFileUploaded = NO;
+        while (attemptCount < 1 && !isFileUploaded) {
+            [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
+                NSData *data = [FileSystemHelper getFileData:filePath];
+                uint32_t crc32sum = [CRCUtils _crcFromData:data];
+                NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long)crc32sum];
+                [_fotkiServiceFacade uploadPicture:filePath crc32:crc32String toTheAlbum:album
+                                         onSuccess:^(id object) {
+                                             LOG(@"File %@ successfully uploaded.", filePath);
+                                             isFileUploaded = YES;
+                                             [lock asyncFinished];
+                                         } onError:^(Error *error) {
+                    [lock asyncFinished];
+                    LOG(@"Error uploading file %@. Error: %@", filePath, error);
+                    attemptCount++;
+                }];
             }];
-        }];
+        }
+        if (!isFileUploaded){
+            failedFilesCount++;
+        }
         i++;
     }
     [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {

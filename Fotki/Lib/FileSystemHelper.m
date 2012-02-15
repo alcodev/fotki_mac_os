@@ -79,4 +79,9 @@
     }
     return filesToUpload;
 }
+
++ (NSData *)getFileData:(NSString *)filePath {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    return [fileManager contentsAtPath:filePath];
+}
 @end
