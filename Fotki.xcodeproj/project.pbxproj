@@ -74,6 +74,8 @@
 		E1EE7F8414AC79AA003AD993 /* AccountInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD992 /* AccountInfo.m */; };
 		E1EE7F8414AC79AA003AD996 /* TextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD995 /* TextUtils.m */; };
 		E1EE7F8414AC79AA003AD999 /* CRCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD998 /* CRCUtils.m */; };
+		E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99B /* F-offline.png */; };
+		E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99D /* F-online.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,6 +220,8 @@
 		E1EE7F8414AC79AA003AD997 /* TextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD998 /* CRCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRCUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD99A /* CRCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRCUtils.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD99B /* F-offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "F-offline.png"; path = "Resources/F-offline.png"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD99D /* F-online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "F-online.png"; path = "Resources/F-online.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,6 +336,8 @@
 		E1EE7F7E14AC798E003AD8DF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD99D /* F-online.png */,
+				E1EE7F8414AC79AA003AD99B /* F-offline.png */,
 				E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */,
 				E1EE7F8414AC79AA003AD984 /* fotki_icon.png */,
 				E1EE7F7F14AC79AA003AD8DF /* check.icns */,
@@ -674,6 +680,8 @@
 				E1EE7F8414AC79AA003AD8DF /* updated.icns in Resources */,
 				E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */,
 				E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */,
+				E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */,
+				E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

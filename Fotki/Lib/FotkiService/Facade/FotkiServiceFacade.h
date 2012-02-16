@@ -20,6 +20,8 @@ typedef void (^ServiceFacadeCallback)(id);
 }
 @property(nonatomic, retain, readonly) NSString *sessionId;
 @property(nonatomic, retain) AccountInfo *accountInfo;
+@property(nonatomic, retain) id dragStatusView;
+
 
 - (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden;
 

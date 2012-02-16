@@ -14,6 +14,12 @@ typedef void (^DragFilesCallback)(id);
 @property(nonatomic, retain)NSMenu *menu;
 @property(nonatomic, copy) DragFilesCallback onFilesDragged;
 
+//- (void)drawRect: (bool *)online;
+
+@property(nonatomic) BOOL isOnline;
+
+- (void)changeIconState:(BOOL)isOnline;
+
 - (DragStatusView *)initWithFrame:(NSRect)rect andMenu:(NSMenu *)menu andStatusMenuItem:(NSStatusItem *)statusItem onFilesDragged:(DragFilesCallback)onFilesDragged;
 
 @end

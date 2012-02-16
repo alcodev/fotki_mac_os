@@ -31,6 +31,7 @@
 
 
 @interface AppDelegate ()
+@property(nonatomic, retain)DragStatusView *dragStatusView;
 - (void)logOuted;
 
 - (void)updateUploadButton;
@@ -54,6 +55,7 @@
 @synthesize uploadWindow = _uploadWindow;
 @synthesize albumLinkLabel = _albumLinkLabel;
 @synthesize uploadFilesTable = _uploadFilesTable;
+@synthesize dragStatusView = _dragStatusView;
 
 
 - (id)init {
@@ -90,6 +92,7 @@
     [_filesToUpload release];
     [_albumLinkLabel release];
     [_uploadFilesTable release];
+    [_dragStatusView release];
     [super dealloc];
 }
 
@@ -198,15 +201,8 @@
         [uploadFilesLabel setStringValue:@"Files successfully uploaded"];
     }
     [uploadProgressIndicator stopAnimation:self];
-    [uploadButton setEnabled:NO];
-    [uploadCancelButton setTitle:@"Close"];
-    [uploadCancelButton setEnabled:YES];
-    [uploadFilesAddButton setEnabled:NO];
-    [uploadFilesDeleteButton setEnabled:NO];
-    [self.uploadFilesTable setEnabled:NO];
     [_filesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
-    [uploadToAlbumComboBox setEnabled:NO];
 }
 
 - (void)showUploadedAlbumLink:(NSString *)urlString {
@@ -254,6 +250,7 @@
                             [lock asyncFinished];
                             LOG(@"Error uploading file %@. Error: %@", filePath, error);
                             attemptCount++;
+                            isFileUploaded = NO;
                         }];
                     }];
                 }
@@ -291,7 +288,7 @@
 }
 
 - (IBAction)uploadButtonClicked:(id)sender {
-
+    [self.albumLinkLabel setHidden:YES];
     NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
     if (!selectedAlbumsPath) {
         LOG(@"Select album to upload");
@@ -305,7 +302,7 @@
     [uploadProgressIndicator startAnimation:sender];
     [uploadFilesLabel setHidden:NO];
     [uploadButton setEnabled:NO];
-    [uploadCancelButton setEnabled:NO];
+
     [self changeUploadFilesLabelText:0 :[_filesToUpload count]];
     [NSThread doInNewThread:^{
         [self uploadSelectedPhotos:sender album:album];
@@ -395,7 +392,7 @@
 
     [statusItem setHighlightMode:YES];
 
-    DragStatusView *dragView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24)
+    self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24)
                                                               andMenu:statusMenu
                                                     andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
                 [_filesToUpload removeAllObjects];
@@ -404,7 +401,7 @@
 
                 [self uploadMenuClicked:nil];
             }] autorelease];
-    [statusItem setView:dragView];
+    [statusItem setView:self.dragStatusView];
 
     [loginButton setTitle:@"Login"];
     [notificationLabel setTitle:@""];
@@ -429,6 +426,7 @@
         [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                          onSuccess:^(id sessionId) {
                                              LOG(@"Session ID is: %@", sessionId);
+                                             [self.dragStatusView changeIconState:YES];
                                              [self loadAlbumsList];
                                              defaults = [NSUserDefaults standardUserDefaults];
                                              [defaults setObject:login forKey:@"login"];
@@ -561,6 +559,7 @@
     [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
                                      onSuccess:^(id sessionId) {
                                          LOG(@"Session ID is: %@", sessionId);
+                                         [self.dragStatusView changeIconState:YES];
                                          [self loadAlbumsList];
                                          NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                                          [defaults setObject:login forKey:@"login"];
@@ -608,6 +607,7 @@
 - (IBAction)loginButtonClicked:(id)sender {
     NSString *sessionId = _fotkiServiceFacade.sessionId;
     if (sessionId) {
+        [self.dragStatusView changeIconState:NO];
         _fotkiServiceFacade.logOut;
         [notificationLabel setTitle:@""];
         [loginTextField setEnabled:true];

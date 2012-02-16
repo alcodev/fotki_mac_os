@@ -6,11 +6,17 @@
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
 
-@implementation DragStatusView
+@implementation DragStatusView {
+@private
+    BOOL _isOnline;
+}
+
 
 @synthesize statusItem = _statusItem;
 @synthesize menu = _menu;
 @synthesize onFilesDragged = _onFilesDragged;
+@synthesize isOnline = _isOnline;
+
 
 - (void)dealloc {
     [_statusItem release];
@@ -23,10 +29,22 @@
     [self.statusItem popUpStatusItemMenu:self.menu];
 }
 
-
 - (void)drawRect:(NSRect)dirtyRect {
-    NSImage *iconImage = [[NSImage imageNamed:@"fotki_icon.png"] extractAsImageRepresentationOfSize:0];
-    [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+    if (self.isOnline) {
+        NSImage *iconImage = [[NSImage imageNamed:@"F-online.png"] extractAsImageRepresentationOfSize:0];
+        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+    }
+    else {
+        NSImage *iconImage = [[NSImage imageNamed:@"F-offline.png"] extractAsImageRepresentationOfSize:0];
+        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+    }
+}
+
+- (void)changeIconState:(BOOL)isOnline {
+    self.isOnline = isOnline;
+    [self setHidden:YES];
+    [self setHidden:NO];
+
 }
 
 //we want to copy the files
