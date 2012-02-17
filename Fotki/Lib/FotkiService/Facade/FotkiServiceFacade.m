@@ -52,11 +52,7 @@
         NSXMLElement *element = [nodes objectAtIndex:0];
         NSString *sessionIdValue = [element stringValue];
         _sessionId = [[NSString alloc] initWithString:sessionIdValue];
-        if (![@"alcodev" isEqualToString:login]) {
-            [ServiceFacadeCallbackCaller callServiceFacadeCallback:onForbidden withObject:nil];
-            _sessionId = nil;
-            return;
-        }
+
         [self getAccountInfo:^(id object) {
             self.accountInfo = object;
             [ServiceFacadeCallbackCaller callServiceFacadeCallback:onSuccess withObject:sessionIdValue];
