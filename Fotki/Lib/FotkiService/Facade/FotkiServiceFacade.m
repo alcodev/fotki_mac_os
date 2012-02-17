@@ -134,7 +134,7 @@
     }
 }
 
-- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError {
+- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum :(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError uploadProgressBlock:(UploadProgressBlock)uploadProgressBlock{
     if ([self checkIsUserAuthenticated:onError]) {
         NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                 album.id, @"album_id",
@@ -145,7 +145,8 @@
                                          params:params
                                            name:@"photo"
                                       imagePath:path
-                                      onSuccess:onSuccess onError:onError];
+                                      onSuccess:onSuccess onError:onError
+                          uploadProgressBlock:uploadProgressBlock];
     }
 }
 

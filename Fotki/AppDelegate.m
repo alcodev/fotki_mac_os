@@ -31,7 +31,8 @@
 
 
 @interface AppDelegate ()
-@property(nonatomic, retain)DragStatusView *dragStatusView;
+@property(nonatomic, retain) DragStatusView *dragStatusView;
+
 - (void)logOuted;
 
 - (void)updateUploadButton;
@@ -219,24 +220,33 @@
 }
 
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
+    NSError *attributesError = nil;
+    long long allFileSize = 0;
+    for (NSString *filePath in _filesToUpload) {
+        NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&attributesError];
+
+        NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
+        long long fileSize = [fileSizeNumber longLongValue];
+        allFileSize += fileSize;
+    }
+    __block long long uploadedSize = 0;
     int i = 1;
     __block int failedFilesCount = 0;
     for (NSString *filePath in _filesToUpload) {
-        [NSThread doInMainThread:^() {
-            [self changeUploadFilesLabelText:i :[_filesToUpload count]];
-        }          waitUntilDone:YES];
+
         __block int attemptCount = 0;
         __block BOOL isFileUploaded = NO;
         NSData *data = [FileSystemHelper getFileData:filePath];
         uint32_t crc32sum = [CRCUtils _crcFromData:data];
-        NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long)crc32sum];
+        NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long) crc32sum];
+        __block long long  currentFileUploadedSize = 0;
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade checkCRC:crc32String toTheAlbum:album
-                                     onSuccess:^(NSString *exist) {
-                                         LOG(@"File %@ exist on server...", filePath);
-                                         isFileUploaded = YES;
-                                         [lock asyncFinished];
-                                     } onError:^(Error *error) {
+                                onSuccess:^(NSString *exist) {
+                                    LOG(@"File %@ exist on server...", filePath);
+                                    isFileUploaded = YES;
+                                    [lock asyncFinished];
+                                } onError:^(Error *error) {
                 LOG(@"File %@ not exist on server. Try to upload....", filePath);
 
                 while (attemptCount < 1 && !isFileUploaded) {
@@ -244,6 +254,9 @@
                         [_fotkiServiceFacade uploadPicture:filePath crc32:crc32String toTheAlbum:album
                                                  onSuccess:^(id object) {
                                                      LOG(@"File %@ successfully uploaded.", filePath);
+                                                     uploadedSize+=currentFileUploadedSize;
+                                                     LOG(@"Total Uploaded: %d", uploadedSize);
+                                                     LOG(@"Total Calculated: %d", allFileSize);
                                                      isFileUploaded = YES;
                                                      [lock asyncFinished];
                                                  } onError:^(Error *error) {
@@ -251,6 +264,12 @@
                             LOG(@"Error uploading file %@. Error: %@", filePath, error);
                             attemptCount++;
                             isFileUploaded = NO;
+                        }              uploadProgressBlock:^(NSInteger bytesWrite, NSInteger totalBytesWrite, NSInteger totalBytesExpectedToWrite) {
+                            currentFileUploadedSize = totalBytesWrite;
+                            [NSThread doInMainThread:^() {
+                                [self changeUploadFilesLabelText:currentFileUploadedSize + totalBytesWrite :allFileSize];
+                            }          waitUntilDone:YES];
+                            LOG(@"uploadedSize: %d", totalBytesWrite);
                         }];
                     }];
                 }
@@ -258,9 +277,9 @@
                 attemptCount++;
             }];
         }];
-        
 
-        if (!isFileUploaded){
+
+        if (!isFileUploaded) {
             failedFilesCount++;
         }
         i++;
@@ -283,7 +302,7 @@
     }          waitUntilDone:YES];
 }
 
-- (void)changeUploadFilesLabelText:(int)current:(int)total {
+- (void)changeUploadFilesLabelText:(long long)current:(long long)total {
     [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Uploading %d/%d", current, total]];
 }
 
@@ -303,7 +322,7 @@
     [uploadFilesLabel setHidden:NO];
     [uploadButton setEnabled:NO];
 
-    [self changeUploadFilesLabelText:0 :[_filesToUpload count]];
+    [self changeUploadFilesLabelText:0 :0];
     [NSThread doInNewThread:^{
         [self uploadSelectedPhotos:sender album:album];
     }];
@@ -393,8 +412,8 @@
     [statusItem setHighlightMode:YES];
 
     self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24)
-                                                              andMenu:statusMenu
-                                                    andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
+                                                         andMenu:statusMenu
+                                               andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
                 [_filesToUpload removeAllObjects];
                 [_filesToUpload addObjectsFromArray:files];
                 [self.uploadFilesTable reloadData];

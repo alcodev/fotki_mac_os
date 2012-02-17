@@ -64,7 +64,7 @@
 
 - (IBAction)uploadDeleteFileButtonClicked:(id)sender;
 
-- (void)changeUploadFilesLabelText:(int)current :(int)total;
+- (void)changeUploadFilesLabelText:(long long)current :(long long)total;
 
 - (IBAction)uploadButtonClicked:(id)sender;
 

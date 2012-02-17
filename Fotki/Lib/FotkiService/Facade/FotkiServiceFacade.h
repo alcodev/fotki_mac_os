@@ -12,6 +12,7 @@
 @class AccountInfo;
 
 typedef void (^ServiceFacadeCallback)(id);
+typedef void (^UploadProgressBlock)(NSInteger, NSInteger, NSInteger);
 
 
 @interface FotkiServiceFacade : NSObject {
@@ -31,7 +32,7 @@ typedef void (^ServiceFacadeCallback)(id);
 
 - (void)getAlbumUrl:(id)AlbumId :(int *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
-- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError uploadProgressBlock:(UploadProgressBlock)uploadProgressBlock;
 
 - (void)checkCRC:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
 
