@@ -239,87 +239,95 @@
 
 }
 
-- (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
-    NSError *attributesError = nil;
-    long long allFileSize = 0;
+- (long long)calculateTotalUploadedFilesSize {
+    long long totalUploadedFilesSize = 0;
     for (NSString *filePath in _filesToUpload) {
-        NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&attributesError];
-
-        NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
-        long long fileSize = [fileSizeNumber longLongValue];
-        allFileSize += fileSize;
+        long long fileSize = [FileSystemHelper getFileSize:filePath];
+        totalUploadedFilesSize += fileSize;
     }
-    __block long long uploadedSize = 0;
+    return totalUploadedFilesSize;
+}
+
+- (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
+    long long totalUploadingFilesSize = [self calculateTotalUploadedFilesSize];
+    __block long long uploadedFilesSize = 0;
+    __block long long skippedFilesSize = 0;
     int i = 1;
     __block int failedFilesCount = 0;
 
     NSDate *beginUploadDate = [NSDate date];
 
-    for (NSString *filePath in _filesToUpload) {
+    for (NSString *uploadFilePath in _filesToUpload) {
+
 
         __block int attemptCount = 0;
         __block BOOL isFileUploaded = NO;
-        NSData *data = [FileSystemHelper getFileData:filePath];
+
+        NSData *data = [FileSystemHelper getFileData:uploadFilePath];
         uint32_t crc32sum = [CRCUtils _crcFromData:data];
         NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long) crc32sum];
-        __block long long  currentFileUploadedSize = 0;
+
+        __block long long currentFileUploadedSize = 0;
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade checkCRC:crc32String toTheAlbum:album
-            onSuccess:^(NSString *exist) {
-                                    LOG(@"File %@ exist on server...", filePath);
+                                onSuccess:^(NSString *exist) {
+                                    LOG(@"File %@ exist on server...", uploadFilePath);
+                                    uploadedFilesSize += [FileSystemHelper getFileSize:uploadFilePath];
                                     isFileUploaded = YES;
                                     [lock asyncFinished];
                                 } onError:^(Error *error) {
-                LOG(@"File %@ not exist on server. Try to upload....", filePath);
+                LOG(@"File %@ not exist on server. Try to upload....", uploadFilePath);
 
                 while (attemptCount < 1 && !isFileUploaded) {
                     [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-                        [_fotkiServiceFacade uploadPicture:filePath crc32:crc32String toTheAlbum:album
+                        [_fotkiServiceFacade uploadPicture:uploadFilePath crc32:crc32String toTheAlbum:album
                                                  onSuccess:^(id object) {
-                                                     LOG(@"File %@ successfully uploaded.", filePath);
-                                                     uploadedSize+=currentFileUploadedSize;
-                                                     LOG(@"Total Uploaded: %d", uploadedSize);
-                                                     LOG(@"Total Calculated: %d", allFileSize);
+                                                     [NSThread doInMainThread:^{
+                                                         [self.currentFileProgressIndicator setDoubleValue:0];
+                                                     }          waitUntilDone:YES];
+                                                     LOG(@"File %@ successfully uploaded.", uploadFilePath);
+                                                     uploadedFilesSize += currentFileUploadedSize;
+                                                     LOG(@"Total Uploaded: %d", uploadedFilesSize);
+                                                     LOG(@"Total Calculated: %d", totalUploadingFilesSize);
                                                      isFileUploaded = YES;
                                                      [lock asyncFinished];
                                                  } onError:^(Error *error) {
                             [lock asyncFinished];
-                            LOG(@"Error uploading file %@. Error: %@", filePath, error);
+                            LOG(@"Error uploading file %@. Error: %@", uploadFilePath, error);
                             attemptCount++;
                             isFileUploaded = NO;
                         }              uploadProgressBlock:^(NSInteger bytesWrite, NSInteger totalBytesWrite, NSInteger totalBytesExpectedToWrite) {
                             currentFileUploadedSize = totalBytesWrite;
 
-                            //[NSThread sleepForTimeInterval:5];
                             NSDate *currentUploadDate = [NSDate date];
-                            NSInteger difference =  [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
-                            NSLog(@"Diff = %ld", difference);
-                            LOG(@"total %d", totalBytesWrite);
-                            LOG(@"");
-                            long long uploadedBytes = uploadedSize + totalBytesWrite;
-                            float uploadingSpeed = ((float)difference/(float)uploadedBytes);
-                            float currentUploadingSpeed = ((float)uploadedBytes/(float)difference);
-                            currentFileUploadedSize = currentUploadingSpeed/1024;
-                            long long leftBytes = allFileSize - uploadedBytes;
-                            float leftTime = ((float)leftBytes*uploadingSpeed);
+                            NSInteger timeInSecondsFromUploadBeginning = [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
+                            NSLog(@"Time in seconds from upload beginning: %ld", timeInSecondsFromUploadBeginning);
+                            LOG(@"Current file's written bytes: %d", totalBytesWrite);
 
-                            LOG(@"Left Time: %@", [DateUtils formatLeftTime:leftTime]);
-                            [self.totalProgressLabel setTitleWithMnemonic:@""];
+                            long long uploadedBytes = uploadedFilesSize + totalBytesWrite;
+
+                            float currentUploadingSpeed = timeInSecondsFromUploadBeginning > 0 ? ((float) uploadedBytes / (float) timeInSecondsFromUploadBeginning) : 0;
+                            currentUploadingSpeed = currentUploadingSpeed / 1024;
+
+                            long long leftBytes = totalUploadingFilesSize - uploadedBytes;
+                            long long leftKBytes = leftBytes / 1024;
+                            float leftTime = currentUploadingSpeed > 0 ? ((float) leftKBytes / currentUploadingSpeed) : 0;
+                            LOG(@"Left time: %f from leftKBytes: %f and currentUploading speed: %f", leftTime, leftKBytes, currentUploadingSpeed);
+
                             [NSThread doInMainThread:^() {
+                                [self.totalProgressLabel setTitleWithMnemonic:@""];
                                 [self.totalFileProgressIndicator startAnimation:self];
                                 [self.currentFileProgressIndicator startAnimation:self];
-                                [self.totalFileProgressIndicator setDoubleValue:uploadedBytes*100/allFileSize];
-                                [self.currentFileProgressIndicator setDoubleValue:totalBytesWrite*100/totalBytesExpectedToWrite];
-                                //[self changeUploadFilesLabelText:uploadedBytes :allFileSize];
-                                NSString *formattedString = [[[NSString alloc] init] autorelease];
-                                formattedString = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.",
-                                                i, _filesToUpload.count, (int)currentFileUploadedSize];
+                                [self.totalFileProgressIndicator setDoubleValue:uploadedBytes * 100 / totalUploadingFilesSize];
+                                [self.currentFileProgressIndicator setDoubleValue:totalBytesWrite * 100 / totalBytesExpectedToWrite];
+                                NSString *formattedString = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.",
+                                                                                       i, _filesToUpload.count, (int) currentUploadingSpeed];
                                 [self.currentFileProgressLabel setTitleWithMnemonic:formattedString];
                                 [self.totalProgressLabel setTitleWithMnemonic:[DateUtils formatLeftTime:leftTime]];
                             }          waitUntilDone:YES];
                             [self.totalFileProgressIndicator stopAnimation:self];
                             [self.currentFileProgressIndicator stopAnimation:self];
-                            LOG(@"uploadedSize: %d", totalBytesWrite);
+                            LOG(@"uploadedFilesSize: %d", totalBytesWrite);
                         }];
                     }];
                 }
@@ -363,6 +371,7 @@
     [uploadFilesDeleteButton setEnabled:NO];
     [uploadButton setEnabled:NO];
     self.dragStatusView.isEnable = NO;
+
     NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
     if (!selectedAlbumsPath) {
         LOG(@"Select album to upload");
@@ -400,8 +409,8 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
-    if (![tableView isEnabled]){
-        return ;
+    if (![tableView isEnabled]) {
+        return;
     }
     NSPasteboard *pasteboard;
     pasteboard = [info draggingPasteboard];

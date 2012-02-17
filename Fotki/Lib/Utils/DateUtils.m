@@ -31,13 +31,13 @@
     seconds = round(seconds - hours * 3600 - minutes * 60);
     NSString *formattedString = [[[NSString alloc] init] autorelease];
     if ((int)hours > 0){
-        formattedString = [NSString stringWithFormat:@"Total progress (Estimated time left: %d hour(s))", (int)hours];
+        formattedString = [NSString stringWithFormat:@"%d hour(s) ", (int)hours];
     }
     if ((int)minutes > 0){
-        formattedString = [NSString stringWithFormat:@"Total progress (Estimated time left: %@ %d minute(s))",formattedString, (int)minutes];
+        formattedString = [NSString stringWithFormat:@"%@%d minute(s) ",formattedString, (int)minutes];
     }
-    formattedString = [NSString stringWithFormat:@"Total progress (Estimated time left: %@ %d second(s) left)", formattedString, (int)seconds];
+    formattedString = [NSString stringWithFormat:@"%@ %d second(s)", formattedString, (int)seconds];
     //LOG(@"%@", formattedString);
-    return formattedString;
+    return [NSString stringWithFormat:@"Total progress (Estimated time left: %@)", formattedString];
 }
 @end

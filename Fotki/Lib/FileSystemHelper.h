@@ -17,4 +17,7 @@
 + (NSMutableArray *)getImagesFromFiles:(NSArray *)files;
 
 + (NSData *)getFileData:(NSString *)filePath;
+
++ (long long int)getFileSize:(NSString *)filePath;
+
 @end

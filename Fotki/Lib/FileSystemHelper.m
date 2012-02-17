@@ -84,4 +84,12 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     return [fileManager contentsAtPath:filePath];
 }
+
++ (long long int)getFileSize:(NSString *)filePath {
+    NSError *attributesError = nil;
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&attributesError];
+    NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
+    long long fileSize = [fileSizeNumber longLongValue];
+    return fileSize;
+}
 @end
