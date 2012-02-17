@@ -76,6 +76,7 @@
 		E1EE7F8414AC79AA003AD999 /* CRCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD998 /* CRCUtils.m */; };
 		E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99B /* F-offline.png */; };
 		E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99D /* F-online.png */; };
+		E1EE7F8414AC79AA003AD9A0 /* DateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99F /* DateUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -222,6 +223,8 @@
 		E1EE7F8414AC79AA003AD99A /* CRCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRCUtils.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD99B /* F-offline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "F-offline.png"; path = "Resources/F-offline.png"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD99D /* F-online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "F-online.png"; path = "Resources/F-online.png"; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD99F /* DateUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateUtils.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A1 /* DateUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -581,6 +584,8 @@
 		E1EE7F8414AC79AA003AD980 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9A1 /* DateUtils.h */,
+				E1EE7F8414AC79AA003AD99F /* DateUtils.m */,
 				E1EE7F8414AC79AA003AD99A /* CRCUtils.h */,
 				E1EE7F8414AC79AA003AD998 /* CRCUtils.m */,
 				E1EE7F8414AC79AA003AD997 /* TextUtils.h */,
@@ -768,6 +773,7 @@
 				E1EE7F8414AC79AA003AD993 /* AccountInfo.m in Sources */,
 				E1EE7F8414AC79AA003AD996 /* TextUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD999 /* CRCUtils.m in Sources */,
+				E1EE7F8414AC79AA003AD9A0 /* DateUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

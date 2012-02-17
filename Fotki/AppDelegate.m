@@ -26,6 +26,7 @@
 #import "AccountInfo.h"
 #import "TextUtils.h"
 #import "CRCUtils.h"
+#import "DateUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -57,6 +58,10 @@
 @synthesize albumLinkLabel = _albumLinkLabel;
 @synthesize uploadFilesTable = _uploadFilesTable;
 @synthesize dragStatusView = _dragStatusView;
+@synthesize totalProgressLabel = _totalProgressLabel;
+@synthesize currentFileProgressLabel = _currentFileProgressLabel;
+@synthesize currentFileProgressIndicator = _currentFileProgressIndicator;
+@synthesize totalFileProgressIndicator = _totalFileProgressIndicator;
 
 
 - (id)init {
@@ -94,6 +99,10 @@
     [_albumLinkLabel release];
     [_uploadFilesTable release];
     [_dragStatusView release];
+    [_totalProgressLabel release];
+    [_currentFileProgressLabel release];
+    [_currentFileProgressIndicator release];
+    [_totalFileProgressIndicator release];
     [super dealloc];
 }
 
@@ -199,7 +208,7 @@
         [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
     } else {
         [uploadFilesLabel setTextColor:[NSColor greenColor]];
-        [uploadFilesLabel setStringValue:@"Files successfully uploaded"];
+        [uploadFilesLabel setStringValue:@"Files successfully uploaded. Click to open your album."];
     }
     [uploadProgressIndicator stopAnimation:self];
     [_filesToUpload removeAllObjects];
@@ -209,11 +218,14 @@
 - (void)showUploadedAlbumLink:(NSString *)urlString {
     [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
     [self.albumLinkLabel setSelectable:YES];
-    [self.albumLinkLabel setHidden:false];
+    [self.albumLinkLabel setHidden:NO];
+    [uploadFilesAddButton setEnabled:YES];
+    [uploadFilesDeleteButton setEnabled:YES];
+    [self.uploadFilesTable setEnabled:YES];
 
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
-    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Click to open your album" withURL:url]];
+    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
 
     [self.albumLinkLabel setAttributedStringValue:attributedString];
 
@@ -232,6 +244,9 @@
     __block long long uploadedSize = 0;
     int i = 1;
     __block int failedFilesCount = 0;
+
+    NSDate *beginUploadDate = [NSDate date];
+
     for (NSString *filePath in _filesToUpload) {
 
         __block int attemptCount = 0;
@@ -242,7 +257,7 @@
         __block long long  currentFileUploadedSize = 0;
         [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
             [_fotkiServiceFacade checkCRC:crc32String toTheAlbum:album
-                                onSuccess:^(NSString *exist) {
+            onSuccess:^(NSString *exist) {
                                     LOG(@"File %@ exist on server...", filePath);
                                     isFileUploaded = YES;
                                     [lock asyncFinished];
@@ -266,9 +281,34 @@
                             isFileUploaded = NO;
                         }              uploadProgressBlock:^(NSInteger bytesWrite, NSInteger totalBytesWrite, NSInteger totalBytesExpectedToWrite) {
                             currentFileUploadedSize = totalBytesWrite;
+
+                            //[NSThread sleepForTimeInterval:5];
+                            NSDate *currentUploadDate = [NSDate date];
+                            NSInteger difference =  [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
+                            NSLog(@"Diff = %ld", difference);
+                            long long uploadedBytes = uploadedSize + totalBytesWrite;
+                            float uploadingSpeed = ((float)difference/(float)uploadedBytes);
+                            float currentUploadingSpeed = ((float)uploadedBytes/(float)difference);
+                            currentFileUploadedSize = currentUploadingSpeed/1024;
+                            long long leftBytes = allFileSize - uploadedBytes;
+                            float leftTime = ((float)leftBytes*uploadingSpeed);
+
+                            LOG(@"Left Time: %@", [DateUtils formatLeftTime:leftTime]);
+
                             [NSThread doInMainThread:^() {
-                                [self changeUploadFilesLabelText:currentFileUploadedSize + totalBytesWrite :allFileSize];
+                                [self.totalFileProgressIndicator startAnimation:self];
+                                [self.currentFileProgressIndicator startAnimation:self];
+                                [self.totalFileProgressIndicator setDoubleValue:uploadedBytes*100/allFileSize];
+                                [self.currentFileProgressIndicator setDoubleValue:totalBytesWrite*100/totalBytesExpectedToWrite];
+                                //[self changeUploadFilesLabelText:uploadedBytes :allFileSize];
+                                NSString *formattedString = [[[NSString alloc] init] autorelease];
+                                formattedString = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.",
+                                                i, _filesToUpload.count, (int)currentFileUploadedSize];
+                                [self.currentFileProgressLabel setTitleWithMnemonic:formattedString];
+                                [self.totalProgressLabel setTitleWithMnemonic:[DateUtils formatLeftTime:leftTime]];
                             }          waitUntilDone:YES];
+                            [self.totalFileProgressIndicator stopAnimation:self];
+                            [self.currentFileProgressIndicator stopAnimation:self];
                             LOG(@"uploadedSize: %d", totalBytesWrite);
                         }];
                     }];
@@ -308,6 +348,9 @@
 
 - (IBAction)uploadButtonClicked:(id)sender {
     [self.albumLinkLabel setHidden:YES];
+    [self.uploadFilesTable setEnabled:NO];
+    [uploadFilesAddButton setEnabled:NO];
+    [uploadFilesDeleteButton setEnabled:NO];
     NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
     if (!selectedAlbumsPath) {
         LOG(@"Select album to upload");
@@ -322,10 +365,12 @@
     [uploadFilesLabel setHidden:NO];
     [uploadButton setEnabled:NO];
 
-    [self changeUploadFilesLabelText:0 :0];
+
+    //[self changeUploadFilesLabelText:0 :0];
     [NSThread doInNewThread:^{
         [self uploadSelectedPhotos:sender album:album];
     }];
+
 }
 
 - (IBAction)uploadCancelButtonClicked:(id)sender {
@@ -345,6 +390,9 @@
 }
 
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
+    if (![tableView isEnabled]){
+        return ;
+    }
     NSPasteboard *pasteboard;
     pasteboard = [info draggingPasteboard];
 
