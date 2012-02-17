@@ -205,30 +205,37 @@
 - (void)setUploadWindowFinishState:(int)failedFilesCount {
     if (failedFilesCount > 0) {
         [uploadFilesLabel setTextColor:[NSColor redColor]];
-        [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
+        //[uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
     } else {
         [uploadFilesLabel setTextColor:[NSColor greenColor]];
-        [uploadFilesLabel setStringValue:@"Files successfully uploaded. Click to open your album."];
+        //[uploadFilesLabel setStringValue:@"Files successfully uploaded. Click to open your album."];
     }
     [uploadProgressIndicator stopAnimation:self];
     [_filesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
 }
 
-- (void)showUploadedAlbumLink:(NSString *)urlString {
+- (void)showUploadedAlbumLink:(NSString *)urlString failedFilesCount:(int)failedFilesCount {
     [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
     [self.albumLinkLabel setSelectable:YES];
     [self.albumLinkLabel setHidden:NO];
     [uploadFilesAddButton setEnabled:YES];
     [uploadFilesDeleteButton setEnabled:YES];
     [self.uploadFilesTable setEnabled:YES];
+    [uploadButton setEnabled:YES];
     self.dragStatusView.isEnable = YES;
 
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
-    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
+    if (failedFilesCount > 0) {
+        [uploadFilesLabel setTextColor:[NSColor redColor]];
+        [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
+    } else {
+        NSURL *url = [NSURL URLWithString:urlString];
+        NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+        [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
 
-    [self.albumLinkLabel setAttributedStringValue:attributedString];
+        [self.albumLinkLabel setAttributedStringValue:attributedString];
+    }
+
 
 }
 
@@ -297,7 +304,7 @@
                             float leftTime = ((float)leftBytes*uploadingSpeed);
 
                             LOG(@"Left Time: %@", [DateUtils formatLeftTime:leftTime]);
-
+                            [self.totalProgressLabel setTitleWithMnemonic:@""];
                             [NSThread doInMainThread:^() {
                                 [self.totalFileProgressIndicator startAnimation:self];
                                 [self.currentFileProgressIndicator startAnimation:self];
@@ -331,7 +338,7 @@
         [_fotkiServiceFacade getAlbumUrl:album.id
                                onSuccess:^(NSString *albumUrl) {
                                    LOG(@"Url Loaded: %@", albumUrl);
-                                   [self showUploadedAlbumLink:albumUrl];
+                                   [self showUploadedAlbumLink:albumUrl failedFilesCount:failedFilesCount];
                                    [lock asyncFinished];
                                }
                                  onError:^(id error) {
@@ -346,7 +353,7 @@
 }
 
 - (void)changeUploadFilesLabelText:(long long)current:(long long)total {
-    [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Uploading %d/%d", current, total]];
+    //[uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Uploading %d/%d", current, total]];
 }
 
 - (IBAction)uploadButtonClicked:(id)sender {
@@ -354,6 +361,7 @@
     [self.uploadFilesTable setEnabled:NO];
     [uploadFilesAddButton setEnabled:NO];
     [uploadFilesDeleteButton setEnabled:NO];
+    [uploadButton setEnabled:NO];
     self.dragStatusView.isEnable = NO;
     NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
     if (!selectedAlbumsPath) {
@@ -365,9 +373,7 @@
         LOG(@"Album by path %@ not found.", selectedAlbumsPath);
         return;
     }
-    [uploadProgressIndicator startAnimation:sender];
-    [uploadFilesLabel setHidden:NO];
-    [uploadButton setEnabled:NO];
+//    [uploadProgressIndicator startAnimation:sender];
 
 
     //[self changeUploadFilesLabelText:0 :0];
