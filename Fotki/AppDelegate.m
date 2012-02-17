@@ -202,7 +202,15 @@
     return nil;
 }
 
+- (void)setProgressBarsHidden:(BOOL)isHidden {
+    [self.totalFileProgressIndicator setHidden:isHidden];
+    [self.totalProgressLabel setHidden:isHidden];
+    [self.currentFileProgressIndicator setHidden:isHidden];
+    [self.currentFileProgressLabel setHidden:isHidden];
+}
+
 - (void)setUploadWindowFinishState:(int)failedFilesCount {
+    [self.totalProgressLabel setTitleWithMnemonic:[DateUtils formatLeftTime:0]];
     if (failedFilesCount > 0) {
         [uploadFilesLabel setTextColor:[NSColor redColor]];
         //[uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
@@ -211,6 +219,7 @@
         //[uploadFilesLabel setStringValue:@"Files successfully uploaded. Click to open your album."];
     }
     [uploadProgressIndicator stopAnimation:self];
+    [self setProgressBarsHidden:YES];
     [_filesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
 }
@@ -249,6 +258,12 @@
 }
 
 - (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
+    [self setProgressBarsHidden:NO];
+    [self.currentFileProgressIndicator stopAnimation:self];
+    [self.currentFileProgressLabel setTitleWithMnemonic:@""];
+    [self.totalFileProgressIndicator stopAnimation:self];
+    [self.totalProgressLabel setTitleWithMnemonic:@""];
+
     long long totalUploadingFilesSize = [self calculateTotalUploadedFilesSize];
     __block long long uploadedFilesSize = 0;
     __block long long skippedFilesSize = 0;

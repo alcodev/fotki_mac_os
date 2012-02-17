@@ -75,6 +75,7 @@
         self.menu = menu;
         self.statusItem = statusItem;
         self.onFilesDragged = onFilesDragged;
+        self.isEnable = YES;
     }
     return self;
 }
