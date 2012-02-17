@@ -16,6 +16,7 @@
 @synthesize menu = _menu;
 @synthesize onFilesDragged = _onFilesDragged;
 @synthesize isOnline = _isOnline;
+@synthesize isEnable = _isEnable;
 
 
 - (void)dealloc {
@@ -53,6 +54,9 @@
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+    if (!self.isEnable){
+        return NO;
+    }
     NSPasteboard *pasteboard;
     pasteboard = [sender draggingPasteboard];
 

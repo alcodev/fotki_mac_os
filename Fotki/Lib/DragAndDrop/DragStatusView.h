@@ -18,6 +18,8 @@ typedef void (^DragFilesCallback)(id);
 
 @property(nonatomic) BOOL isOnline;
 
+@property(nonatomic) BOOL isEnable;
+
 - (void)changeIconState:(BOOL)isOnline;
 
 - (DragStatusView *)initWithFrame:(NSRect)rect andMenu:(NSMenu *)menu andStatusMenuItem:(NSStatusItem *)statusItem onFilesDragged:(DragFilesCallback)onFilesDragged;

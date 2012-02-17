@@ -222,6 +222,7 @@
     [uploadFilesAddButton setEnabled:YES];
     [uploadFilesDeleteButton setEnabled:YES];
     [self.uploadFilesTable setEnabled:YES];
+    self.dragStatusView.isEnable = YES;
 
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
@@ -286,6 +287,8 @@
                             NSDate *currentUploadDate = [NSDate date];
                             NSInteger difference =  [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
                             NSLog(@"Diff = %ld", difference);
+                            LOG(@"total %d", totalBytesWrite);
+                            LOG(@"");
                             long long uploadedBytes = uploadedSize + totalBytesWrite;
                             float uploadingSpeed = ((float)difference/(float)uploadedBytes);
                             float currentUploadingSpeed = ((float)uploadedBytes/(float)difference);
@@ -351,6 +354,7 @@
     [self.uploadFilesTable setEnabled:NO];
     [uploadFilesAddButton setEnabled:NO];
     [uploadFilesDeleteButton setEnabled:NO];
+    self.dragStatusView.isEnable = NO;
     NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
     if (!selectedAlbumsPath) {
         LOG(@"Select album to upload");
