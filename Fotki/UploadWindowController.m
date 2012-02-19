@@ -5,17 +5,9 @@
 
 #import "UploadWindowController.h"
 #import "TextUtils.h"
-#import "FileSystemHelper.h"
 #import "Album.h"
-#import "Async2SyncLock.h"
-#import "NSThread+Helper.h"
-#import "CRCUtils.h"
-#import "DateUtils.h"
-#import "Error.h"
-#import "ApiException.h"
 #import "FotkiServiceFacade.h"
 #import "AccountInfo.h"
-#import "Callbacks.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -26,9 +18,9 @@ typedef enum {
 @property(nonatomic, assign) UploadWindowState currentState;
 @property(nonatomic, retain) FotkiServiceFacade *fotkiServiceFacade;
 
-- (void)uploadSelectedPhotos:(id)sender album:(Album *)album;
-
 - (void)changeApplyButtonStateBasedOnFormState;
+
+- (void)showLinkToAlbum:(NSString *)urlToAlbum;
 
 - (void)setProgressBarsHidden:(BOOL)isHidden;
 
@@ -200,12 +192,15 @@ typedef enum {
         return NO;
     }
 
+    BOOL result = NO;
     if (self.onNeedAcceptDrop) {
-        self.onNeedAcceptDrop(info);
+        result = self.onNeedAcceptDrop(info);
 
         [self.uploadFilesTable reloadData];
         [self changeApplyButtonStateBasedOnFormState];
     }
+
+    return result;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
@@ -228,122 +223,16 @@ typedef enum {
 }
 
 //-----------------------------------------------------------------------------------------
-
-- (void)showUploadedAlbumLink:(NSString *)urlString failedFilesCount:(int)failedFilesCount {
-    [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
-    [self.albumLinkLabel setSelectable:YES];
-    [self.albumLinkLabel setHidden:NO];
-    [self.uploadFilesAddButton setEnabled:YES];
-    [self.uploadFilesDeleteButton setEnabled:YES];
-    [self.uploadFilesTable setEnabled:YES];
-    [self.uploadButton setEnabled:YES];
-    //self.dragStatusView.isEnable = YES;
-
-    if (failedFilesCount > 0) {
-        //TODO: decide if we need self.uploadFilesLabel
-        //[self.uploadFilesLabel setTextColor:[NSColor redColor]];
-        //[self.uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
-    } else {
-        NSURL *url = [NSURL URLWithString:urlString];
-        NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
-        [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
-
-        [self.albumLinkLabel setAttributedStringValue:attributedString];
-    }
-
-
-}
-
-
-- (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
-    long long sizeFilesTotal = [FileSystemHelper sizeForFilesAtPaths:self.arrayFilesToUpload];
-    long long sizeFilesUploaded = 0;
-    int countFilesFailed = 0;
-
-    NSDate *beginUploadDate = [NSDate date];
-
-    for(NSInteger indexFilePath = 0; indexFilePath < self.arrayFilesToUpload.count; indexFilePath++) {
-        BOOL isFileUploaded = NO;
-
-        NSString *pathFile = [self.arrayFilesToUpload objectAtIndex:(NSUInteger) indexFilePath];
-        NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
-
-        if ([self.fotkiServiceFacade checkCrc32:crcFile inAlbum:album]){
-            LOG(@"File %@ exist on server...", pathFile);
-            sizeFilesUploaded += [FileSystemHelper sizeForFileAtPath:pathFile];
-            isFileUploaded = YES;
-        } else {
-            LOG(@"File %@ not exist on server. Try to upload....", pathFile);
-
-            int countAttempts = 0;
-            __block long long sizeFileCurrentUploaded = 0;
-            while (countAttempts < 1 && !isFileUploaded) {
-                @try {
-                    [self.fotkiServiceFacade uploadImageAtPath:pathFile crc32:crcFile toAlbum:album uploadProgressBlock:^(NSInteger bytesWrite, NSInteger totalBytesWrite, NSInteger totalBytesExpectedToWrite) {
-                        sizeFileCurrentUploaded = totalBytesWrite;
-
-                        NSDate *currentUploadDate = [NSDate date];
-                        NSInteger timeInSecondsFromUploadBeginning = [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
-                        LOG(@"Time in seconds from upload beginning: %ld", timeInSecondsFromUploadBeginning);
-                        LOG(@"Current file's written bytes: %d", totalBytesWrite);
-
-                        long long uploadedBytes = sizeFilesUploaded + totalBytesWrite;
-
-                        float currentUploadingSpeed = timeInSecondsFromUploadBeginning > 0 ? ((float) uploadedBytes / (float) timeInSecondsFromUploadBeginning) : 0;
-                        currentUploadingSpeed = currentUploadingSpeed / 1024;
-
-                        long long leftBytes = sizeFilesTotal - uploadedBytes;
-                        long long leftKBytes = leftBytes / 1024;
-                        float leftTime = currentUploadingSpeed > 0 ? ((float) leftKBytes / currentUploadingSpeed) : 0;
-                        LOG(@"Left time: %f from leftKBytes: %f and currentUploading speed: %f", leftTime, leftKBytes, currentUploadingSpeed);
-
-                        [NSThread doInMainThread:^() {
-                            double valueProgressFile = totalBytesWrite * 100 / totalBytesExpectedToWrite;
-                            NSString *labelProgressFile = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.", indexFilePath + 1, self.arrayFilesToUpload.count, (int) currentUploadingSpeed];
-                            double valueProgressTotal = uploadedBytes * 100 / sizeFilesTotal;
-                            NSString *labelProgressTotal = [DateUtils formatLeftTime:leftTime];
-
-                            [self setStateUploadingWithFileProgressValue:valueProgressFile fileProgressLabel:labelProgressFile totalProgressValue:valueProgressTotal totalProgressLabel:labelProgressTotal];
-                        } waitUntilDone:YES];
-
-                        LOG(@"uploadedFilesSize: %d", totalBytesWrite);
-                    }];
-
-                    LOG(@"Image '%@' was successfully uploaded", pathFile);
-                    sizeFilesUploaded += sizeFileCurrentUploaded;
-                    LOG(@"Total Uploaded: %d", sizeFilesUploaded);
-                    LOG(@"Total Calculated: %d", sizeFilesTotal);
-                    isFileUploaded = YES;
-                } @catch (ApiException *ex) {
-                    LOG(@"Error uploading image '%@', reason: %@", pathFile, ex.description);
-                    countAttempts++;
-                    isFileUploaded = NO;
-                }
-            }
-
-            countAttempts++;
-        }
-
-        if (!isFileUploaded) {
-            countFilesFailed++;
-        }
-    }
-
-    @try {
-        NSString *albumUrl = [self.fotkiServiceFacade getAlbumUrl:album.id];
-        [self showUploadedAlbumLink:albumUrl failedFilesCount:countFilesFailed];
-    } @catch(ApiException *ex) {
-        LOG(@"Error getting url for album: %@", album.id);
-    }
-
-    [NSThread doInMainThread:^() {
-        [self setStateUploaded];
-    } waitUntilDone:YES];
-}
-
+// Helpers
 //-----------------------------------------------------------------------------------------
-// UI helpers
-//-----------------------------------------------------------------------------------------
+
+- (void)showLinkToAlbum:(NSString *)urlToAlbum {
+    NSURL *url = [NSURL URLWithString:urlToAlbum];
+    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
+
+    [self.albumLinkLabel setAttributedStringValue:attributedString];
+}
 
 - (void)setProgressBarsHidden:(BOOL)isHidden {
     [self.totalFileProgressIndicator setHidden:isHidden];
@@ -428,16 +317,13 @@ typedef enum {
     [self.uploadCancelButton setTitle:@"Cancel"];
 }
 
-- (void)setStateUploaded {
-    if (self.currentState == kStateUploaded) {
-        return;
-    }
-
+- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum {
     self.currentState = kStateUploaded;
 
-    [self setStateUploading];
+    [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Done" totalProgressValue:100.0 totalProgressLabel:@"Done"];
 
-    [self.albumLinkLabel setHidden:YES];
+    [self.albumLinkLabel setHidden:NO];
+    [self showLinkToAlbum:urlToAlbum];
 }
 
 @end

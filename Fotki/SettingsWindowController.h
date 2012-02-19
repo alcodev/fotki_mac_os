@@ -24,7 +24,7 @@ typedef void (^NeedLoginCallback)(NSString *username, NSString *password);
 
 - (void)setStateAsLoggedInWithAccountInfo:(AccountInfo *)accountInfo;
 
-- (void)setStateAsLoggingIn;
+- (void)setStateAsLoggingInWithUsername:(NSString *)username passowrd:(NSString *)password;
 
 - (void)setStateAsNotLoggedInWithStatus:(NSString *)status;
 

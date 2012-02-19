@@ -10,20 +10,17 @@
 #import "NSThread+Helper.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
-#import "Error.h"
 #import "DialogUtils.h"
-#import "AlbumsExtracter.h"
 #import "Album.h"
-#import "Async2SyncLock.h"
 #import "DragStatusView.h"
 #import "AccountInfo.h"
-#import "TextUtils.h"
 #import "CRCUtils.h"
 #import "DateUtils.h"
 #import "SettingsWindowController.h"
 #import "ApiServiceException.h"
 #import "ApiConnectionException.h"
 #import "UploadWindowController.h"
+#import "UploadFilesStatisticsCalculator.h"
 
 #define APP_NAME @"Fotki"
 
@@ -31,14 +28,12 @@
 @interface AppDelegate ()
 
 @property(nonatomic, retain) SettingsWindowController *controllerSettingsWindow;
-
 @property(nonatomic, retain) UploadWindowController *controllerUploadWindow;
-
 @property(nonatomic, retain) DragStatusView *dragStatusView;
 
-- (AccountInfo *)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
+- (void)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
-- (AccountInfo *)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password;
+- (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
 - (void)doClearSession;
 
@@ -46,7 +41,9 @@
 
 - (void)restoreSession;
 
-- (void)uploadSelectedPhotos:(id)sender album:(Album *)album;
+- (void)uploadImagesAtPaths:(NSArray *)pathsFiles toAlbum:(Album *)album;
+
+- (NSString *)getUrlToAlbum:(Album *)album;
 
 @end
 
@@ -129,9 +126,9 @@
 
 //-----------------------------------------------------------------------------------------
 
-- (AccountInfo *)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password {
+- (void)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password {
     @try {
-        [self.controllerSettingsWindow setStateAsLoggingIn];
+        [self.controllerSettingsWindow setStateAsLoggingInWithUsername:username passowrd:password];
 
         AccountInfo *accountInfo = [_fotkiServiceFacade authenticateWithLogin:username andPassword:password];
         accountInfo.username = username;
@@ -155,7 +152,7 @@
     }
 }
 
-- (AccountInfo *)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
+- (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
    [NSThread doInNewThread:^{
        [self doSyncLoginWithUsername:username password:password];
    }];
@@ -197,9 +194,6 @@
     }] autorelease];
     [statusItem setView:self.dragStatusView];
 
-    [self.uploadFilesTable setDataSource:self];
-    [uploadProgressIndicator setDisplayedWhenStopped:NO];
-
     self.controllerSettingsWindow = [SettingsWindowController controllerWithOnNeedLogIn:^(NSString *username, NSString *password) {
         [self doAsyncLoginWithUsername:username password:password];
     } onNeedLogoutCallback:^{
@@ -217,6 +211,9 @@
             NSArray *pathsAll = [pasteboard propertyListForType:NSFilenamesPboardType];
             NSArray *pathsImages = [FileSystemHelper getImagesFromFiles:pathsAll];
             [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:pathsImages];
+            return YES;
+        } else {
+            return NO;
         }
     };
     self.controllerUploadWindow.onAddFileButtonClicked = ^{
@@ -232,14 +229,94 @@
     };
     self.controllerUploadWindow.onNeedUpload = ^{
         self.dragStatusView.isEnable = NO;
-        [self.controllerUploadWindow setStateUploading];
+        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 fileProgressLabel:@"Start" totalProgressValue:0.0 totalProgressLabel:@"Start"];
 
         [NSThread doInNewThread:^{
-            //[self uploadSelectedPhotos:sender album:self.controllerUploadWindow.selectedAlbum];
+            [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
         }];
     };
 
     [self restoreSession];
+}
+
+- (void)uploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album {
+    UploadFilesStatisticsCalculator *statisticsCalculator = [UploadFilesStatisticsCalculator calculatorWithPathsFiles:arrayPathsFiles];
+    LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite/1024);
+    LOG(@"");
+    for(NSInteger indexFilePath = 0; indexFilePath < arrayPathsFiles.count; indexFilePath++) {
+        NSString *pathFile = [arrayPathsFiles objectAtIndex:(NSUInteger) indexFilePath];
+
+        BOOL isFileUploaded = NO;
+
+        NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
+        if ([_fotkiServiceFacade checkCrc32:crcFile inAlbum:album]){
+            LOG(@"File '%@' already exists on server, skipping it", pathFile);
+            [statisticsCalculator setUploadSuccessForPath:pathFile];
+        } else {
+            LOG(@"File '%@' does not exist on server, uploading it", pathFile);
+
+            int countAttempts = 0;
+            while (countAttempts < 1 && !isFileUploaded) {
+                @try {
+                    [_fotkiServiceFacade uploadImageAtPath:pathFile crc32:crcFile toAlbum:album uploadProgressBlock:^(NSInteger bytesCurrentLastWritten, NSInteger bytesCurrentTotalWritten, NSInteger bytesCurrentTotalExpectedToWrite) {
+                        [statisticsCalculator setCurrentStatisticsWithBytesLastWritten:(NSUInteger) bytesCurrentLastWritten bytesTotalWritten:(NSUInteger) bytesCurrentTotalWritten bytesTotalExpectedToWrite:(NSUInteger) bytesCurrentTotalExpectedToWrite];
+
+                        LOG(@"speed: %f", statisticsCalculator.speed/1024);
+
+                        LOG(@"bytesCurrentLastWritten: %d", statisticsCalculator.bytesCurrentLastWritten/1024);
+                        LOG(@"bytesCurrentTotalWritten: %d", statisticsCalculator.bytesCurrentTotalWritten/1024);
+                        LOG(@"bytesCurrentTotalExpectedToWrite: %d", statisticsCalculator.bytesCurrentTotalExpectedToWrite/1024);
+                        LOG(@"bytesCurrentLeft: %d", statisticsCalculator.bytesCurrentLeft/1024);
+                        LOG(@"secondsCurrentLeft: %d", statisticsCalculator.secondsCurrentLeft);
+
+                        LOG(@"bytesTotalWritten: %d", statisticsCalculator.bytesTotalWritten/1024);
+                        LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite/1024);
+                        LOG(@"bytesTotalLeft: %d", statisticsCalculator.bytesTotalLeft/1024);
+                        LOG(@"secondsTotalLeft: %d", statisticsCalculator.secondsTotalLeft);
+
+                        [NSThread doInMainThread:^() {
+                            double valueProgressFile = statisticsCalculator.bytesCurrentTotalWritten * 100 / statisticsCalculator.bytesCurrentTotalExpectedToWrite;
+                            NSString *labelProgressFile = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.", indexFilePath + 1, arrayPathsFiles.count, (int) statisticsCalculator.speed / 1024];
+
+                            double valueProgressTotal = statisticsCalculator.bytesTotalWritten * 100 / statisticsCalculator.bytesTotalExpectedToWrite;
+                            NSString *labelProgressTotal = [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft];
+
+                            [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressFile fileProgressLabel:labelProgressFile totalProgressValue:valueProgressTotal totalProgressLabel:labelProgressTotal];
+                        } waitUntilDone:YES];
+
+                        LOG(@"");
+                        LOG(@"");
+                    }];
+
+                    LOG(@"File '%@' was successfully uploaded", pathFile);
+                    [statisticsCalculator setUploadSuccessForPath:pathFile];
+                    isFileUploaded = YES;
+                } @catch (ApiException *ex) {
+                    LOG(@"Error uploading file '%@', reason: %@", pathFile, ex.description);
+                    countAttempts++;
+                    isFileUploaded = NO;
+                }
+            }
+        }
+
+        if (!isFileUploaded) {
+            [statisticsCalculator setUploadFailedForPath:pathFile];
+        }
+    }
+
+
+    [NSThread doInMainThread:^() {
+        [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:[self getUrlToAlbum:album]];
+    } waitUntilDone:YES];
+}
+
+- (NSString *)getUrlToAlbum:(Album *)album {
+    @try {
+        return [_fotkiServiceFacade getAlbumUrl:album.id];
+    } @catch(ApiException *ex) {
+        LOG(@"Error getting url for album: %@", album.path);
+        return nil;
+    }
 }
 
 @end

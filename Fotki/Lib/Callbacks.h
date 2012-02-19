@@ -5,5 +5,5 @@ typedef id (^ReturnableCallback)(void);
 
 typedef void (^ParametrizedCallback)(id);
 
-typedef void (^AcceptDropCallback)(id<NSDraggingInfo>draggingInfo);
+typedef BOOL (^AcceptDropCallback)(id<NSDraggingInfo>draggingInfo);
 

@@ -42,7 +42,6 @@
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueFile fileProgressLabel:(NSString *)labelFileProgress totalProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress;
 
-- (void)setStateUploaded;
-
+- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum;
 
 @end

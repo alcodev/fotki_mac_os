@@ -54,7 +54,7 @@
         [self.buttonApply setAction:@selector(onApplyButtonClicked:)];
         [self.buttonClose setAction:@selector(onCloseButtonClicked:)];
 
-        NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertNoteIcon)];
+        //NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertNoteIcon)];
     }
 
     return self;
@@ -116,12 +116,16 @@
     self.isLoggedIn = YES;
 }
 
-- (void)setStateAsLoggingIn {
+- (void)setStateAsLoggingInWithUsername:(NSString *)username passowrd:(NSString *)password {
     [self.labelInfo setStringValue:@"Logging in ..."];
     self.buttonApply.title = @"Login";
 
     [self.textLogin setEnabled:NO];
+    [self.textLogin setStringValue:username];
+
     [self.textPassword setEnabled:NO];
+    [self.textPassword setStringValue:password];
+
     [self.buttonApply setEnabled:NO];
 
     self.isLoggedIn = NO;

@@ -86,6 +86,7 @@
 		E1EE7F8414AC79AA003AD9B1 /* ApiNotFoundException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B0 /* ApiNotFoundException.m */; };
 		E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B2 /* ApiServiceException.m */; };
 		E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */; };
+		E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -251,6 +252,8 @@
 		E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadWindowController.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9B7 /* UploadWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadWindowController.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9B8 /* Callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Callbacks.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B9 /* UploadFilesStatisticsCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadFilesStatisticsCalculator.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadFilesStatisticsCalculator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -385,6 +388,8 @@
 		E1EE7F8414AC79AA003AD8E0 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */,
+				E1EE7F8414AC79AA003AD9B9 /* UploadFilesStatisticsCalculator.h */,
 				E1EE7F8414AC79AA003AD9B8 /* Callbacks.h */,
 				E1EE7F8414AC79AA003AD8F2 /* FileSystemHelper.h */,
 				E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */,
@@ -826,6 +831,7 @@
 				E1EE7F8414AC79AA003AD9B1 /* ApiNotFoundException.m in Sources */,
 				E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */,
 				E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */,
+				E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -120,9 +120,7 @@ typedef void (^ApiSyncCallback)(ApiCallback doneCallback);
         }
     }];
     [requestOperation setUploadProgressBlock:uploadProgressBlock];
-
-    NSOperationQueue *queue = [[[NSOperationQueue alloc] init] autorelease];
-    [queue addOperation:requestOperation];
+    [requestOperation start];
 }
 
 + (id)syncProcessImageRequestForUrl:(NSString *)serviceUrl path:(NSString *)path params:(NSDictionary *)params name:(NSString *)name imagePath:(NSString *)imagePath uploadProgressBlock:(UploadProgressBlock)uploadProgressBlock{
