@@ -10,6 +10,8 @@
 
 @implementation AccountInfo
 
+@synthesize username = _username;
+@synthesize password = _password;
 @synthesize spaceLimit = _spaceLimit;
 @synthesize spaceUsed = _spaceUsed;
 @synthesize name = _name;
@@ -26,9 +28,12 @@
 }
 
 - (void)dealloc {
+    [_username release];
+    [_password release];
+    [_name release];
     [_spaceLimit release];
     [_spaceUsed release];
-    [_name release];
+
     [super dealloc];
 }
 

@@ -85,11 +85,22 @@
     return [fileManager contentsAtPath:filePath];
 }
 
-+ (long long int)getFileSize:(NSString *)filePath {
++ (long long int)sizeForFileAtPath:(NSString *)path {
     NSError *attributesError = nil;
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:&attributesError];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&attributesError];
     NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
     long long fileSize = [fileSizeNumber longLongValue];
     return fileSize;
 }
+
++ (long long int)sizeForFilesAtPaths:(NSArray *)paths {
+    long long totalSize = 0;
+    for (NSString *path in paths) {
+        long long sizePath = [FileSystemHelper sizeForFileAtPath:path];
+        totalSize += sizePath;
+    }
+
+    return totalSize;
+}
+
 @end

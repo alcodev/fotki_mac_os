@@ -9,6 +9,9 @@
 
 
 @interface CRCUtils : NSObject
-+ (uint32_t)_crcFromData:(NSData *)data;
+
++ (uint32_t)crcFromDataAsInteger:(NSData *)data;
+
++ (NSString *)crcFromDataAsString:(NSData *)data;
 
 @end

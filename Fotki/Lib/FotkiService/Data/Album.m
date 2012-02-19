@@ -33,4 +33,12 @@
      }
     return (self);
 }
+
+- (id)copyWithZone:(NSZone *)zone {
+    Album *copy = [[[self class] allocWithZone: zone] init];
+    copy.id = [[self.id copy] autorelease];
+    copy.name = [[self.name copy] autorelease];
+    return copy;
+}
+
 @end

@@ -12,5 +12,7 @@
 
 
 @interface ErrorResponseParser : NSObject
-+ (Error *)extractErrorFromXmlDocument:(CXMLDocument *)document;
+
++ (NSString *)extractErrorFromXmlDocument:(CXMLDocument *)document;
+
 @end

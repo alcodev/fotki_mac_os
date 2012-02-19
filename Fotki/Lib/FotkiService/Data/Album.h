@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 
-@interface Album : NSObject {
+@interface Album : NSObject<NSCopying> {
     NSString *_id;
     NSString *_name;
     NSString *_path;

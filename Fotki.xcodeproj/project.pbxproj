@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2521F1C714EB76B400A78B65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2521F1C614EB76B400A78B65 /* libz.dylib */; };
+		E1AF2C9D14EF51E100ABF258 /* SettingsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */; };
+		E1AF2CA014EF531F00ABF258 /* SettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */; };
+		E1AF2CB214EFDC9C00ABF258 /* UploadWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2CB114EFDC9C00ABF258 /* UploadWindow.xib */; };
 		E1DA1C1614B44A2C00E44BE2 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DA1C1514B44A2C00E44BE2 /* QuickLook.framework */; };
 		E1EA4A2614A59F0400EE9703 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1EA4A2514A59F0400EE9703 /* Cocoa.framework */; };
 		E1EA4A3014A59F0400EE9703 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E1EA4A2E14A59F0400EE9703 /* InfoPlist.strings */; };
@@ -59,7 +62,6 @@
 		E1EE7F8414AC79AA003AD95B /* Error.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95A /* Error.m */; };
 		E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD95D /* ErrorResponseParser.m */; };
 		E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */; };
-		E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */; };
 		E1EE7F8414AC79AA003AD96C /* CheckoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD96B /* CheckoutManager.m */; };
 		E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD973 /* Async2SyncLock.m */; };
 		E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD976 /* NSThread+Helper.m */; };
@@ -77,6 +79,13 @@
 		E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99B /* F-offline.png */; };
 		E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99D /* F-online.png */; };
 		E1EE7F8414AC79AA003AD9A0 /* DateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD99F /* DateUtils.m */; };
+		E1EE7F8414AC79AA003AD9A5 /* ApiAuthenticationException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9A4 /* ApiAuthenticationException.m */; };
+		E1EE7F8414AC79AA003AD9A8 /* ApiConnectionException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9A7 /* ApiConnectionException.m */; };
+		E1EE7F8414AC79AA003AD9AB /* ApiException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9AA /* ApiException.m */; };
+		E1EE7F8414AC79AA003AD9AE /* ApiCallResult.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9AD /* ApiCallResult.m */; };
+		E1EE7F8414AC79AA003AD9B1 /* ApiNotFoundException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B0 /* ApiNotFoundException.m */; };
+		E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B2 /* ApiServiceException.m */; };
+		E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +100,10 @@
 
 /* Begin PBXFileReference section */
 		2521F1C614EB76B400A78B65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		E1AF2C9B14EF51E100ABF258 /* SettingsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsWindowController.h; sourceTree = "<group>"; };
+		E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsWindowController.m; sourceTree = "<group>"; };
+		E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsWindow.xib; sourceTree = "<group>"; };
+		E1AF2CB114EFDC9C00ABF258 /* UploadWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UploadWindow.xib; sourceTree = "<group>"; };
 		E1DA1C1514B44A2C00E44BE2 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		E1EA4A2114A59F0400EE9703 /* Fotki.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fotki.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1EA4A2514A59F0400EE9703 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -193,8 +206,6 @@
 		E1EE7F8414AC79AA003AD95F /* ErrorResponseParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorResponseParser.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceUtils.h; sourceTree = "<group>"; };
-		E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceFacadeCallbackCaller.m; sourceTree = "<group>"; };
-		E1EE7F8414AC79AA003AD969 /* ServiceFacadeCallbackCaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceFacadeCallbackCaller.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD96B /* CheckoutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckoutManager.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD96D /* CheckoutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckoutManager.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD972 /* Async2SyncLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Async2SyncLock.h; sourceTree = "<group>"; };
@@ -225,6 +236,21 @@
 		E1EE7F8414AC79AA003AD99D /* F-online.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "F-online.png"; path = "Resources/F-online.png"; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD99F /* DateUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9A1 /* DateUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateUtils.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A3 /* ApiAuthenticationException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiAuthenticationException.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A4 /* ApiAuthenticationException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiAuthenticationException.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A6 /* ApiConnectionException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiConnectionException.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A7 /* ApiConnectionException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiConnectionException.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9A9 /* ApiException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiException.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9AA /* ApiException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiException.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9AC /* ApiCallResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiCallResult.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9AD /* ApiCallResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiCallResult.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9AF /* ApiNotFoundException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiNotFoundException.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B0 /* ApiNotFoundException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiNotFoundException.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B2 /* ApiServiceException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiServiceException.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B4 /* ApiServiceException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiServiceException.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadWindowController.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B7 /* UploadWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadWindowController.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9B8 /* Callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Callbacks.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -295,12 +321,18 @@
 		E1EA4A2B14A59F0400EE9703 /* Fotki */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9B7 /* UploadWindowController.h */,
+				E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */,
 				E1EE7F8414AC79AA003AD91D /* Consts.h */,
 				E1EA4A3714A59F0400EE9703 /* AppDelegate.h */,
 				E1EA4A3814A59F0400EE9703 /* AppDelegate.m */,
 				E1EA4A3A14A59F0400EE9703 /* MainMenu.xib */,
 				E1EA4A2C14A59F0400EE9703 /* Supporting Files */,
 				E1EE7F8414AC79AA003AD8E0 /* Lib */,
+				E1AF2C9B14EF51E100ABF258 /* SettingsWindowController.h */,
+				E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */,
+				E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */,
+				E1AF2CB114EFDC9C00ABF258 /* UploadWindow.xib */,
 			);
 			path = Fotki;
 			sourceTree = "<group>";
@@ -353,6 +385,7 @@
 		E1EE7F8414AC79AA003AD8E0 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9B8 /* Callbacks.h */,
 				E1EE7F8414AC79AA003AD8F2 /* FileSystemHelper.h */,
 				E1EE7F8414AC79AA003AD8F0 /* FileSystemHelper.m */,
 				E1EE7F8414AC79AA003AD8EC /* NSImage+Helper.h */,
@@ -391,7 +424,6 @@
 				E1EE7F8414AC79AA003AD960 /* Facade */,
 				E1EE7F8414AC79AA003AD961 /* FoldersTree */,
 				E1EE7F8414AC79AA003AD962 /* Downloaders */,
-				E1EE7F8414AC79AA003AD963 /* ServiceUtils */,
 				E1EE7F8414AC79AA003AD96A /* Checkout */,
 				E1EE7F8414AC79AA003AD97C /* Synchronization */,
 			);
@@ -506,10 +538,13 @@
 		E1EE7F8414AC79AA003AD960 /* Facade */ = {
 			isa = PBXGroup;
 			children = (
-				E1EE7F8414AC79AA003AD969 /* ServiceFacadeCallbackCaller.h */,
-				E1EE7F8414AC79AA003AD967 /* ServiceFacadeCallbackCaller.m */,
+				E1EE7F8414AC79AA003AD9AD /* ApiCallResult.m */,
+				E1EE7F8414AC79AA003AD9AC /* ApiCallResult.h */,
+				E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */,
+				E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */,
 				E1EE7F8414AC79AA003AD8F9 /* FotkiServiceFacade.m */,
 				E1EE7F8414AC79AA003AD8FB /* FotkiServiceFacade.h */,
+				E1EE7F8414AC79AA003AD9A2 /* Exceptions */,
 			);
 			path = Facade;
 			sourceTree = "<group>";
@@ -532,15 +567,6 @@
 				E1EE7F8414AC79AA003AD958 /* ImageDownloader.h */,
 			);
 			path = Downloaders;
-			sourceTree = "<group>";
-		};
-		E1EE7F8414AC79AA003AD963 /* ServiceUtils */ = {
-			isa = PBXGroup;
-			children = (
-				E1EE7F8414AC79AA003AD966 /* ServiceUtils.h */,
-				E1EE7F8414AC79AA003AD964 /* ServiceUtils.m */,
-			);
-			path = ServiceUtils;
 			sourceTree = "<group>";
 		};
 		E1EE7F8414AC79AA003AD96A /* Checkout */ = {
@@ -605,6 +631,23 @@
 				E1EE7F8414AC79AA003AD98F /* DragStatusView.m */,
 			);
 			path = DragAndDrop;
+			sourceTree = "<group>";
+		};
+		E1EE7F8414AC79AA003AD9A2 /* Exceptions */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD9B4 /* ApiServiceException.h */,
+				E1EE7F8414AC79AA003AD9B2 /* ApiServiceException.m */,
+				E1EE7F8414AC79AA003AD9B0 /* ApiNotFoundException.m */,
+				E1EE7F8414AC79AA003AD9AF /* ApiNotFoundException.h */,
+				E1EE7F8414AC79AA003AD9AA /* ApiException.m */,
+				E1EE7F8414AC79AA003AD9A9 /* ApiException.h */,
+				E1EE7F8414AC79AA003AD9A7 /* ApiConnectionException.m */,
+				E1EE7F8414AC79AA003AD9A6 /* ApiConnectionException.h */,
+				E1EE7F8414AC79AA003AD9A4 /* ApiAuthenticationException.m */,
+				E1EE7F8414AC79AA003AD9A3 /* ApiAuthenticationException.h */,
+			);
+			path = Exceptions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -687,6 +730,8 @@
 				E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */,
 				E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */,
 				E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */,
+				E1AF2CA014EF531F00ABF258 /* SettingsWindow.xib in Resources */,
+				E1AF2CB214EFDC9C00ABF258 /* UploadWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,7 +805,6 @@
 				E1EE7F8414AC79AA003AD95B /* Error.m in Sources */,
 				E1EE7F8414AC79AA003AD95E /* ErrorResponseParser.m in Sources */,
 				E1EE7F8414AC79AA003AD965 /* ServiceUtils.m in Sources */,
-				E1EE7F8414AC79AA003AD968 /* ServiceFacadeCallbackCaller.m in Sources */,
 				E1EE7F8414AC79AA003AD96C /* CheckoutManager.m in Sources */,
 				E1EE7F8414AC79AA003AD974 /* Async2SyncLock.m in Sources */,
 				E1EE7F8414AC79AA003AD977 /* NSThread+Helper.m in Sources */,
@@ -774,6 +818,14 @@
 				E1EE7F8414AC79AA003AD996 /* TextUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD999 /* CRCUtils.m in Sources */,
 				E1EE7F8414AC79AA003AD9A0 /* DateUtils.m in Sources */,
+				E1AF2C9D14EF51E100ABF258 /* SettingsWindowController.m in Sources */,
+				E1EE7F8414AC79AA003AD9A5 /* ApiAuthenticationException.m in Sources */,
+				E1EE7F8414AC79AA003AD9A8 /* ApiConnectionException.m in Sources */,
+				E1EE7F8414AC79AA003AD9AB /* ApiException.m in Sources */,
+				E1EE7F8414AC79AA003AD9AE /* ApiCallResult.m in Sources */,
+				E1EE7F8414AC79AA003AD9B1 /* ApiNotFoundException.m in Sources */,
+				E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */,
+				E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

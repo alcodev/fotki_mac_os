@@ -18,6 +18,8 @@
 
 + (NSData *)getFileData:(NSString *)filePath;
 
-+ (long long int)getFileSize:(NSString *)filePath;
++ (long long int)sizeForFileAtPath:(NSString *)path;
+
++ (long long int)sizeForFilesAtPaths:(NSArray *)paths;
 
 @end

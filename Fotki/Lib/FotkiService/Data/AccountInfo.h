@@ -10,6 +10,8 @@
 
 @interface AccountInfo : NSObject
 
+@property(nonatomic, retain) NSString *username;
+@property(nonatomic, retain) NSString *password;
 @property(nonatomic, retain) NSString *name;
 @property(nonatomic, retain) NSString *spaceUsed;
 @property(nonatomic, retain) NSString *spaceLimit;

@@ -8,16 +8,9 @@
 
 #import "AppDelegate.h"
 #import "NSThread+Helper.h"
-#import "FileSystemMonitor.h"
-#import "Finder.h"
 #import "FileSystemHelper.h"
 #import "FotkiServiceFacade.h"
-#import "CheckoutManager.h"
-#import "BadgeUtils.h"
-#import "ImageWithSiteSynchronizator.h"
 #import "Error.h"
-#import "Folder.h"
-#import "DirectoryUtils.h"
 #import "DialogUtils.h"
 #import "AlbumsExtracter.h"
 #import "Album.h"
@@ -27,20 +20,33 @@
 #import "TextUtils.h"
 #import "CRCUtils.h"
 #import "DateUtils.h"
+#import "SettingsWindowController.h"
+#import "ApiServiceException.h"
+#import "ApiConnectionException.h"
+#import "UploadWindowController.h"
 
 #define APP_NAME @"Fotki"
 
 
 @interface AppDelegate ()
+
+@property(nonatomic, retain) SettingsWindowController *controllerSettingsWindow;
+
+@property(nonatomic, retain) UploadWindowController *controllerUploadWindow;
+
 @property(nonatomic, retain) DragStatusView *dragStatusView;
 
-- (void)logOuted;
+- (AccountInfo *)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
-- (void)updateUploadButton;
+- (AccountInfo *)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
+- (void)doClearSession;
 
-- (void)logined;
+- (void)doLogout;
 
+- (void)restoreSession;
+
+- (void)uploadSelectedPhotos:(id)sender album:(Album *)album;
 
 @end
 
@@ -53,7 +59,6 @@
 
 }
 @synthesize settingsWindow = _settingsWindow;
-@synthesize lastEventId = _lastEventId;
 @synthesize uploadWindow = _uploadWindow;
 @synthesize albumLinkLabel = _albumLinkLabel;
 @synthesize uploadFilesTable = _uploadFilesTable;
@@ -62,13 +67,14 @@
 @synthesize currentFileProgressLabel = _currentFileProgressLabel;
 @synthesize currentFileProgressIndicator = _currentFileProgressIndicator;
 @synthesize totalFileProgressIndicator = _totalFileProgressIndicator;
+@synthesize controllerSettingsWindow = _controllerSettingsWindow;
+@synthesize controllerUploadWindow = _controllerUploadWindow;
 
 
 - (id)init {
     self = [super init];
     if (self != nil) {
         _fm = [NSFileManager defaultManager];
-        _files = [NSMutableArray new];
         _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
         _filesToUpload = [[NSMutableArray alloc] init];
         [_uploadWindow registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
@@ -79,19 +85,7 @@
 - (void)dealloc {
     [statusMenu release];
     [statusItem release];
-    [loginButton release];
-    [loginTextField release];
-    [passwordSecureTextField release];
-    [notificationLabel release];
     [synchronizeMenuItem release];
-
-    [_files release];
-    [_filesHashes release];
-    [_lastEventId release];
-
-    [_appStartedTimestamp release];
-
-    [_fileSystemMonitor release];
 
     [_fotkiServiceFacade release];
     [_albums release];
@@ -103,308 +97,27 @@
     [_currentFileProgressLabel release];
     [_currentFileProgressIndicator release];
     [_totalFileProgressIndicator release];
+    [_controllerSettingsWindow release];
+    [_controllerUploadWindow release];
     [super dealloc];
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
-}
-
-
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)app {
-    [_fileSystemMonitor shutDown];
-    return NSTerminateNow;
-}
-
-- (void)handleFileAdd:(NSString *)path {
-    BOOL isUserAuthenticated = _fotkiServiceFacade && _fotkiServiceFacade.sessionId;
-    if (!isUserAuthenticated || ![FileSystemHelper isImageFileAtPath:path]) {
-        return;
-    }
-
-    [NSThread doInNewThread:^{
-        [BadgeUtils putUpdatedBadgeOnFileIconAtPath:path];
-        [ImageWithSiteSynchronizator synchronize:path serviceFacade:_fotkiServiceFacade];
-    }];
-}
-
-- (void)setUploadWindowStartState {
-    [self.uploadFilesTable setEnabled:YES];
-    [uploadFilesAddButton setEnabled:YES];
-    [uploadFilesDeleteButton setEnabled:YES];
-    [uploadButton setEnabled:YES];
-    [uploadCancelButton setEnabled:YES];
-    [uploadCancelButton setTitle:@"Cancel"];
-    [uploadFilesLabel setHidden:YES];
-    [uploadFilesLabel setTextColor:[NSColor blackColor]];
-    [uploadToAlbumComboBox setEnabled:YES];
-}
+//-----------------------------------------------------------------------------------------
+// Main menu handlers
+//-----------------------------------------------------------------------------------------
 
 - (IBAction)uploadMenuClicked:(id)sender {
-    NSString *sessionId = _fotkiServiceFacade.sessionId;
-    if (sessionId) {
-        [welcomeLabel setTextColor:[NSColor greenColor]];
-        NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
-        NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", currentUsername];
-        [welcomeLabel setTitleWithMnemonic:welcomeString];
-
-        [uploadToAlbumComboBox removeAllItems];
-        for (Album *album in _albums) {
-            [uploadToAlbumComboBox addItemWithObjectValue:album.path];
-        }
-        if ([_albums count] > 0) {
-            [uploadToAlbumComboBox selectItemAtIndex:0];
-        }
-        [self setUploadWindowStartState];
-        [self.uploadWindow center];
-        [self.uploadWindow makeKeyAndOrderFront:self];
-        [self.uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-        [self.uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
-
-        [NSApp activateIgnoringOtherApps:YES];
-
-        [self.albumLinkLabel setHidden:true];
-        [self updateUploadButton];
-    }
-    else {
-        [self.settingsWindow center];
-        [self.settingsWindow makeKeyAndOrderFront:self];
-        [NSApp activateIgnoringOtherApps:YES];
-        [self logOuted];
-    }
-
+    [self.controllerUploadWindow setStateInitializedWithAccountInfo:_fotkiServiceFacade.accountInfo];
+    [self.controllerUploadWindow showWindow:self];
 }
 
-- (IBAction)uploadAddFileButtonClicked:(id)sender {
-    NSArray *filesUrls = [DialogUtils showOpenImageFileDialog];
-    for (NSURL *url in filesUrls) {
-        [_filesToUpload addObject:[url path]];
-        [self.uploadFilesTable reloadData];
-    }
-    [self updateUploadButton];
+- (IBAction)settingsMenuItemClicked:(id)sender {
+    [self.controllerSettingsWindow showWindow:self];
 }
 
-- (IBAction)uploadDeleteFileButtonClicked:(id)sender {
-    NSInteger selectedRowIndex = [self.uploadFilesTable selectedRow];
-    if (selectedRowIndex >= 0) {
-        [_filesToUpload removeObjectAtIndex:selectedRowIndex];
-        [self.uploadFilesTable reloadData];
-    }
-    [self updateUploadButton];
-}
-
-- (Album *)searchAlbumByPath:(NSString *)albumsPath {
-    for (Album *album in _albums) {
-        if ([albumsPath isEqualToString:album.path]) {
-            return album;
-        }
-    }
-    return nil;
-}
-
-- (void)setProgressBarsHidden:(BOOL)isHidden {
-    [self.totalFileProgressIndicator setHidden:isHidden];
-    [self.totalProgressLabel setHidden:isHidden];
-    [self.currentFileProgressIndicator setHidden:isHidden];
-    [self.currentFileProgressLabel setHidden:isHidden];
-}
-
-- (void)setUploadWindowFinishState:(int)failedFilesCount {
-    [self.totalProgressLabel setTitleWithMnemonic:[DateUtils formatLeftTime:0]];
-    if (failedFilesCount > 0) {
-        [uploadFilesLabel setTextColor:[NSColor redColor]];
-        //[uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
-    } else {
-        [uploadFilesLabel setTextColor:[NSColor greenColor]];
-        //[uploadFilesLabel setStringValue:@"Files successfully uploaded. Click to open your album."];
-    }
-    [uploadProgressIndicator stopAnimation:self];
-    [self setProgressBarsHidden:YES];
-    [_filesToUpload removeAllObjects];
-    [self.uploadFilesTable reloadData];
-}
-
-- (void)showUploadedAlbumLink:(NSString *)urlString failedFilesCount:(int)failedFilesCount {
-    [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
-    [self.albumLinkLabel setSelectable:YES];
-    [self.albumLinkLabel setHidden:NO];
-    [uploadFilesAddButton setEnabled:YES];
-    [uploadFilesDeleteButton setEnabled:YES];
-    [self.uploadFilesTable setEnabled:YES];
-    [uploadButton setEnabled:YES];
-    self.dragStatusView.isEnable = YES;
-
-    if (failedFilesCount > 0) {
-        [uploadFilesLabel setTextColor:[NSColor redColor]];
-        [uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Error: %d files of %d was not uploaded", failedFilesCount, [_filesToUpload count]]];
-    } else {
-        NSURL *url = [NSURL URLWithString:urlString];
-        NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
-        [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
-
-        [self.albumLinkLabel setAttributedStringValue:attributedString];
-    }
-
-
-}
-
-- (long long)calculateTotalUploadedFilesSize {
-    long long totalUploadedFilesSize = 0;
-    for (NSString *filePath in _filesToUpload) {
-        long long fileSize = [FileSystemHelper getFileSize:filePath];
-        totalUploadedFilesSize += fileSize;
-    }
-    return totalUploadedFilesSize;
-}
-
-- (void)uploadSelectedPhotos:(id)sender album:(Album *)album {
-    [self setProgressBarsHidden:NO];
-    [self.currentFileProgressIndicator stopAnimation:self];
-    [self.currentFileProgressLabel setTitleWithMnemonic:@""];
-    [self.totalFileProgressIndicator stopAnimation:self];
-    [self.totalProgressLabel setTitleWithMnemonic:@""];
-
-    long long totalUploadingFilesSize = [self calculateTotalUploadedFilesSize];
-    __block long long uploadedFilesSize = 0;
-    __block long long skippedFilesSize = 0;
-    int i = 1;
-    __block int failedFilesCount = 0;
-
-    NSDate *beginUploadDate = [NSDate date];
-
-    for (NSString *uploadFilePath in _filesToUpload) {
-
-
-        __block int attemptCount = 0;
-        __block BOOL isFileUploaded = NO;
-
-        NSData *data = [FileSystemHelper getFileData:uploadFilePath];
-        uint32_t crc32sum = [CRCUtils _crcFromData:data];
-        NSString *crc32String = [NSString stringWithFormat:@"%lu", (unsigned long) crc32sum];
-
-        __block long long currentFileUploadedSize = 0;
-        [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-            [_fotkiServiceFacade checkCRC:crc32String toTheAlbum:album
-                                onSuccess:^(NSString *exist) {
-                                    LOG(@"File %@ exist on server...", uploadFilePath);
-                                    uploadedFilesSize += [FileSystemHelper getFileSize:uploadFilePath];
-                                    isFileUploaded = YES;
-                                    [lock asyncFinished];
-                                } onError:^(Error *error) {
-                LOG(@"File %@ not exist on server. Try to upload....", uploadFilePath);
-
-                while (attemptCount < 1 && !isFileUploaded) {
-                    [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-                        [_fotkiServiceFacade uploadPicture:uploadFilePath crc32:crc32String toTheAlbum:album
-                                                 onSuccess:^(id object) {
-                                                     [NSThread doInMainThread:^{
-                                                         [self.currentFileProgressIndicator setDoubleValue:0];
-                                                     }          waitUntilDone:YES];
-                                                     LOG(@"File %@ successfully uploaded.", uploadFilePath);
-                                                     uploadedFilesSize += currentFileUploadedSize;
-                                                     LOG(@"Total Uploaded: %d", uploadedFilesSize);
-                                                     LOG(@"Total Calculated: %d", totalUploadingFilesSize);
-                                                     isFileUploaded = YES;
-                                                     [lock asyncFinished];
-                                                 } onError:^(Error *error) {
-                            [lock asyncFinished];
-                            LOG(@"Error uploading file %@. Error: %@", uploadFilePath, error);
-                            attemptCount++;
-                            isFileUploaded = NO;
-                        }              uploadProgressBlock:^(NSInteger bytesWrite, NSInteger totalBytesWrite, NSInteger totalBytesExpectedToWrite) {
-                            currentFileUploadedSize = totalBytesWrite;
-
-                            NSDate *currentUploadDate = [NSDate date];
-                            NSInteger timeInSecondsFromUploadBeginning = [DateUtils dateDiffInSecondsBetweenDate1:beginUploadDate andDate2:currentUploadDate];
-                            NSLog(@"Time in seconds from upload beginning: %ld", timeInSecondsFromUploadBeginning);
-                            LOG(@"Current file's written bytes: %d", totalBytesWrite);
-
-                            long long uploadedBytes = uploadedFilesSize + totalBytesWrite;
-
-                            float currentUploadingSpeed = timeInSecondsFromUploadBeginning > 0 ? ((float) uploadedBytes / (float) timeInSecondsFromUploadBeginning) : 0;
-                            currentUploadingSpeed = currentUploadingSpeed / 1024;
-
-                            long long leftBytes = totalUploadingFilesSize - uploadedBytes;
-                            long long leftKBytes = leftBytes / 1024;
-                            float leftTime = currentUploadingSpeed > 0 ? ((float) leftKBytes / currentUploadingSpeed) : 0;
-                            LOG(@"Left time: %f from leftKBytes: %f and currentUploading speed: %f", leftTime, leftKBytes, currentUploadingSpeed);
-
-                            [NSThread doInMainThread:^() {
-                                [self.totalProgressLabel setTitleWithMnemonic:@""];
-                                [self.totalFileProgressIndicator startAnimation:self];
-                                [self.currentFileProgressIndicator startAnimation:self];
-                                [self.totalFileProgressIndicator setDoubleValue:uploadedBytes * 100 / totalUploadingFilesSize];
-                                [self.currentFileProgressIndicator setDoubleValue:totalBytesWrite * 100 / totalBytesExpectedToWrite];
-                                NSString *formattedString = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.",
-                                                                                       i, _filesToUpload.count, (int) currentUploadingSpeed];
-                                [self.currentFileProgressLabel setTitleWithMnemonic:formattedString];
-                                [self.totalProgressLabel setTitleWithMnemonic:[DateUtils formatLeftTime:leftTime]];
-                            }          waitUntilDone:YES];
-                            [self.totalFileProgressIndicator stopAnimation:self];
-                            [self.currentFileProgressIndicator stopAnimation:self];
-                            LOG(@"uploadedFilesSize: %d", totalBytesWrite);
-                        }];
-                    }];
-                }
-                [lock asyncFinished];
-                attemptCount++;
-            }];
-        }];
-
-
-        if (!isFileUploaded) {
-            failedFilesCount++;
-        }
-        i++;
-    }
-    [NSThread runAsyncBlockSynchronously:^(Async2SyncLock *lock) {
-        [_fotkiServiceFacade getAlbumUrl:album.id
-                               onSuccess:^(NSString *albumUrl) {
-                                   LOG(@"Url Loaded: %@", albumUrl);
-                                   [self showUploadedAlbumLink:albumUrl failedFilesCount:failedFilesCount];
-                                   [lock asyncFinished];
-                               }
-                                 onError:^(id error) {
-                                     LOG(@"Url Not Loaded error: %@"), error;
-                                     [lock asyncFinished];
-                                 }];
-    }];
-
-    [NSThread doInMainThread:^() {
-        [self setUploadWindowFinishState:failedFilesCount];
-    }          waitUntilDone:YES];
-}
-
-- (void)changeUploadFilesLabelText:(long long)current:(long long)total {
-    //[uploadFilesLabel setStringValue:[NSString stringWithFormat:@"Uploading %d/%d", current, total]];
-}
-
-- (IBAction)uploadButtonClicked:(id)sender {
-    [self.albumLinkLabel setHidden:YES];
-    [self.uploadFilesTable setEnabled:NO];
-    [uploadFilesAddButton setEnabled:NO];
-    [uploadFilesDeleteButton setEnabled:NO];
-    [uploadButton setEnabled:NO];
-    self.dragStatusView.isEnable = NO;
-
-    NSString *selectedAlbumsPath = [uploadToAlbumComboBox objectValueOfSelectedItem];
-    if (!selectedAlbumsPath) {
-        LOG(@"Select album to upload");
-        return;
-    }
-    Album *album = [self searchAlbumByPath:selectedAlbumsPath];
-    if (!album) {
-        LOG(@"Album by path %@ not found.", selectedAlbumsPath);
-        return;
-    }
-//    [uploadProgressIndicator startAnimation:sender];
-
-
-    //[self changeUploadFilesLabelText:0 :0];
-    [NSThread doInNewThread:^{
-        [self uploadSelectedPhotos:sender album:album];
-    }];
-
+- (IBAction)exitMenuItemClicked:(id)sender {
+    LOG(@"Application finished with exit code 0");
+    exit(0);
 }
 
 - (IBAction)uploadCancelButtonClicked:(id)sender {
@@ -414,321 +127,119 @@
 
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [_filesToUpload count];
-}
+//-----------------------------------------------------------------------------------------
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex {
-    NSString *valueToDisplay = [_filesToUpload objectAtIndex:rowIndex];
-    return valueToDisplay;
-}
+- (AccountInfo *)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password {
+    @try {
+        [self.controllerSettingsWindow setStateAsLoggingIn];
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
-    if (![tableView isEnabled]) {
-        return;
-    }
-    NSPasteboard *pasteboard;
-    pasteboard = [info draggingPasteboard];
+        AccountInfo *accountInfo = [_fotkiServiceFacade authenticateWithLogin:username andPassword:password];
+        accountInfo.username = username;
+        accountInfo.password = password;
+        LOG(@"Authentication success, session ID is: %@", _fotkiServiceFacade.sessionId);
 
-    if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
-        NSArray *files = [pasteboard propertyListForType:NSFilenamesPboardType];
-        NSMutableArray *images = [[FileSystemHelper getImagesFromFiles:files] retain];
-        [_filesToUpload addObjectsFromArray:images];
-        [images release];
-        [self.uploadFilesTable reloadData];
-
-        [self updateUploadButton];
-    }
-}
-
-- (NSDragOperation)tableView:(NSTableView *)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
-    // Add code here to validate the drop
-    //NSLog(@"validate Drop");
-    return NSDragOperationEvery;
-}
-
-- (void)registerDefaults {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *appDefaults = [NSDictionary
-            dictionaryWithObjects:[NSArray arrayWithObjects:[NSNumber numberWithUnsignedLongLong:0], [NSMutableDictionary new], nil]
-                          forKeys:[NSArray arrayWithObjects:@"lastEventId", @"filesHashes", nil]];
-    [defaults registerDefaults:appDefaults];
-}
-
-- (void)addFotkiPathToFavourites {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    BOOL isFotkiPathAlreadyExists = [fileManager fileExistsAtPath:[DirectoryUtils getFotkiPath]];
-    if (!isFotkiPathAlreadyExists) {
-        [fileManager createDirectoryAtPath:[DirectoryUtils getFotkiPath] withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
-}
-
-- (void)fileMonitorCreateAndStart {
-
-    _lastEventId = [NSNumber numberWithUnsignedLongLong:0];
-
-    NSArray *pathsToWatch = [NSArray arrayWithObject:[DirectoryUtils getFotkiPath]];
-    _fileSystemMonitor = [[FileSystemMonitor alloc] initWithPaths:pathsToWatch lastEventId:_lastEventId filesHashes:_filesHashes];
-    [_fileSystemMonitor startAndDoOnSyncNeeded:^(FileSystemMonitor *sender) {
-        _lastEventId = sender.lastEventId;
-        LOG(@"Saving last event %lu", [_lastEventId unsignedLongLongValue]);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:sender.lastEventId forKey:@"lastEventId"];
-        [defaults setObject:sender.filesHashes forKey:@"filesHashes"];
+        [defaults setObject:username forKey:@"login"];
+        [defaults setObject:password forKey:@"password"];
         [defaults synchronize];
-    }                            doOnFileAdded:^(NSString *path) {
-        [self handleFileAdd:path];
-    }                          doOnFileUpdated:^(NSString *path) {
 
-    }                          doOnFileDeleted:^(NSString *path) {
+        [self.dragStatusView changeIconState:YES];
 
-    }];
+        [self.controllerSettingsWindow setStateAsLoggedInWithAccountInfo:accountInfo];
+    } @catch(ApiConnectionException *ex) {
+        LOG(@"Authentication error: %@", ex.description);
+        [self.controllerSettingsWindow setStateAsErrorWithUsername:username passowrd:password status:@"Connection error"];
+    } @catch(ApiException *ex) {
+        LOG(@"Authentication error: %@", ex.description);
+        [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Authentication error"];
+    }
+}
+
+- (AccountInfo *)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
+   [NSThread doInNewThread:^{
+       [self doSyncLoginWithUsername:username password:password];
+   }];
+}
+
+- (void)doClearSession {
+    [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Logged out"];
+}
+
+- (void)doLogout {
+    [_fotkiServiceFacade logOut];
+    [self doClearSession];
+}
+
+- (void)restoreSession {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *login = [defaults objectForKey:@"login"];
+    NSString *password = [defaults objectForKey:@"password"];
+    if (login && password) {
+        LOG(@"User's login and password were found in Defaults, auto logging in");
+        [self doAsyncLoginWithUsername:login password:password];
+    } else {
+        LOG(@"User's login and password were not found in Defaults, clearing session");
+        [self doClearSession];
+    }
 }
 
 - (void)awakeFromNib {
     statusItem = [[[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength] retain];
-    [statusItem setMenu:statusMenu];
     [statusMenu setAutoenablesItems:NO];
-
     [statusItem setHighlightMode:YES];
+    [statusItem setMenu:statusMenu];
 
-    self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24)
-                                                         andMenu:statusMenu
-                                               andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
-                [_filesToUpload removeAllObjects];
-                [_filesToUpload addObjectsFromArray:files];
-                [self.uploadFilesTable reloadData];
-
-                [self uploadMenuClicked:nil];
-            }] autorelease];
+    self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24) andMenu:statusMenu andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
+        [self.controllerUploadWindow setStateInitializedWithAccountInfo:_fotkiServiceFacade.accountInfo];
+        [self.controllerUploadWindow showWindow:self];
+        [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:files];
+        [self.controllerUploadWindow.uploadFilesTable reloadData];
+    }] autorelease];
     [statusItem setView:self.dragStatusView];
-
-    [loginButton setTitle:@"Login"];
-    [notificationLabel setTitle:@""];
-
-    [self registerDefaults];
-    [self addFotkiPathToFavourites];
 
     [self.uploadFilesTable setDataSource:self];
     [uploadProgressIndicator setDisplayedWhenStopped:NO];
 
-    _appStartedTimestamp = [[NSDate date] retain];
-    _filesHashes = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"filesHashes"] mutableCopy];
-
-    [self fileMonitorCreateAndStart];
-
-    __block NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *login = [defaults objectForKey:@"login"];
-    NSString *password = [defaults objectForKey:@"password"];
-    if (login) {
-        [loginTextField setStringValue:login];
-        [passwordSecureTextField setStringValue:password];
-        [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
-                                         onSuccess:^(id sessionId) {
-                                             LOG(@"Session ID is: %@", sessionId);
-                                             [self.dragStatusView changeIconState:YES];
-                                             [self loadAlbumsList];
-                                             defaults = [NSUserDefaults standardUserDefaults];
-                                             [defaults setObject:login forKey:@"login"];
-                                             [defaults setObject:password forKey:@"password"];
-                                             [defaults synchronize];
-                                         }
-                                                 onError:^(id error) {
-                                                     LOG(@"Authentication error: %@", error);
-                                                     [self.settingsWindow center];
-                                                     [self.settingsWindow makeKeyAndOrderFront:self];
-                                                     [NSApp activateIgnoringOtherApps:YES];
-                                                 } onForbidden:^(id object) {
-            LOG(@"Access is forbidden");
-            [self.settingsWindow center];
-            [self.settingsWindow makeKeyAndOrderFront:self];
-            [NSApp activateIgnoringOtherApps:YES];
-        }];
-    } else {
-        LOG(@"User's login and password not assigned yet.");
-        [self.settingsWindow center];
-        [self.settingsWindow makeKeyAndOrderFront:self];
-        [NSApp activateIgnoringOtherApps:YES];
-    }
-}
-
-- (IBAction)testMenuItemClicked:(id)sender {
-    [Finder addPathToFavourites:[DirectoryUtils getFotkiPath]];
-}
-
-- (IBAction)settingsMenuItemClicked:(id)sender {
-    //[self.window orderOut:self];
-
-    [self.settingsWindow center];
-    [self.settingsWindow makeKeyAndOrderFront:self];
-    [NSApp activateIgnoringOtherApps:YES];
-    NSString *sessionId = _fotkiServiceFacade.sessionId;
-    if (sessionId) {
-        [self logined];
-    }
-    else {
-        [self logOuted];
-    }
-}
-
-- (void)synchronizationStart {
-    [BadgeUtils putUpdatedBadgeOnFileIconAtPath:[DirectoryUtils getFotkiPath]];
-    [synchronizeMenuItem setTitle:@"Synchronizing..."];
-    [synchronizeMenuItem setEnabled:NO];
-    [loginButton setEnabled:NO];
-    [_fileSystemMonitor stop];
-}
-
-- (void)synchronizationFinished {
-    [BadgeUtils putCheckBadgeOnFileIconAtPath:[DirectoryUtils getFotkiPath]];
-    [synchronizeMenuItem setTitle:@"Synchronize"];
-    [synchronizeMenuItem setEnabled:YES];
-    [loginButton setEnabled:YES];
-    [_fileSystemMonitor start];
-}
-
-- (IBAction)synchronizeMenuItemClicked:(id)sender {
-    [self synchronizationStart];
-    if (_fotkiServiceFacade) {
-        [_fotkiServiceFacade getAlbumsPlain:^(NSMutableArray *albums) {
-            if ([albums count] > 0) {
-                [_fotkiServiceFacade getAlbums:^(id rootFolders) {
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    [NSThread doInNewThread:^{
-                        NSString *fotkiPath = [DirectoryUtils getFotkiPath];
-                        [CheckoutManager clearDirectory:fotkiPath withFileManager:fileManager];
-                        [CheckoutManager createFoldersHierarchyOnHardDisk:rootFolders inDirectory:fotkiPath withFileManager:fileManager serviceFacade:_fotkiServiceFacade onFinish:^(id object) {
-                        }];
-                        LOG(@"Folders' hierarchy created successfully.");
-                        [self synchronizationFinished];
-                    }];
-                }                      onError:^(Error *error) {
-                    LOG(@"Checkout error: %@", error);
-                    [self synchronizationFinished];
-                }];
-            } else {
-                [_fotkiServiceFacade getPublicHomeFolder:^(Folder *publicHomeFolder) {
-                    [_fotkiServiceFacade createAlbum:@"Mac album" parentFolderId:publicHomeFolder.id onSuccess:^(id object) {
-                        LOG(@"Mac album successfully created");
-                        [self synchronizationFinished];
-                        [self synchronizeMenuItemClicked:sender];
-                    }                        onError:^(Error *error) {
-                        LOG(@"Error creating Mac album: %@", error);
-                        [self synchronizationFinished];
-                    }];
-                }                                onError:^(Error *error) {
-                    LOG(@"Error getting public home folder: %@", error);
-                    [self synchronizationFinished];
-                }];
-            }
-        }                           onError:^(Error *error) {
-            LOG(@"Error getting albums plain: %@", error);
-            [self synchronizationFinished];
-        }];
-
-    }
-}
-
-- (IBAction)exitMenuItemClicked:(id)sender {
-    LOG(@"Application finished with exit code 0");
-    [_fileSystemMonitor shutDown];
-    exit(0);
-}
-
-- (void)showSuccessAccountSavedNotification {
-    [notificationLabel setTextColor:[NSColor greenColor]];
-    [notificationLabel setTitle:@"Authentification success"];
-    NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
-    NSString *welcomeString = [NSString stringWithFormat:@"Welcome %@!", currentUsername];
-    [notificationLabel setTitle:welcomeString];
-    [loginTextField setEnabled:false];
-    [passwordSecureTextField setEnabled:false];
-}
-
-- (void)showErrorAccountNotification {
-    [notificationLabel setTextColor:[NSColor redColor]];
-    [notificationLabel setTitle:@"Authentification failed"];
-}
-
-- (void)showForbiddenAccessNotification {
-    [notificationLabel setTextColor:[NSColor redColor]];
-    [notificationLabel setTitle:@"This is a demo version. You should log in only from test account"];
-}
-
-- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password {
-    [_fotkiServiceFacade authenticateWithLogin:login andPassword:password
-                                     onSuccess:^(id sessionId) {
-                                         LOG(@"Session ID is: %@", sessionId);
-                                         [self.dragStatusView changeIconState:YES];
-                                         [self loadAlbumsList];
-                                         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                                         [defaults setObject:login forKey:@"login"];
-                                         [defaults setObject:password forKey:@"password"];
-                                         [defaults synchronize];
-                                         [self showSuccessAccountSavedNotification];
-                                         [loginButton setTitle:@"Logout"];
-                                     }
-                                             onError:^(id error) {
-                                                 LOG(@"Authentication error: %@", error);
-                                                 [self showErrorAccountNotification];
-                                                 [loginButton setTitle:@"Login"];
-                                             } onForbidden:^(id object) {
-        [self showForbiddenAccessNotification];
-
+    self.controllerSettingsWindow = [SettingsWindowController controllerWithOnNeedLogIn:^(NSString *username, NSString *password) {
+        [self doAsyncLoginWithUsername:username password:password];
+    } onNeedLogoutCallback:^{
+        [self doLogout];
     }];
+
+    self.controllerUploadWindow = [UploadWindowController controller];
+    self.controllerUploadWindow.onNeedAlbums = ^{
+        return [_fotkiServiceFacade getAlbums];
+    };
+    self.controllerUploadWindow.onNeedAcceptDrop = ^(id<NSDraggingInfo> draggingInfo) {
+        NSPasteboard *pasteboard;
+        pasteboard = [draggingInfo draggingPasteboard];
+        if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
+            NSArray *pathsAll = [pasteboard propertyListForType:NSFilenamesPboardType];
+            NSArray *pathsImages = [FileSystemHelper getImagesFromFiles:pathsAll];
+            [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:pathsImages];
+        }
+    };
+    self.controllerUploadWindow.onAddFileButtonClicked = ^{
+        NSArray *arraySelectedUrls = [DialogUtils showOpenImageFileDialog];
+        for (NSURL *url in arraySelectedUrls) {
+            [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
+        }
+    };
+    self.controllerUploadWindow.onDeleteFileButtonClicked = ^(NSNumber *selectedRowIndex){
+        if ([selectedRowIndex integerValue] >= 0) {
+            [self.controllerUploadWindow.arrayFilesToUpload removeObjectAtIndex:(NSUInteger) [selectedRowIndex integerValue]];
+        }
+    };
+    self.controllerUploadWindow.onNeedUpload = ^{
+        self.dragStatusView.isEnable = NO;
+        [self.controllerUploadWindow setStateUploading];
+
+        [NSThread doInNewThread:^{
+            //[self uploadSelectedPhotos:sender album:self.controllerUploadWindow.selectedAlbum];
+        }];
+    };
+
+    [self restoreSession];
 }
 
-- (void)loadAlbumsList {
-    [_fotkiServiceFacade getAlbums:^(NSArray *rootFolders) {
-        _albums = [[AlbumsExtracter extractAlbums:rootFolders] retain];
-    }
-                           onError:^(Error *error) {
-                               LOG(@"Error loading albums list: %@", error);
-                           }];
-}
-
-- (void)logined {
-    [notificationLabel setTextColor:[NSColor greenColor]];
-    NSString *currentUsername = _fotkiServiceFacade.accountInfo.name;
-    NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", currentUsername];
-    [notificationLabel setTitle:welcomeString];
-    [loginTextField setEnabled:false];
-    [passwordSecureTextField setEnabled:false];
-    [loginButton setTitle:@"Logout"];
-}
-
-- (void)logOuted {
-    [notificationLabel setTitle:@""];
-    [loginTextField setEnabled:true];
-    [passwordSecureTextField setEnabled:true];
-    [loginButton setTitle:@"Login"];
-}
-
-- (IBAction)loginButtonClicked:(id)sender {
-    NSString *sessionId = _fotkiServiceFacade.sessionId;
-    if (sessionId) {
-        [self.dragStatusView changeIconState:NO];
-        _fotkiServiceFacade.logOut;
-        [notificationLabel setTitle:@""];
-        [loginTextField setEnabled:true];
-        [passwordSecureTextField setEnabled:true];
-        [loginButton setTitle:@"Login"];
-    }
-    else {
-        NSString *login = [loginTextField stringValue];
-        NSString *password = [passwordSecureTextField stringValue];
-        [loginButton setTitle:@"Logging in..."];
-        [self authenticateWithLogin:login andPassword:password];
-        [notificationLabel setTextColor:[NSColor greenColor]];
-    }
-}
-
-- (void)updateUploadButton {
-    if (self.uploadFilesTable.numberOfRows > 0) {
-        [uploadButton setEnabled:YES];
-    } else {
-        [uploadButton setEnabled:NO];
-    }
-}
 @end

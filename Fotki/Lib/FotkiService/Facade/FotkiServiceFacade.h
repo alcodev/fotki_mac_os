@@ -24,28 +24,30 @@ typedef void (^UploadProgressBlock)(NSInteger, NSInteger, NSInteger);
 @property(nonatomic, retain) id dragStatusView;
 
 
-- (void)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError onForbidden:(ServiceFacadeCallback)onForbidden;
-
-- (void)getAlbumsPlain:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)getAlbums:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)getAlbumUrl:(id)AlbumId :(int *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)uploadPicture:(NSString *)path crc32:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError uploadProgressBlock:(UploadProgressBlock)uploadProgressBlock;
-
-- (void)checkCRC:(NSString *)crc32 toTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)getPhotosFromTheAlbum:(Album *)album onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
-
-- (void)createAlbum:(NSString *)name parentFolderId:(NSString *)parentFolderId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+- (BOOL)isLoggedIn;
 
 - (void)logOut;
 
-- (void)getPublicHomeFolder:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+- (AccountInfo *)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
 
-- (void)getAlbumUrl:(NSString *)albumId onSuccess:(ServiceFacadeCallback)onSuccess onError:(ServiceFacadeCallback)onError;
+- (AccountInfo *)getAccountInfo;
+
+- (NSInteger)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId;
+
+- (NSInteger)createAlbum:(NSString *)name parentFolderId:(NSString *)parentFolderId;
+
+- (NSArray *)getAlbumsPlain;
+
+- (NSArray *)getFolders;
+
+- (NSArray *)getAlbums;
+
+- (NSString *)getAlbumUrl:(NSString *)albumId;
+
+- (NSArray *)getPhotosFromTheAlbum:(Album *)album;
+
+- (BOOL)checkCrc32:(NSString *)crc32 inAlbum:(Album *)album;
+
+- (void)uploadImageAtPath:(NSString *)path crc32:(NSString *)crc32 toAlbum:(Album *)album uploadProgressBlock:(UploadProgressBlock)uploadProgressBlock;
 
 @end

@@ -9,11 +9,9 @@
 #import "CXMLDocument.h"
 
 
-@implementation ErrorResponseParser {
+@implementation ErrorResponseParser
 
-}
-
-+ (Error *)extractErrorFromXmlDocument:(CXMLDocument *)document {
++ (NSString *)extractErrorFromXmlDocument:(CXMLDocument *)document {
     NSArray *nodes = [document nodesForXPath:@"//result" error:nil];
     NSXMLElement *element = [nodes objectAtIndex:0];
     NSString *resultValue = [element stringValue];
@@ -27,9 +25,7 @@
 
     nodes = [document nodesForXPath:@"//message" error:nil];
     element = [nodes objectAtIndex:0];
-    NSString *errorMessage = [element stringValue];
-
-    Error *error = [[[Error alloc] initWithId:errorId andMessage:errorMessage] autorelease];
-    return (error);
+    return [element stringValue];
 }
+
 @end
