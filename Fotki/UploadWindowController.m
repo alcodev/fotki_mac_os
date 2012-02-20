@@ -111,8 +111,8 @@ typedef enum {
 }
 
 - (IBAction)showWindow:(id)sender {
+    [self.window setDelegate:self];
     [super showWindow:sender];
-
     [self.window makeKeyAndOrderFront:self];
     [self.window center];
     [NSApp activateIgnoringOtherApps:YES];
@@ -221,7 +221,7 @@ typedef enum {
 // Helpers
 //-----------------------------------------------------------------------------------------
 
-- (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText{
+- (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText {
     if (urlToAlbum) {
         [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
         [self.albumLinkLabel setSelectable:YES];
@@ -230,7 +230,7 @@ typedef enum {
         [attributedString appendAttributedString:[TextUtils hyperlinkFromString:urlText withURL:url]];
 
         [self.albumLinkLabel setAttributedStringValue:attributedString];
-    } else{
+    } else {
         [self.albumLinkLabel setTitleWithMnemonic:@"Error get album url"];
     }
 }
@@ -341,8 +341,17 @@ typedef enum {
         NSString *errorText = [NSString stringWithFormat:@"Failed to upload %d files", arrayPathsFilesFailed.count];
         [self.countErrorsUploadFilesLabel setHidden:NO];
         [self.countErrorsUploadFilesLabel setTitleWithMnemonic:errorText];
-    } else{
+    } else {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification {
+    [[self window] setLevel:NSFloatingWindowLevel];
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+    [[self window] setLevel:NSNormalWindowLevel];
 }
 @end
