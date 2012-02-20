@@ -344,11 +344,13 @@
 - (void)setStateAsLoggedIn {
     [uploadMenuItem setEnabled:YES];
     self.dragStatusView.isEnable = YES;
+    [self.dragStatusView changeIconState:YES];
 }
 
 - (void)setStateAsLoggedOut {
     [uploadMenuItem setEnabled:NO];
     self.dragStatusView.isEnable = NO;
+    [self.dragStatusView changeIconState:NO];
 }
 
 @end
