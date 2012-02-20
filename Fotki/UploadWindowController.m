@@ -12,11 +12,11 @@ typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
 } UploadWindowState;
 
-@interface UploadWindowController()
+@interface UploadWindowController ()
 
 @property(nonatomic, assign) UploadWindowState currentState;
 
-- (void)showLinkToAlbum:(NSString *)urlToAlbum;
+- (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText;
 
 - (void)setProgressBarsHidden:(BOOL)isHidden;
 
@@ -48,6 +48,7 @@ typedef enum {
 @synthesize onAddFileButtonClicked = _onAddFileButtonClicked;
 @synthesize onDeleteFileButtonClicked = _onDeleteFileButtonClicked;
 @synthesize onNeedUpload = _onNeedUpload;
+@synthesize countErrorsUploadFilesLabel = _countErrorsUploadFilesLabel;
 
 
 - (id)init {
@@ -105,6 +106,7 @@ typedef enum {
     [_onDeleteFileButtonClicked release];
     [_onNeedUpload release];
 
+    [_countErrorsUploadFilesLabel release];
     [super dealloc];
 }
 
@@ -133,7 +135,7 @@ typedef enum {
 //-----------------------------------------------------------------------------------------
 
 - (IBAction)onAddButtonClicked:(id)sender {
-    if(self.onAddFileButtonClicked) {
+    if (self.onAddFileButtonClicked) {
         self.onAddFileButtonClicked();
 
         [self.uploadFilesTable reloadData];
@@ -142,7 +144,7 @@ typedef enum {
 }
 
 - (IBAction)onDeleteButtonClicked:(id)sender {
-    if(self.onDeleteFileButtonClicked) {
+    if (self.onDeleteFileButtonClicked) {
         NSInteger selectedRowIndex = [self.uploadFilesTable selectedRow];
         self.onDeleteFileButtonClicked([NSNumber numberWithInteger:selectedRowIndex]);
 
@@ -219,15 +221,18 @@ typedef enum {
 // Helpers
 //-----------------------------------------------------------------------------------------
 
-- (void)showLinkToAlbum:(NSString *)urlToAlbum {
-    [self.albumLinkLabel setAllowsEditingTextAttributes: YES];
-    [self.albumLinkLabel setSelectable: YES];
+- (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText{
+    if (urlToAlbum) {
+        [self.albumLinkLabel setAllowsEditingTextAttributes:YES];
+        [self.albumLinkLabel setSelectable:YES];
+        NSURL *url = [NSURL URLWithString:urlToAlbum];
+        NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+        [attributedString appendAttributedString:[TextUtils hyperlinkFromString:urlText withURL:url]];
 
-    NSURL *url = [NSURL URLWithString:urlToAlbum];
-    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
-    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];
-
-    [self.albumLinkLabel setAttributedStringValue:attributedString];
+        [self.albumLinkLabel setAttributedStringValue:attributedString];
+    } else{
+        [self.albumLinkLabel setTitleWithMnemonic:@"Error get album url"];
+    }
 }
 
 - (void)setProgressBarsHidden:(BOOL)isHidden {
@@ -277,6 +282,8 @@ typedef enum {
 
     [self.albumLinkLabel setHidden:YES];
 
+    [self.countErrorsUploadFilesLabel setHidden:YES];
+
     [self setProgressBarsHidden:YES];
 
     [self changeApplyButtonStateBasedOnFormState];
@@ -313,13 +320,30 @@ typedef enum {
     [self.uploadCancelButton setTitle:@"Cancel"];
 }
 
-- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum {
+- (void)setStateUploadedWithException:(NSException *)exception {
+    self.currentState = kStateUploaded;
+
+    [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Error" totalProgressValue:100.0 totalProgressLabel:@"Error"];
+
+    [self.albumLinkLabel setHidden:NO];
+    [self.albumLinkLabel setTitleWithMnemonic:@"Upload error"];
+
+}
+
+- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed {
     self.currentState = kStateUploaded;
 
     [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Done" totalProgressValue:100.0 totalProgressLabel:@"Done"];
 
     [self.albumLinkLabel setHidden:NO];
-    [self showLinkToAlbum:urlToAlbum];
-}
 
+    if (arrayPathsFilesFailed.count > 0) {
+        [self showLinkToAlbum:urlToAlbum withUrlText:@"Click to open your album"];
+        NSString *errorText = [NSString stringWithFormat:@"Failed to upload %d files", arrayPathsFilesFailed.count];
+        [self.countErrorsUploadFilesLabel setHidden:NO];
+        [self.countErrorsUploadFilesLabel setTitleWithMnemonic:errorText];
+    } else{
+        [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
+    }
+}
 @end

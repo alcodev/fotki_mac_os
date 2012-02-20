@@ -459,7 +459,7 @@
 						<object class="NSTextField" id="96078176">
 							<reference key="NSNextResponder" ref="780121213"/>
 							<int key="NSvFlags">-2147483360</int>
-							<string key="NSFrame">{{11, 20}, {298, 17}}</string>
+							<string key="NSFrame">{{11, 23}, {298, 14}}</string>
 							<reference key="NSSuperview" ref="780121213"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="549182887"/>
@@ -585,6 +585,25 @@
 								<string type="base64-UTF8" key="NSKeyEquivalent">Gw</string>
 								<int key="NSPeriodicDelay">200</int>
 								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
+						<object class="NSTextField" id="391293598">
+							<reference key="NSNextResponder" ref="780121213"/>
+							<int key="NSvFlags">-2147483360</int>
+							<string key="NSFrame">{{11, 5}, {298, 17}}</string>
+							<reference key="NSSuperview" ref="780121213"/>
+							<reference key="NSWindow"/>
+							<string key="NSReuseIdentifierKey">_NS:3944</string>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSTextFieldCell" key="NSCell" id="818370920">
+								<int key="NSCellFlags">68288064</int>
+								<int key="NSCellFlags2">272630784</int>
+								<string key="NSContents">Label</string>
+								<reference key="NSSupport" ref="462150672"/>
+								<string key="NSCellIdentifier">_NS:3944</string>
+								<reference key="NSControlView" ref="391293598"/>
+								<reference key="NSBackgroundColor" ref="688497266"/>
+								<reference key="NSTextColor" ref="658346034"/>
 							</object>
 						</object>
 					</object>
@@ -713,6 +732,14 @@
 					</object>
 					<int key="connectionID">48</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">countErrorsUploadFilesLabel</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="391293598"/>
+					</object>
+					<int key="connectionID">53</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -771,6 +798,7 @@
 							<reference ref="538856446"/>
 							<reference ref="96078176"/>
 							<reference ref="937839462"/>
+							<reference ref="391293598"/>
 						</object>
 						<reference key="parent" ref="589971581"/>
 					</object>
@@ -988,6 +1016,20 @@
 						<reference key="object" ref="1049562833"/>
 						<reference key="parent" ref="595996634"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">51</int>
+						<reference key="object" ref="391293598"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="818370920"/>
+						</object>
+						<reference key="parent" ref="780121213"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">52</int>
+						<reference key="object" ref="818370920"/>
+						<reference key="parent" ref="391293598"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1035,6 +1077,8 @@
 					<string>4.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.userInterfaceItemIdentifier</string>
+					<string>51.IBPluginDependency</string>
+					<string>52.IBPluginDependency</string>
 					<string>6.IBPluginDependency</string>
 					<string>6.userInterfaceItemIdentifier</string>
 					<string>7.IBPluginDependency</string>
@@ -1089,6 +1133,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>cancelButton</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>uploadFilesButton</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1107,7 +1153,7 @@
 				<reference key="dict.values" ref="1002"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">50</int>
+			<int key="maxID">53</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1120,6 +1166,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>albumLinkLabel</string>
+							<string>countErrorsUploadFilesLabel</string>
 							<string>currentFileProgressIndicator</string>
 							<string>currentFileProgressLabel</string>
 							<string>totalFileProgressIndicator</string>
@@ -1134,6 +1181,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSTextField</string>
 							<string>NSTextField</string>
 							<string>NSProgressIndicator</string>
 							<string>NSTextField</string>
@@ -1153,6 +1201,7 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>albumLinkLabel</string>
+							<string>countErrorsUploadFilesLabel</string>
 							<string>currentFileProgressIndicator</string>
 							<string>currentFileProgressLabel</string>
 							<string>totalFileProgressIndicator</string>
@@ -1169,6 +1218,10 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
 								<string key="name">albumLinkLabel</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">countErrorsUploadFilesLabel</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">

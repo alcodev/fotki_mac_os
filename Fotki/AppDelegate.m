@@ -45,6 +45,8 @@
 
 - (void)uploadImagesAtPaths:(NSArray *)pathsFiles toAlbum:(Album *)album;
 
+- (void)doUploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album;
+
 - (NSString *)getUrlToAlbum:(Album *)album;
 
 - (void)setStateAsLoggedIn;
@@ -143,11 +145,11 @@
 
         [self setStateAsLoggedIn];
         [self.controllerSettingsWindow setStateAsLoggedInWithAccount:self.currentAccount];
-    } @catch(ApiConnectionException *ex) {
+    } @catch (ApiConnectionException *ex) {
         LOG(@"Authentication error: %@", ex.description);
         [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsErrorWithUsername:username passowrd:password status:@"Connection error"];
-    } @catch(ApiException *ex) {
+    } @catch (ApiException *ex) {
         LOG(@"Authentication error: %@", ex.description);
         [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Authentication error"];
@@ -155,9 +157,9 @@
 }
 
 - (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
-   [NSThread doInNewThread:^{
-       [self doSyncLoginWithUsername:username password:password];
-   }];
+    [NSThread doInNewThread:^{
+        [self doSyncLoginWithUsername:username password:password];
+    }];
 }
 
 - (void)doClearSession {
@@ -202,7 +204,7 @@
 
     self.controllerSettingsWindow = [SettingsWindowController controllerWithOnNeedLogIn:^(NSString *username, NSString *password) {
         [self doAsyncLoginWithUsername:username password:password];
-    } onNeedLogoutCallback:^{
+    }                                                              onNeedLogoutCallback:^{
         [self doLogout];
     }];
 
@@ -210,7 +212,7 @@
     self.controllerUploadWindow.onNeedAlbums = ^{
         return self.currentAccount.albums;
     };
-    self.controllerUploadWindow.onNeedAcceptDrop = ^(id<NSDraggingInfo> draggingInfo) {
+    self.controllerUploadWindow.onNeedAcceptDrop = ^(id <NSDraggingInfo> draggingInfo) {
         NSPasteboard *pasteboard;
         pasteboard = [draggingInfo draggingPasteboard];
         if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
@@ -228,7 +230,7 @@
             [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
         }
     };
-    self.controllerUploadWindow.onDeleteFileButtonClicked = ^(NSNumber *selectedRowIndex){
+    self.controllerUploadWindow.onDeleteFileButtonClicked = ^(NSNumber *selectedRowIndex) {
         if ([selectedRowIndex integerValue] >= 0) {
             [self.controllerUploadWindow.arrayFilesToUpload removeObjectAtIndex:(NSUInteger) [selectedRowIndex integerValue]];
         }
@@ -246,38 +248,49 @@
 }
 
 - (void)uploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album {
+    @try {
+        [self doUploadImagesAtPaths:arrayPathsFiles toAlbum:album];
+    } @catch (NSException *exception) {
+        LOG(@"Error occurred: %@", exception.description);
+        [self.controllerUploadWindow setStateUploadedWithException:exception];
+    }
+
+}
+
+- (void)doUploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album {
+    NSString *linkToAlbum = [self getUrlToAlbum:album];
+
     UploadFilesStatisticsCalculator *statisticsCalculator = [UploadFilesStatisticsCalculator calculatorWithPathsFiles:arrayPathsFiles];
-    LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite/1024);
+    LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite / 1024);
     LOG(@"");
-    for(NSInteger indexFilePath = 0; indexFilePath < arrayPathsFiles.count; indexFilePath++) {
+    for (NSInteger indexFilePath = 0; indexFilePath < arrayPathsFiles.count; indexFilePath++) {
         NSString *pathFile = [arrayPathsFiles objectAtIndex:(NSUInteger) indexFilePath];
 
         BOOL isFileUploaded = NO;
 
-        NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
-        if ([self.serviceFacade checkCrc32:crcFile inAlbum:album]){
-            LOG(@"File '%@' already exists on server, skipping it", pathFile);
-            [statisticsCalculator setUploadSuccessForPath:pathFile];
-        } else {
-            LOG(@"File '%@' does not exist on server, uploading it", pathFile);
-
-            int countAttempts = 0;
-            while (countAttempts < 1 && !isFileUploaded) {
-                @try {
+        int countAttempts = 0;
+        while (countAttempts < 1 && !isFileUploaded) {
+            @try {
+                NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
+                if ([self.serviceFacade checkCrc32:crcFile inAlbum:album]) {
+                    LOG(@"File '%@' already exists on server, skipping it", pathFile);
+                    [statisticsCalculator setUploadSuccessForPath:pathFile];
+                } else {
+                    LOG(@"File '%@' does not exist on server, uploading it", pathFile);
                     [self.serviceFacade uploadImageAtPath:pathFile crc32:crcFile toAlbum:album uploadProgressBlock:^(NSInteger bytesCurrentLastWritten, NSInteger bytesCurrentTotalWritten, NSInteger bytesCurrentTotalExpectedToWrite) {
                         [statisticsCalculator setCurrentStatisticsWithBytesLastWritten:(NSUInteger) bytesCurrentLastWritten bytesTotalWritten:(NSUInteger) bytesCurrentTotalWritten bytesTotalExpectedToWrite:(NSUInteger) bytesCurrentTotalExpectedToWrite];
 
-                        LOG(@"speed: %f", statisticsCalculator.speed/1024);
+                        LOG(@"speed: %f", statisticsCalculator.speed / 1024);
 
-                        LOG(@"bytesCurrentLastWritten: %d", statisticsCalculator.bytesCurrentLastWritten/1024);
-                        LOG(@"bytesCurrentTotalWritten: %d", statisticsCalculator.bytesCurrentTotalWritten/1024);
-                        LOG(@"bytesCurrentTotalExpectedToWrite: %d", statisticsCalculator.bytesCurrentTotalExpectedToWrite/1024);
-                        LOG(@"bytesCurrentLeft: %d", statisticsCalculator.bytesCurrentLeft/1024);
+                        LOG(@"bytesCurrentLastWritten: %d", statisticsCalculator.bytesCurrentLastWritten / 1024);
+                        LOG(@"bytesCurrentTotalWritten: %d", statisticsCalculator.bytesCurrentTotalWritten / 1024);
+                        LOG(@"bytesCurrentTotalExpectedToWrite: %d", statisticsCalculator.bytesCurrentTotalExpectedToWrite / 1024);
+                        LOG(@"bytesCurrentLeft: %d", statisticsCalculator.bytesCurrentLeft / 1024);
                         LOG(@"secondsCurrentLeft: %d", statisticsCalculator.secondsCurrentLeft);
 
-                        LOG(@"bytesTotalWritten: %d", statisticsCalculator.bytesTotalWritten/1024);
-                        LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite/1024);
-                        LOG(@"bytesTotalLeft: %d", statisticsCalculator.bytesTotalLeft/1024);
+                        LOG(@"bytesTotalWritten: %d", statisticsCalculator.bytesTotalWritten / 1024);
+                        LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite / 1024);
+                        LOG(@"bytesTotalLeft: %d", statisticsCalculator.bytesTotalLeft / 1024);
                         LOG(@"secondsTotalLeft: %d", statisticsCalculator.secondsTotalLeft);
 
                         [NSThread doInMainThread:^() {
@@ -288,7 +301,7 @@
                             NSString *labelProgressTotal = [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft];
 
                             [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressFile fileProgressLabel:labelProgressFile totalProgressValue:valueProgressTotal totalProgressLabel:labelProgressTotal];
-                        } waitUntilDone:YES];
+                        }          waitUntilDone:YES];
 
                         LOG(@"");
                         LOG(@"");
@@ -297,11 +310,11 @@
                     LOG(@"File '%@' was successfully uploaded", pathFile);
                     [statisticsCalculator setUploadSuccessForPath:pathFile];
                     isFileUploaded = YES;
-                } @catch (ApiException *ex) {
-                    LOG(@"Error uploading file '%@', reason: %@", pathFile, ex.description);
-                    countAttempts++;
-                    isFileUploaded = NO;
                 }
+            } @catch (ApiException *ex) {
+                LOG(@"Error uploading file '%@', reason: %@", pathFile, ex.description);
+                countAttempts++;
+                isFileUploaded = NO;
             }
         }
 
@@ -312,14 +325,14 @@
 
 
     [NSThread doInMainThread:^() {
-        [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:[self getUrlToAlbum:album]];
-    } waitUntilDone:YES];
+        [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:linkToAlbum arrayPathsFilesFailed:[statisticsCalculator arrayPathsFilesFailed]];
+    }          waitUntilDone:YES];
 }
 
 - (NSString *)getUrlToAlbum:(Album *)album {
     @try {
         return [self.serviceFacade getAlbumUrl:album.id];
-    } @catch(ApiException *ex) {
+    } @catch (ApiException *ex) {
         LOG(@"Error getting url for album: %@", album.path);
         return nil;
     }

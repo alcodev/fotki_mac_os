@@ -24,6 +24,7 @@
 @property(nonatomic, retain) IBOutlet NSTextField *totalProgressLabel;
 @property(nonatomic, retain) IBOutlet NSProgressIndicator *totalFileProgressIndicator;
 @property(nonatomic, retain) IBOutlet NSTextField *albumLinkLabel;
+@property(nonatomic, retain) IBOutlet NSTextField *countErrorsUploadFilesLabel;
 @property(nonatomic, retain) IBOutlet NSButton *uploadButton;
 @property(nonatomic, retain) IBOutlet NSButton *uploadCancelButton;
 
@@ -42,8 +43,9 @@
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueFile fileProgressLabel:(NSString *)labelFileProgress totalProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress;
 
-- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum;
-
 - (void)changeApplyButtonStateBasedOnFormState;
 
+- (void)setStateUploadedWithException:(NSException *)exception;
+
+- (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed;
 @end
