@@ -47,6 +47,11 @@
 
 - (NSString *)getUrlToAlbum:(Album *)album;
 
+- (void)setStateAsLoggedIn;
+
+- (void)setStateAsLoggedOut;
+
+
 @end
 
 @implementation AppDelegate
@@ -136,12 +141,15 @@
 
         [self.dragStatusView changeIconState:YES];
 
+        [self setStateAsLoggedIn];
         [self.controllerSettingsWindow setStateAsLoggedInWithAccount:self.currentAccount];
     } @catch(ApiConnectionException *ex) {
         LOG(@"Authentication error: %@", ex.description);
+        [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsErrorWithUsername:username passowrd:password status:@"Connection error"];
     } @catch(ApiException *ex) {
         LOG(@"Authentication error: %@", ex.description);
+        [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Authentication error"];
     }
 }
@@ -153,6 +161,7 @@
 }
 
 - (void)doClearSession {
+    [self setStateAsLoggedOut];
     [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Logged out"];
 }
 
@@ -162,6 +171,8 @@
 }
 
 - (void)restoreSession {
+    [self setStateAsLoggedOut];
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *login = [defaults objectForKey:@"login"];
     NSString *password = [defaults objectForKey:@"password"];
@@ -311,6 +322,16 @@
         LOG(@"Error getting url for album: %@", album.path);
         return nil;
     }
+}
+
+- (void)setStateAsLoggedIn {
+    [uploadMenuItem setEnabled:YES];
+    self.dragStatusView.isEnable = YES;
+}
+
+- (void)setStateAsLoggedOut {
+    [uploadMenuItem setEnabled:NO];
+    self.dragStatusView.isEnable = NO;
 }
 
 @end

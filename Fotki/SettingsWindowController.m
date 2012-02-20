@@ -104,7 +104,7 @@
 }
 
 - (void)setStateAsLoggedInWithAccount:(Account *)account {
-    [self.labelInfo setStringValue:[NSString stringWithFormat:@"Logged in as %@", account.name]];
+    [self.labelInfo setStringValue:[NSString stringWithFormat:@"Logged in as %@", account.fullName]];
 
     self.buttonApply.title = @"Logout";
     [self.buttonApply setEnabled:YES];
@@ -130,7 +130,7 @@
     [self.textPassword setEnabled:NO];
     [self.textPassword setStringValue:password];
 
-    [self.progressIndicatorLogin stopAnimation:self];
+    [self.progressIndicatorLogin startAnimation:self];
 
     [self.buttonApply setEnabled:NO];
 
@@ -146,7 +146,7 @@
     [self.textLogin setEnabled:YES];
     [self.textPassword setEnabled:YES];
 
-    [self.progressIndicatorLogin startAnimation:self];
+    [self.progressIndicatorLogin stopAnimation:self];
 
     self.isLoggedIn = NO;
 }
