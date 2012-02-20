@@ -196,6 +196,7 @@
         [self.controllerUploadWindow showWindow:self];
         [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:files];
         [self.controllerUploadWindow.uploadFilesTable reloadData];
+        [self.controllerUploadWindow changeApplyButtonStateBasedOnFormState];
     }] autorelease];
     [statusItem setView:self.dragStatusView];
 

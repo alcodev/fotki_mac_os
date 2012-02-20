@@ -16,8 +16,6 @@ typedef enum {
 
 @property(nonatomic, assign) UploadWindowState currentState;
 
-- (void)changeApplyButtonStateBasedOnFormState;
-
 - (void)showLinkToAlbum:(NSString *)urlToAlbum;
 
 - (void)setProgressBarsHidden:(BOOL)isHidden;
@@ -222,6 +220,9 @@ typedef enum {
 //-----------------------------------------------------------------------------------------
 
 - (void)showLinkToAlbum:(NSString *)urlToAlbum {
+    [self.albumLinkLabel setAllowsEditingTextAttributes: YES];
+    [self.albumLinkLabel setSelectable: YES];
+
     NSURL *url = [NSURL URLWithString:urlToAlbum];
     NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
     [attributedString appendAttributedString:[TextUtils hyperlinkFromString:@"Files successfully uploaded. Click to open your album." withURL:url]];

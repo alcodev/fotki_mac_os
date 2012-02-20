@@ -44,4 +44,6 @@
 
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum;
 
+- (void)changeApplyButtonStateBasedOnFormState;
+
 @end

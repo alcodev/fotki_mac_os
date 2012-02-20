@@ -25,12 +25,6 @@
     [attrString addAttribute:
             NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSSingleUnderlineStyle] range:range];
 
-    //center the text
-    NSMutableParagraphStyle *mutParaStyle=[[NSMutableParagraphStyle alloc] init];
-    [mutParaStyle setAlignment:NSCenterTextAlignment];
-    [attrString addAttributes:[NSDictionary dictionaryWithObject:mutParaStyle forKey:NSParagraphStyleAttributeName] range:range];
-    [mutParaStyle release];
-
     [attrString endEditing];
 
     return [attrString autorelease];
