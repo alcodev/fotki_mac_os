@@ -16,6 +16,10 @@ typedef enum {
 
 @property(nonatomic, assign) UploadWindowState currentState;
 
+- (void)prepareWindowBeforeClose;
+
+- (IBAction)onCloseButtonClicked:(id)sender;
+
 - (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText;
 
 - (void)setProgressBarsHidden:(BOOL)isHidden;
@@ -73,6 +77,7 @@ typedef enum {
         [self.uploadButton setAction:@selector(onApplyButtonClicked:)];
         [self.uploadCancelButton setAction:@selector(onCloseButtonClicked:)];
 
+        [self.window setDelegate:self];
         //NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertNoteIcon)];
     }
 
@@ -111,11 +116,22 @@ typedef enum {
 }
 
 - (IBAction)showWindow:(id)sender {
-    [self.window setDelegate:self];
     [super showWindow:sender];
     [self.window makeKeyAndOrderFront:self];
     [self.window center];
     [NSApp activateIgnoringOtherApps:YES];
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification {
+    [[self window] setLevel:NSFloatingWindowLevel];
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification {
+    [[self window] setLevel:NSNormalWindowLevel];
+}
+
+- (void)windowWillClose :(NSNotification *)notification {
+    [self prepareWindowBeforeClose];
 }
 
 - (NSArray *)selectedPaths {
@@ -159,9 +175,13 @@ typedef enum {
     }
 }
 
-- (IBAction)onCloseButtonClicked:(id)sender {
+- (void)prepareWindowBeforeClose {
     [self.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
+}
+
+- (IBAction)onCloseButtonClicked:(id)sender {
+    [self prepareWindowBeforeClose];
     [self.window close];
 }
 
@@ -344,14 +364,5 @@ typedef enum {
     } else {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }
-}
-
-- (void)windowDidResignMain:(NSNotification *)notification {
-    [[self window] setLevel:NSFloatingWindowLevel];
-}
-
-- (void)windowDidBecomeMain:(NSNotification *)notification
-{
-    [[self window] setLevel:NSNormalWindowLevel];
 }
 @end

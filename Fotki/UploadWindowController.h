@@ -9,7 +9,7 @@
 @class Account;
 @class Album;
 
-@interface UploadWindowController : NSWindowController<NSTableViewDataSource, NSComboBoxDataSource>
+@interface UploadWindowController : NSWindowController<NSTableViewDataSource, NSComboBoxDataSource, NSWindowDelegate>
 
 @property(nonatomic, retain) NSMutableArray *arrayFilesToUpload;
 @property(nonatomic, retain) NSArray *arrayAlbums;
