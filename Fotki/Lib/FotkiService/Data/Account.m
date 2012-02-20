@@ -5,22 +5,23 @@
 //
 
 
-#import "AccountInfo.h"
+#import "Account.h"
 
 
-@implementation AccountInfo
+@implementation Account
 
 @synthesize username = _username;
 @synthesize password = _password;
+@synthesize fullName = _fullName;
 @synthesize spaceLimit = _spaceLimit;
 @synthesize spaceUsed = _spaceUsed;
-@synthesize name = _name;
+@synthesize albums = _albums;
 
 
-- (AccountInfo *)initWithName:(NSString *)name spaceLimit:(NSString *)spaceLimit spaceUsed:(NSString *)spaceUsed {
+- (Account *)initWithFullName:(NSString *)fullName spaceLimit:(NSString *)spaceLimit spaceUsed:(NSString *)spaceUsed {
     self = [super init];
     if (self) {
-        self.name = name;
+        self.fullName = fullName;
         self.spaceLimit = spaceLimit;
         self.spaceUsed = spaceUsed;
     }
@@ -30,9 +31,10 @@
 - (void)dealloc {
     [_username release];
     [_password release];
-    [_name release];
+    [_fullName release];
     [_spaceLimit release];
     [_spaceUsed release];
+    [_albums release];
 
     [super dealloc];
 }

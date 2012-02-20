@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import "Callbacks.h"
 
-@class AccountInfo;
+@class Account;
 @class Album;
 
 @interface UploadWindowController : NSWindowController<NSTableViewDataSource, NSComboBoxDataSource>
@@ -38,7 +38,7 @@
 
 + (id)controller;
 
-- (void)setStateInitializedWithAccountInfo:(AccountInfo *)accountInfo;
+- (void)setStateInitializedWithAccount:(Account *)account;
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueFile fileProgressLabel:(NSString *)labelFileProgress totalProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress;
 

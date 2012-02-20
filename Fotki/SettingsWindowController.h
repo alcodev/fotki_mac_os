@@ -10,7 +10,7 @@
 
 typedef void (^NeedLoginCallback)(NSString *username, NSString *password);
 
-@class AccountInfo;
+@class Account;
 
 @interface SettingsWindowController : NSWindowController
 
@@ -19,10 +19,11 @@ typedef void (^NeedLoginCallback)(NSString *username, NSString *password);
 @property(nonatomic, retain) IBOutlet NSTextField *labelInfo;
 @property(nonatomic, retain) IBOutlet NSButton *buttonApply;
 @property(nonatomic, retain) IBOutlet NSButton *buttonClose;
+@property(nonatomic, retain) IBOutlet NSProgressIndicator *progressIndicatorLogin;
 
 + (id)controllerWithOnNeedLogIn:(NeedLoginCallback)onNeedLogin onNeedLogoutCallback:(Callback)onNeedLogout;
 
-- (void)setStateAsLoggedInWithAccountInfo:(AccountInfo *)accountInfo;
+- (void)setStateAsLoggedInWithAccount:(Account *)account;
 
 - (void)setStateAsLoggingInWithUsername:(NSString *)username passowrd:(NSString *)password;
 

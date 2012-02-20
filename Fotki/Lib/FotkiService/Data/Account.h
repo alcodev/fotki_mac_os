@@ -8,14 +8,15 @@
 #import <Foundation/Foundation.h>
 
 
-@interface AccountInfo : NSObject
+@interface Account : NSObject
 
 @property(nonatomic, retain) NSString *username;
 @property(nonatomic, retain) NSString *password;
-@property(nonatomic, retain) NSString *name;
+@property(nonatomic, retain) NSString *fullName;
 @property(nonatomic, retain) NSString *spaceUsed;
 @property(nonatomic, retain) NSString *spaceLimit;
+@property(nonatomic, retain) NSArray *albums;
 
-- (AccountInfo *)initWithName:(NSString *)name spaceLimit:(NSString *)spaceLimit spaceUsed:(NSString *)spaceUsed;
+- (Account *)initWithFullName:(NSString *)fullName spaceLimit:(NSString *)spaceLimit spaceUsed:(NSString *)spaceUsed;
 
 @end

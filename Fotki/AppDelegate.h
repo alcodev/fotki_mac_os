@@ -15,18 +15,7 @@
     IBOutlet NSMenuItem *synchronizeMenuItem;
     IBOutlet NSMenuItem *uploadMenuItem;
 
-    IBOutlet NSButton *uploadFilesAddButton;
-    IBOutlet NSButton *uploadFilesDeleteButton;
-    IBOutlet NSComboBox *uploadToAlbumComboBox;
-    IBOutlet NSProgressIndicator *uploadProgressIndicator;
-    IBOutlet NSButton *uploadButton;
-    IBOutlet NSButton *uploadCancelButton;
-    IBOutlet NSTextField *uploadFilesLabel;
-    IBOutlet NSTextField *welcomeLabel;
-
     NSStatusItem *statusItem;
-
-    NSFileManager *_fm;
 }
 
 @property(assign) IBOutlet NSWindow *settingsWindow;
@@ -43,7 +32,5 @@
 - (IBAction)exitMenuItemClicked:(id)sender;
 
 - (IBAction)uploadMenuClicked:(id)sender;
-
-- (IBAction)uploadCancelButtonClicked:(id)sender;
 
 @end

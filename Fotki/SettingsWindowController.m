@@ -7,7 +7,7 @@
 //
 
 #import "SettingsWindowController.h"
-#import "AccountInfo.h"
+#import "Account.h"
 
 @interface SettingsWindowController()
 
@@ -32,6 +32,7 @@
 @synthesize labelInfo = _labelInfo;
 @synthesize buttonApply = _buttonApply;
 @synthesize buttonClose = _buttonClose;
+@synthesize progressIndicatorLogin = _progressIndicatorLogin;
 
 @synthesize isLoggedIn = _isLoggedIn;
 
@@ -70,6 +71,7 @@
     [_labelInfo release];
     [_buttonApply release];
     [_buttonClose release];
+    [_progressIndicatorLogin release];
 
     [_onNeedLogin release];
     [_onNeedLogout release];
@@ -101,17 +103,19 @@
     [self.window close];
 }
 
-- (void)setStateAsLoggedInWithAccountInfo:(AccountInfo *)accountInfo {
-    [self.labelInfo setStringValue:[NSString stringWithFormat:@"Logged in as %@", accountInfo.name]];
+- (void)setStateAsLoggedInWithAccount:(Account *)account {
+    [self.labelInfo setStringValue:[NSString stringWithFormat:@"Logged in as %@", account.name]];
 
     self.buttonApply.title = @"Logout";
     [self.buttonApply setEnabled:YES];
 
-    [self.textLogin setStringValue:accountInfo.username];
+    [self.textLogin setStringValue:account.username];
     [self.textLogin setEnabled:NO];
 
-    [self.textPassword setStringValue:accountInfo.password];
+    [self.textPassword setStringValue:account.password];
     [self.textPassword setEnabled:NO];
+
+    [self.progressIndicatorLogin stopAnimation:self];
 
     self.isLoggedIn = YES;
 }
@@ -125,6 +129,8 @@
 
     [self.textPassword setEnabled:NO];
     [self.textPassword setStringValue:password];
+
+    [self.progressIndicatorLogin stopAnimation:self];
 
     [self.buttonApply setEnabled:NO];
 
@@ -140,6 +146,8 @@
     [self.textLogin setEnabled:YES];
     [self.textPassword setEnabled:YES];
 
+    [self.progressIndicatorLogin startAnimation:self];
+
     self.isLoggedIn = NO;
 }
 
@@ -154,6 +162,8 @@
 
     [self.textPassword setStringValue:password];
     [self.textPassword setEnabled:YES];
+
+    [self.progressIndicatorLogin stopAnimation:self];
 
     self.isLoggedIn = NO;
 }

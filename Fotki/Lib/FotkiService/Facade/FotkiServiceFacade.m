@@ -12,7 +12,7 @@
 #import "Photo.h"
 #import "ServiceUtils.h"
 #import "Folder.h"
-#import "AccountInfo.h"
+#import "Account.h"
 #import "ApiServiceException.h"
 #import "AlbumsExtracter.h"
 
@@ -26,13 +26,9 @@
 @implementation FotkiServiceFacade
 
 @synthesize sessionId = _sessionId;
-@synthesize accountInfo = _accountInfo;
-
 
 - (void)dealloc {
     [_sessionId release];
-    [_rootFolders release];
-    [_accountInfo release];
     [super dealloc];
 }
 
@@ -54,7 +50,7 @@
     }
 }
 
-- (AccountInfo *)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password {
+- (Account *)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password {
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
             login, @"login",
             password, @"password",
@@ -66,10 +62,10 @@
     NSString *sessionIdValue = [element stringValue];
     _sessionId = [[NSString alloc] initWithString:sessionIdValue];
 
-    return [self getAccountInfo];
+    return [self getAccount];
 }
 
-- (AccountInfo *)getAccountInfo {
+- (Account *)getAccount {
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
             _sessionId, @"session_id",
             nil];
@@ -88,7 +84,7 @@
     element = [nodes objectAtIndex:0];
     NSString *spaceLimit = [element stringValue];
 
-    return [[[AccountInfo alloc] initWithName:displayName spaceLimit:spaceLimit spaceUsed:spaceUsed] autorelease];
+    return [[[Account alloc] initWithFullName:displayName spaceLimit:spaceLimit spaceUsed:spaceUsed] autorelease];
 }
 
 - (NSInteger)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId {

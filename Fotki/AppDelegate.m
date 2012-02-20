@@ -13,7 +13,7 @@
 #import "DialogUtils.h"
 #import "Album.h"
 #import "DragStatusView.h"
-#import "AccountInfo.h"
+#import "Account.h"
 #import "CRCUtils.h"
 #import "DateUtils.h"
 #import "SettingsWindowController.h"
@@ -27,6 +27,8 @@
 
 @interface AppDelegate ()
 
+@property(nonatomic, retain) FotkiServiceFacade *serviceFacade;
+@property(nonatomic, retain) Account *currentAccount;
 @property(nonatomic, retain) SettingsWindowController *controllerSettingsWindow;
 @property(nonatomic, retain) UploadWindowController *controllerUploadWindow;
 @property(nonatomic, retain) DragStatusView *dragStatusView;
@@ -47,14 +49,11 @@
 
 @end
 
-@implementation AppDelegate {
-    FotkiServiceFacade *_fotkiServiceFacade;
-    NSMutableArray *_filesToUpload;
+@implementation AppDelegate
 
-@private
-    NSMutableArray *_albums;
+@synthesize serviceFacade = _serviceFacade;
+@synthesize currentAccount = _currentAccount;
 
-}
 @synthesize settingsWindow = _settingsWindow;
 @synthesize uploadWindow = _uploadWindow;
 @synthesize albumLinkLabel = _albumLinkLabel;
@@ -64,6 +63,7 @@
 @synthesize currentFileProgressLabel = _currentFileProgressLabel;
 @synthesize currentFileProgressIndicator = _currentFileProgressIndicator;
 @synthesize totalFileProgressIndicator = _totalFileProgressIndicator;
+
 @synthesize controllerSettingsWindow = _controllerSettingsWindow;
 @synthesize controllerUploadWindow = _controllerUploadWindow;
 
@@ -71,22 +71,20 @@
 - (id)init {
     self = [super init];
     if (self != nil) {
-        _fm = [NSFileManager defaultManager];
-        _fotkiServiceFacade = [[FotkiServiceFacade alloc] init];
-        _filesToUpload = [[NSMutableArray alloc] init];
+        self.serviceFacade = [[[FotkiServiceFacade alloc] init] autorelease];
         [_uploadWindow registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
     }
     return self;
 }
 
 - (void)dealloc {
+    [_serviceFacade release];
+    [_currentAccount release];
+
     [statusMenu release];
     [statusItem release];
     [synchronizeMenuItem release];
 
-    [_fotkiServiceFacade release];
-    [_albums release];
-    [_filesToUpload release];
     [_albumLinkLabel release];
     [_uploadFilesTable release];
     [_dragStatusView release];
@@ -96,6 +94,7 @@
     [_totalFileProgressIndicator release];
     [_controllerSettingsWindow release];
     [_controllerUploadWindow release];
+
     [super dealloc];
 }
 
@@ -103,25 +102,18 @@
 // Main menu handlers
 //-----------------------------------------------------------------------------------------
 
-- (IBAction)uploadMenuClicked:(id)sender {
-    [self.controllerUploadWindow setStateInitializedWithAccountInfo:_fotkiServiceFacade.accountInfo];
-    [self.controllerUploadWindow showWindow:self];
-}
-
 - (IBAction)settingsMenuItemClicked:(id)sender {
     [self.controllerSettingsWindow showWindow:self];
+}
+
+- (IBAction)uploadMenuClicked:(id)sender {
+    [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
+    [self.controllerUploadWindow showWindow:self];
 }
 
 - (IBAction)exitMenuItemClicked:(id)sender {
     LOG(@"Application finished with exit code 0");
     exit(0);
-}
-
-- (IBAction)uploadCancelButtonClicked:(id)sender {
-    [_filesToUpload removeAllObjects];
-    [self.uploadFilesTable reloadData];
-    [self.uploadWindow close];
-
 }
 
 //-----------------------------------------------------------------------------------------
@@ -130,10 +122,12 @@
     @try {
         [self.controllerSettingsWindow setStateAsLoggingInWithUsername:username passowrd:password];
 
-        AccountInfo *accountInfo = [_fotkiServiceFacade authenticateWithLogin:username andPassword:password];
-        accountInfo.username = username;
-        accountInfo.password = password;
-        LOG(@"Authentication success, session ID is: %@", _fotkiServiceFacade.sessionId);
+        self.currentAccount = [self.serviceFacade authenticateWithLogin:username andPassword:password];
+        self.currentAccount.username = username;
+        self.currentAccount.password = password;
+        LOG(@"Authentication success, session ID is: %@", self.serviceFacade.sessionId);
+
+        self.currentAccount.albums = [self.serviceFacade getAlbums];
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:username forKey:@"login"];
@@ -142,7 +136,7 @@
 
         [self.dragStatusView changeIconState:YES];
 
-        [self.controllerSettingsWindow setStateAsLoggedInWithAccountInfo:accountInfo];
+        [self.controllerSettingsWindow setStateAsLoggedInWithAccount:self.currentAccount];
     } @catch(ApiConnectionException *ex) {
         LOG(@"Authentication error: %@", ex.description);
         [self.controllerSettingsWindow setStateAsErrorWithUsername:username passowrd:password status:@"Connection error"];
@@ -163,7 +157,7 @@
 }
 
 - (void)doLogout {
-    [_fotkiServiceFacade logOut];
+    [self.serviceFacade logOut];
     [self doClearSession];
 }
 
@@ -187,7 +181,7 @@
     [statusItem setMenu:statusMenu];
 
     self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24) andMenu:statusMenu andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
-        [self.controllerUploadWindow setStateInitializedWithAccountInfo:_fotkiServiceFacade.accountInfo];
+        [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
         [self.controllerUploadWindow showWindow:self];
         [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:files];
         [self.controllerUploadWindow.uploadFilesTable reloadData];
@@ -202,7 +196,7 @@
 
     self.controllerUploadWindow = [UploadWindowController controller];
     self.controllerUploadWindow.onNeedAlbums = ^{
-        return [_fotkiServiceFacade getAlbums];
+        return self.currentAccount.albums;
     };
     self.controllerUploadWindow.onNeedAcceptDrop = ^(id<NSDraggingInfo> draggingInfo) {
         NSPasteboard *pasteboard;
@@ -249,7 +243,7 @@
         BOOL isFileUploaded = NO;
 
         NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
-        if ([_fotkiServiceFacade checkCrc32:crcFile inAlbum:album]){
+        if ([self.serviceFacade checkCrc32:crcFile inAlbum:album]){
             LOG(@"File '%@' already exists on server, skipping it", pathFile);
             [statisticsCalculator setUploadSuccessForPath:pathFile];
         } else {
@@ -258,7 +252,7 @@
             int countAttempts = 0;
             while (countAttempts < 1 && !isFileUploaded) {
                 @try {
-                    [_fotkiServiceFacade uploadImageAtPath:pathFile crc32:crcFile toAlbum:album uploadProgressBlock:^(NSInteger bytesCurrentLastWritten, NSInteger bytesCurrentTotalWritten, NSInteger bytesCurrentTotalExpectedToWrite) {
+                    [self.serviceFacade uploadImageAtPath:pathFile crc32:crcFile toAlbum:album uploadProgressBlock:^(NSInteger bytesCurrentLastWritten, NSInteger bytesCurrentTotalWritten, NSInteger bytesCurrentTotalExpectedToWrite) {
                         [statisticsCalculator setCurrentStatisticsWithBytesLastWritten:(NSUInteger) bytesCurrentLastWritten bytesTotalWritten:(NSUInteger) bytesCurrentTotalWritten bytesTotalExpectedToWrite:(NSUInteger) bytesCurrentTotalExpectedToWrite];
 
                         LOG(@"speed: %f", statisticsCalculator.speed/1024);
@@ -312,7 +306,7 @@
 
 - (NSString *)getUrlToAlbum:(Album *)album {
     @try {
-        return [_fotkiServiceFacade getAlbumUrl:album.id];
+        return [self.serviceFacade getAlbumUrl:album.id];
     } @catch(ApiException *ex) {
         LOG(@"Error getting url for album: %@", album.path);
         return nil;

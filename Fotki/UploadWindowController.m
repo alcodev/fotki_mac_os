@@ -6,8 +6,7 @@
 #import "UploadWindowController.h"
 #import "TextUtils.h"
 #import "Album.h"
-#import "FotkiServiceFacade.h"
-#import "AccountInfo.h"
+#import "Account.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -16,7 +15,6 @@ typedef enum {
 @interface UploadWindowController()
 
 @property(nonatomic, assign) UploadWindowState currentState;
-@property(nonatomic, retain) FotkiServiceFacade *fotkiServiceFacade;
 
 - (void)changeApplyButtonStateBasedOnFormState;
 
@@ -46,7 +44,6 @@ typedef enum {
 @synthesize uploadCancelButton = _uploadCancelButton;
 
 @synthesize currentState = _currentState;
-@synthesize fotkiServiceFacade = _fotkiServiceFacade;
 
 @synthesize onNeedAlbums = _onNeedAlbums;
 @synthesize onNeedAcceptDrop = _onNeedAcceptDrop;
@@ -59,7 +56,6 @@ typedef enum {
     self = [super initWithWindowNibName:@"UploadWindow"];
     if (self) {
         self.arrayFilesToUpload = [NSMutableArray array];
-        self.fotkiServiceFacade = [[[FotkiServiceFacade alloc] init] autorelease];
 
         //HACK: http://borkware.com/quickies/single?id=276
         //The window controller nib doesn't get loaded until the window is manipulated.
@@ -104,7 +100,6 @@ typedef enum {
 
     [_arrayFilesToUpload release];
     [_arrayAlbums release];
-    [_fotkiServiceFacade release];
 
     [_onNeedAlbums release];
     [_onNeedAcceptDrop release];
@@ -252,14 +247,14 @@ typedef enum {
 // State helpers
 //-----------------------------------------------------------------------------------------
 
-- (void)setStateInitializedWithAccountInfo:(AccountInfo *)accountInfo {
+- (void)setStateInitializedWithAccount:(Account *)account {
     if (self.currentState == kStateInitialized) {
         return;
     }
 
     self.currentState = kStateInitialized;
 
-    NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", accountInfo.name];
+    NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", account.fullName];
     [self.welcomeLabel setTitleWithMnemonic:welcomeString];
 
     [self.arrayFilesToUpload removeAllObjects];

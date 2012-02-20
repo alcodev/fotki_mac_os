@@ -7,30 +7,25 @@
 
 #import <Foundation/Foundation.h>
 
+@class Account;
 @class Album;
 @class Folder;
-@class AccountInfo;
 
 typedef void (^ServiceFacadeCallback)(id);
 typedef void (^UploadProgressBlock)(NSInteger, NSInteger, NSInteger);
 
 
-@interface FotkiServiceFacade : NSObject {
-    NSString *_sessionId;
-    NSArray *_rootFolders;
-}
-@property(nonatomic, retain, readonly) NSString *sessionId;
-@property(nonatomic, retain) AccountInfo *accountInfo;
-@property(nonatomic, retain) id dragStatusView;
+@interface FotkiServiceFacade : NSObject
 
+@property(nonatomic, retain, readonly) NSString *sessionId;
 
 - (BOOL)isLoggedIn;
 
 - (void)logOut;
 
-- (AccountInfo *)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
+- (Account *)authenticateWithLogin:(NSString *)login andPassword:(NSString *)password;
 
-- (AccountInfo *)getAccountInfo;
+- (Account *)getAccount;
 
 - (NSInteger)createFolder:(NSString *)name parentFolderId:(NSString *)parentFolderId;
 
