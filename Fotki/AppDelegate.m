@@ -252,6 +252,7 @@
         [self doUploadImagesAtPaths:arrayPathsFiles toAlbum:album];
     } @catch (NSException *exception) {
         LOG(@"Error occurred: %@", exception.description);
+        self.dragStatusView.isEnable = YES;
         [self.controllerUploadWindow setStateUploadedWithException:exception];
     }
 
@@ -274,6 +275,7 @@
                 NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
                 if ([self.serviceFacade checkCrc32:crcFile inAlbum:album]) {
                     LOG(@"File '%@' already exists on server, skipping it", pathFile);
+                    isFileUploaded = YES;
                     [statisticsCalculator setUploadSuccessForPath:pathFile];
                 } else {
                     LOG(@"File '%@' does not exist on server, uploading it", pathFile);
@@ -325,6 +327,7 @@
 
 
     [NSThread doInMainThread:^() {
+        self.dragStatusView.isEnable = YES;
         [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:linkToAlbum arrayPathsFilesFailed:[statisticsCalculator arrayPathsFilesFailed]];
     }          waitUntilDone:YES];
 }

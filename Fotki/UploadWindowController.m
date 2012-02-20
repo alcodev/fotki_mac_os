@@ -332,7 +332,6 @@ typedef enum {
 
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed {
     self.currentState = kStateUploaded;
-
     [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Done" totalProgressValue:100.0 totalProgressLabel:@"Done"];
 
     [self.albumLinkLabel setHidden:NO];
