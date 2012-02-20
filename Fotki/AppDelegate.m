@@ -53,6 +53,8 @@
 
 - (void)setStateAsLoggedOut;
 
+- (void)addUniqueElementsFromArray:(NSArray *)srcArray toArray:(NSMutableArray *)dstArray;
+
 
 @end
 
@@ -196,7 +198,7 @@
     self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24) andMenu:statusMenu andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
         [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
         [self.controllerUploadWindow showWindow:self];
-        [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:files];
+        [self addUniqueElementsFromArray:files toArray:self.controllerUploadWindow.arrayFilesToUpload];
         [self.controllerUploadWindow.uploadFilesTable reloadData];
         [self.controllerUploadWindow changeApplyButtonStateBasedOnFormState];
     }] autorelease];
@@ -218,7 +220,7 @@
         if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
             NSArray *pathsAll = [pasteboard propertyListForType:NSFilenamesPboardType];
             NSArray *pathsImages = [FileSystemHelper getImagesFromFiles:pathsAll];
-            [self.controllerUploadWindow.arrayFilesToUpload addObjectsFromArray:pathsImages];
+            [self addUniqueElementsFromArray:pathsImages toArray:self.controllerUploadWindow.arrayFilesToUpload];
             return YES;
         } else {
             return NO;
@@ -227,7 +229,9 @@
     self.controllerUploadWindow.onAddFileButtonClicked = ^{
         NSArray *arraySelectedUrls = [DialogUtils showOpenImageFileDialog];
         for (NSURL *url in arraySelectedUrls) {
-            [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
+            if (![self.controllerUploadWindow.arrayFilesToUpload containsObject:url.path]){
+                [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
+            }
         }
     };
     self.controllerUploadWindow.onDeleteFileButtonClicked = ^(NSNumber *selectedRowIndex) {
@@ -353,4 +357,12 @@
     [self.dragStatusView changeIconState:NO];
 }
 
+- (void)addUniqueElementsFromArray:(NSArray *)srcArray toArray:(NSMutableArray *)dstArray{
+    NSSet *set = [NSSet setWithArray:srcArray];
+    for(NSObject *object in set){
+        if (![dstArray containsObject:object]){
+            [dstArray addObject:object];
+        }
+    }
+}
 @end
