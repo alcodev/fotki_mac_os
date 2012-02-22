@@ -50,13 +50,10 @@
 
 //we want to copy the files
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    return NSDragOperationCopy;
+    return self.isEnable? NSDragOperationCopy: NSDragOperationNone;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    if (!self.isEnable){
-        return NO;
-    }
     NSPasteboard *pasteboard;
     pasteboard = [sender draggingPasteboard];
 
