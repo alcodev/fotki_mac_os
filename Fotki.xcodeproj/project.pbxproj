@@ -88,6 +88,8 @@
 		E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */; };
 		E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */; };
 		E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */; };
+		E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C0 /* ErrorsDataSource.m */; };
+		E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C3 /* UploadError.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -257,6 +259,10 @@
 		E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadFilesStatisticsCalculator.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadFilesDataSource.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9BF /* UploadFilesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadFilesDataSource.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C0 /* ErrorsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorsDataSource.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C2 /* ErrorsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorsDataSource.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C3 /* UploadError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadError.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C5 /* UploadError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadError.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -662,6 +668,10 @@
 		E1EE7F8414AC79AA003AD9BC /* DataSources */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9C5 /* UploadError.h */,
+				E1EE7F8414AC79AA003AD9C3 /* UploadError.m */,
+				E1EE7F8414AC79AA003AD9C2 /* ErrorsDataSource.h */,
+				E1EE7F8414AC79AA003AD9C0 /* ErrorsDataSource.m */,
 				E1EE7F8414AC79AA003AD9BF /* UploadFilesDataSource.h */,
 				E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */,
 			);
@@ -846,6 +856,8 @@
 				E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */,
 				E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */,
 				E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */,
+				E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */,
+				E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,15 +14,20 @@
 @synthesize arrayFilesToUpload = _arrayFilesToUpload;
 
 -(UploadFilesDataSource *)init{
-   self = [super init];
+    self = [super init];
     if (self){
         self.arrayFilesToUpload = [[[NSMutableArray alloc] init] autorelease];
     }
     return self;
 }
 
+- (void)dealloc {
+    [_arrayFilesToUpload release];
+    [super dealloc];
+}
+
 + (UploadFilesDataSource *)dataSource {
- return [[[UploadFilesDataSource alloc] init] autorelease];
+    return [[[UploadFilesDataSource alloc] init] autorelease];
 
 }
 
@@ -35,8 +40,4 @@
     return valueToDisplay;
 }
 
-- (void)dealloc {
-    [_arrayFilesToUpload release];
-    [super dealloc];
-}
 @end

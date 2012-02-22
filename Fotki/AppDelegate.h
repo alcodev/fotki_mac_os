@@ -23,7 +23,6 @@
 @property(nonatomic, retain)IBOutlet NSTextField *albumLinkLabel;
 @property(nonatomic, retain)IBOutlet NSTextField *totalProgressLabel;
 @property(nonatomic, retain)IBOutlet NSTextField *currentFileProgressLabel;
-@property(nonatomic, retain)IBOutlet NSTableView *uploadFilesTable;
 @property(nonatomic, retain)IBOutlet NSProgressIndicator *currentFileProgressIndicator;
 @property(nonatomic, retain)IBOutlet NSProgressIndicator *totalFileProgressIndicator;
 

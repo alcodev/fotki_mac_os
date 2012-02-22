@@ -67,7 +67,6 @@
 @synthesize settingsWindow = _settingsWindow;
 @synthesize uploadWindow = _uploadWindow;
 @synthesize albumLinkLabel = _albumLinkLabel;
-@synthesize uploadFilesTable = _uploadFilesTable;
 @synthesize dragStatusView = _dragStatusView;
 @synthesize totalProgressLabel = _totalProgressLabel;
 @synthesize currentFileProgressLabel = _currentFileProgressLabel;
@@ -96,7 +95,6 @@
     [synchronizeMenuItem release];
 
     [_albumLinkLabel release];
-    [_uploadFilesTable release];
     [_dragStatusView release];
     [_totalProgressLabel release];
     [_currentFileProgressLabel release];
@@ -257,6 +255,7 @@
         [self doUploadImagesAtPaths:arrayPathsFiles toAlbum:album];
     } @catch (NSException *exception) {
         LOG(@"Error occurred: %@", exception.description);
+        [self.controllerUploadWindow addError:exception.description forEvent:@"Upload images"];
         self.dragStatusView.isEnable = YES;
         [self.controllerUploadWindow setStateUploadedWithException:exception];
     }
@@ -326,6 +325,7 @@
                 }
             } @catch (ApiException *ex) {
                 LOG(@"Error uploading file '%@', reason: %@", pathFile, ex.description);
+                [self.controllerUploadWindow addError:ex.description forEvent:[NSString stringWithFormat:@"Uploading file: %@", pathFile]];
                 countAttempts++;
                 isFileUploaded = NO;
             }
@@ -348,6 +348,7 @@
         return [self.serviceFacade getAlbumUrl:album.id];
     } @catch (ApiException *ex) {
         LOG(@"Error getting url for album: %@", album.path);
+        [self.controllerUploadWindow addError:ex.description forEvent:@"Error getting url for album"];
         return nil;
     }
 }

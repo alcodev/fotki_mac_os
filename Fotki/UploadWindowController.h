@@ -9,13 +9,15 @@
 @class Account;
 @class Album;
 @class UploadFilesDataSource;
+@class ErrorsDataSource;
 
-@interface UploadWindowController : NSWindowController<NSComboBoxDataSource, NSWindowDelegate>
+@interface UploadWindowController : NSWindowController<NSComboBoxDataSource, NSWindowDelegate, NSDraggingDestination>
 
 @property(nonatomic, retain) NSArray *arrayAlbums;
 
 @property(nonatomic, retain) IBOutlet NSTextField *welcomeLabel;
 @property(nonatomic, retain) IBOutlet NSTableView *uploadFilesTable;
+@property(nonatomic, retain) UploadFilesDataSource *uploadFilesDataSource;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesAddButton;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesDeleteButton;
 @property(nonatomic, retain) IBOutlet NSComboBox *uploadToAlbumComboBox;
@@ -36,7 +38,10 @@
 @property(nonatomic, copy) ParametrizedCallback onDeleteFileButtonClicked;
 @property(nonatomic, copy) Callback onNeedUpload;
 
-@property(nonatomic, retain)UploadFilesDataSource *uploadFilesDataSource;
+@property(nonatomic, retain) IBOutlet NSTableView *errorsTable;
+@property(nonatomic, retain) ErrorsDataSource *errorsDataSource;
+
+@property(nonatomic, retain) IBOutlet NSTabView *tabWindow;
 
 + (id)controller;
 
@@ -49,4 +54,6 @@
 - (void)setStateUploadedWithException:(NSException *)exception;
 
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed;
+
+- (void)addError:(NSString *)errorDescription forEvent:(NSString *)event;
 @end

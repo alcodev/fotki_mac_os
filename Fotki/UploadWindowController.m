@@ -8,6 +8,8 @@
 #import "Album.h"
 #import "Account.h"
 #import "UploadFilesDataSource.h"
+#import "ErrorsDataSource.h"
+#import "Lib/DataSources/UploadError.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -51,12 +53,14 @@ typedef enum {
 @synthesize errorsUploadFilesLabel = _errorsUploadFilesLabel;
 @synthesize progressStatisticLabel = _progressStatisticLabel;
 @synthesize uploadFilesDataSource = _uploadFilesDataSource;
+@synthesize errorsDataSource = _errorsDataSource;
+@synthesize errorsTable = _errorsTable;
+@synthesize tabWindow = _tabWindow;
 
 
 - (id)init {
     self = [super initWithWindowNibName:@"UploadWindow"];
     if (self) {
-        self.uploadFilesDataSource = [UploadFilesDataSource dataSource];
 
         //HACK: http://borkware.com/quickies/single?id=276
         //The window controller nib doesn't get loaded until the window is manipulated.
@@ -66,7 +70,12 @@ typedef enum {
 
         self.currentState = kStateUnknown;
 
+        self.uploadFilesDataSource = [UploadFilesDataSource dataSource];
         self.uploadFilesTable.dataSource = self.uploadFilesDataSource;
+
+        self.errorsDataSource = [ErrorsDataSource dataSource];
+        self.errorsTable.dataSource = self.errorsDataSource;
+
         self.uploadToAlbumComboBox.dataSource = self;
 
         [self.uploadFilesAddButton setAction:@selector(onAddButtonClicked:)];
@@ -75,6 +84,7 @@ typedef enum {
         [self.uploadButton setAction:@selector(onApplyButtonClicked:)];
         [self.uploadCancelButton setAction:@selector(onCloseButtonClicked:)];
 
+        [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
         [self.window setDelegate:self];
     }
 
@@ -108,6 +118,9 @@ typedef enum {
     [_errorsUploadFilesLabel release];
     [_progressStatisticLabel release];
     [_uploadFilesDataSource release];
+    [_errorsDataSource release];
+    [_errorsTable release];
+    [_tabWindow release];
     [super dealloc];
 }
 
@@ -150,6 +163,8 @@ typedef enum {
     if (self.onAddFileButtonClicked) {
         self.onAddFileButtonClicked();
 
+        [self.errorsDataSource.errors removeAllObjects];
+        [self.errorsTable reloadData];
         [self.uploadFilesTable reloadData];
         [self changeApplyButtonStateBasedOnFormState];
     }
@@ -172,8 +187,11 @@ typedef enum {
 }
 
 - (void)prepareWindowBeforeClose {
+    [self.tabWindow selectTabViewItemAtIndex:0];
     [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
+    [self.errorsDataSource.errors removeAllObjects];
+    [self.errorsTable reloadData];
 }
 
 - (IBAction)onCloseButtonClicked:(id)sender {
@@ -182,17 +200,20 @@ typedef enum {
 }
 
 //-----------------------------------------------------------------------------------------
-// NSTableView drag-n-drop implementation
+// NSDraggingDestination implementation
 //-----------------------------------------------------------------------------------------
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    return NSDragOperationCopy;
+}
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation {
-    if (![tableView isEnabled]) {
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+    if (![self.uploadFilesTable isEnabled]) {
         return NO;
     }
 
     BOOL result = NO;
     if (self.onNeedAcceptDrop) {
-        result = self.onNeedAcceptDrop(info);
+        result = self.onNeedAcceptDrop(sender);
 
         [self.uploadFilesTable reloadData];
         [self changeApplyButtonStateBasedOnFormState];
@@ -200,13 +221,6 @@ typedef enum {
 
     return result;
 }
-
-- (NSDragOperation)tableView:(NSTableView *)pTableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op {
-    // Add code here to validate the drop
-    //NSLog(@"validate Drop");
-    return NSDragOperationEvery;
-}
-
 //-----------------------------------------------------------------------------------------
 // NSComboBoxDataSource implementation
 //-----------------------------------------------------------------------------------------
@@ -263,8 +277,6 @@ typedef enum {
     [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
     [self.uploadFilesTable setEnabled:YES];
-    [self.uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-    [self.uploadFilesTable setDraggingSourceOperationMask:NSDragOperationCopy forLocal:NO];
 
     [self.uploadFilesAddButton setEnabled:YES];
     [self.uploadFilesDeleteButton setEnabled:YES];
@@ -291,6 +303,8 @@ typedef enum {
 
     [self.uploadCancelButton setEnabled:YES];
     [self.uploadCancelButton setTitle:@"Close"];
+
+    [self.errorsTable reloadData];
 }
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress {
@@ -346,4 +360,8 @@ typedef enum {
     }
 }
 
+- (void)addError:(NSString *)errorDescription forEvent:(NSString *)event {
+   [self.errorsDataSource.errors addObject:[[[UploadError alloc] initWithEvent:event andErrorDescription:errorDescription] autorelease]];
+   [self.errorsTable reloadData];
+}
 @end
