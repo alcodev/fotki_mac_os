@@ -22,4 +22,9 @@
 
 + (long long int)sizeForFilesAtPaths:(NSArray *)paths;
 
++ (NSString *)formatFileSize:(float)sizeInByte;
+
++ (NSString *)formatSpeed:(float)speedInByteSec;
+
+
 @end

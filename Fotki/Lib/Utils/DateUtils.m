@@ -30,14 +30,25 @@
     double minutes = floor((seconds - hours * 3600) / 60);
     seconds = round(seconds - hours * 3600 - minutes * 60);
     NSString *formattedString = [[[NSString alloc] init] autorelease];
-    if ((int)hours > 0){
-        formattedString = [NSString stringWithFormat:@"%d hour(s) ", (int)hours];
+    if ((int) hours > 0) {
+        if ((int) hours == 1)
+            formattedString = [NSString stringWithFormat:@"%d hour ", (int) hours];
+        else
+            formattedString = [NSString stringWithFormat:@"%d hours ", (int) hours];
     }
-    if ((int)minutes > 0){
-        formattedString = [NSString stringWithFormat:@"%@%d minute(s) ",formattedString, (int)minutes];
+    if ((int) minutes > 0) {
+        if ((int) minutes == 1)
+            formattedString = [NSString stringWithFormat:@"%@%d minute ", formattedString, (int) minutes];
+        else
+            formattedString = [NSString stringWithFormat:@"%@%d minutes ", formattedString, (int) minutes];
     }
-    formattedString = [NSString stringWithFormat:@"%@ %d second(s)", formattedString, (int)seconds];
-    //LOG(@"%@", formattedString);
-    return [NSString stringWithFormat:@"Total progress (Estimated time left: %@)", formattedString];
+    if ((int) seconds == 1)
+        formattedString = [NSString stringWithFormat:@"%@ %d second", formattedString, (int) seconds];
+    else
+        formattedString = [NSString stringWithFormat:@"%@ %d seconds", formattedString, (int) seconds];
+
+    return formattedString;
 }
+
+
 @end

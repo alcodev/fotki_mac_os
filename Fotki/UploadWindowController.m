@@ -37,10 +37,8 @@ typedef enum {
 @synthesize uploadFilesAddButton = _uploadFilesAddButton;
 @synthesize uploadFilesDeleteButton = _uploadFilesDeleteButton;
 @synthesize uploadToAlbumComboBox = _uploadToAlbumComboBox;
-@synthesize currentFileProgressLabel = _currentFileProgressLabel;
-@synthesize currentFileProgressIndicator = _currentFileProgressIndicator;
-@synthesize totalProgressLabel = _totalProgressLabel;
-@synthesize totalFileProgressIndicator = _totalFileProgressIndicator;
+
+@synthesize uploadProgressIndicator = _uploadProgressIndicator;
 @synthesize albumLinkLabel = _albumLinkLabel;
 @synthesize uploadButton = _uploadButton;
 @synthesize uploadCancelButton = _uploadCancelButton;
@@ -52,7 +50,8 @@ typedef enum {
 @synthesize onAddFileButtonClicked = _onAddFileButtonClicked;
 @synthesize onDeleteFileButtonClicked = _onDeleteFileButtonClicked;
 @synthesize onNeedUpload = _onNeedUpload;
-@synthesize countErrorsUploadFilesLabel = _countErrorsUploadFilesLabel;
+@synthesize errorsUploadFilesLabel = _errorsUploadFilesLabel;
+@synthesize progressStatisticLabel = _progressStatisticLabel;
 
 
 - (id)init {
@@ -94,10 +93,8 @@ typedef enum {
     [_uploadFilesAddButton release];
     [_uploadFilesDeleteButton release];
     [_uploadToAlbumComboBox release];
-    [_currentFileProgressLabel release];
-    [_currentFileProgressIndicator release];
-    [_totalProgressLabel release];
-    [_totalFileProgressIndicator release];
+
+    [_uploadProgressIndicator release];
     [_albumLinkLabel release];
     [_uploadButton release];
     [_uploadCancelButton release];
@@ -111,7 +108,8 @@ typedef enum {
     [_onDeleteFileButtonClicked release];
     [_onNeedUpload release];
 
-    [_countErrorsUploadFilesLabel release];
+    [_errorsUploadFilesLabel release];
+    [_progressStatisticLabel release];
     [super dealloc];
 }
 
@@ -251,15 +249,13 @@ typedef enum {
 
         [self.albumLinkLabel setAttributedStringValue:attributedString];
     } else {
-        [self.albumLinkLabel setTitleWithMnemonic:@"Error get album url"];
+        [self.albumLinkLabel setTitleWithMnemonic:@""];
+        //[self.albumLinkLabel setTitleWithMnemonic:@"Error get album url"];
     }
 }
 
 - (void)setProgressBarsHidden:(BOOL)isHidden {
-    [self.totalFileProgressIndicator setHidden:isHidden];
-    [self.totalProgressLabel setHidden:isHidden];
-    [self.currentFileProgressIndicator setHidden:isHidden];
-    [self.currentFileProgressLabel setHidden:isHidden];
+    [self.uploadProgressIndicator setHidden:isHidden];
 }
 
 - (void)changeApplyButtonStateBasedOnFormState {
@@ -302,17 +298,21 @@ typedef enum {
 
     [self.albumLinkLabel setHidden:YES];
 
-    [self.countErrorsUploadFilesLabel setHidden:YES];
+    [self.errorsUploadFilesLabel setHidden:YES];
 
-    [self setProgressBarsHidden:YES];
+    [self.uploadProgressIndicator setHidden:YES];
+    [self.albumLinkLabel setHidden:YES];
+    [self.errorsUploadFilesLabel setHidden:YES];
+    [self.progressStatisticLabel setHidden:YES];
 
+    [self.uploadProgressIndicator startAnimation:self];
     [self changeApplyButtonStateBasedOnFormState];
 
     [self.uploadCancelButton setEnabled:YES];
     [self.uploadCancelButton setTitle:@"Close"];
 }
 
-- (void)setStateUploadingWithFileProgressValue:(double)progressValueFile fileProgressLabel:(NSString *)labelFileProgress totalProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress {
+- (void)setStateUploadingWithFileProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress {
     self.currentState = kStateUploading;
 
     [self.uploadFilesTable setEnabled:NO];
@@ -324,26 +324,23 @@ typedef enum {
 
     [self.albumLinkLabel setHidden:YES];
 
-    [self setProgressBarsHidden:NO];
+    [self.uploadProgressIndicator setHidden:NO];
+    [self.progressStatisticLabel setHidden:NO];
 
-    [self.currentFileProgressIndicator startAnimation:self];
-    [self.currentFileProgressLabel setTitleWithMnemonic:labelFileProgress];
-    [self.currentFileProgressIndicator setDoubleValue:progressValueFile];
-
-    [self.totalFileProgressIndicator startAnimation:self];
-    [self.totalFileProgressIndicator setDoubleValue:progressValueTotal];
-    [self.totalProgressLabel setTitleWithMnemonic:labelTotalProgress];
+    [self.uploadProgressIndicator startAnimation:self];
+    [self.uploadProgressIndicator setDoubleValue:progressValueTotal];
 
     [self.uploadButton setEnabled:NO];
 
     [self.uploadCancelButton setEnabled:YES];
     [self.uploadCancelButton setTitle:@"Cancel"];
+    [self.progressStatisticLabel setTitleWithMnemonic:labelTotalProgress];
 }
 
 - (void)setStateUploadedWithException:(NSException *)exception {
     self.currentState = kStateUploaded;
 
-    [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Error" totalProgressValue:100.0 totalProgressLabel:@"Error"];
+    [self setStateUploadingWithFileProgressValue:100.0 totalProgressLabel:@"Error"];
 
     [self.albumLinkLabel setHidden:NO];
     [self.albumLinkLabel setTitleWithMnemonic:@"Upload error"];
@@ -352,15 +349,17 @@ typedef enum {
 
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed {
     self.currentState = kStateUploaded;
-    [self setStateUploadingWithFileProgressValue:100.0 fileProgressLabel:@"Done" totalProgressValue:100.0 totalProgressLabel:@"Done"];
+    [self setStateUploadingWithFileProgressValue:100.0 totalProgressLabel:@"Done"];
 
+    [self.uploadProgressIndicator setHidden:YES];
+    [self.progressStatisticLabel setHidden:YES];
     [self.albumLinkLabel setHidden:NO];
 
     if (arrayPathsFilesFailed.count > 0) {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Click to open your album"];
         NSString *errorText = [NSString stringWithFormat:@"Failed to upload %d files", arrayPathsFilesFailed.count];
-        [self.countErrorsUploadFilesLabel setHidden:NO];
-        [self.countErrorsUploadFilesLabel setTitleWithMnemonic:errorText];
+        [self.errorsUploadFilesLabel setHidden:NO];
+        [self.errorsUploadFilesLabel setTitleWithMnemonic:errorText];
     } else {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }

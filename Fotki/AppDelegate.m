@@ -241,7 +241,7 @@
     };
     self.controllerUploadWindow.onNeedUpload = ^{
         self.dragStatusView.isEnable = NO;
-        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 fileProgressLabel:@"Start" totalProgressValue:0.0 totalProgressLabel:@"Start"];
+        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 totalProgressLabel:@"Start"];
 
         [NSThread doInNewThread:^{
             [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
@@ -299,14 +299,20 @@
                         LOG(@"bytesTotalLeft: %d", statisticsCalculator.bytesTotalLeft / 1024);
                         LOG(@"secondsTotalLeft: %d", statisticsCalculator.secondsTotalLeft);
 
+
                         [NSThread doInMainThread:^() {
-                            double valueProgressFile = statisticsCalculator.bytesCurrentTotalWritten * 100 / statisticsCalculator.bytesCurrentTotalExpectedToWrite;
-                            NSString *labelProgressFile = [NSString stringWithFormat:@"Uploading file %d of %d at %dKB/sec.", indexFilePath + 1, arrayPathsFiles.count, (int) statisticsCalculator.speed / 1024];
-
                             double valueProgressTotal = statisticsCalculator.bytesTotalWritten * 100 / statisticsCalculator.bytesTotalExpectedToWrite;
-                            NSString *labelProgressTotal = [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft];
 
-                            [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressFile fileProgressLabel:labelProgressFile totalProgressValue:valueProgressTotal totalProgressLabel:labelProgressTotal];
+
+                            NSString *statisticText =
+                                    [NSString stringWithFormat:@"Uploading %d of %d (%@ of %@) at speed %@. Estimated time left: %@",
+                                                    indexFilePath, arrayPathsFiles.count,
+                                                    [FileSystemHelper formatFileSize:statisticsCalculator.bytesCurrentTotalWritten],
+                                                    [FileSystemHelper formatFileSize:statisticsCalculator.bytesTotalExpectedToWrite],
+                                                    [FileSystemHelper formatSpeed:statisticsCalculator.speed],
+                                                    [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft]];
+
+                            [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressTotal totalProgressLabel:statisticText];
                         }          waitUntilDone:YES];
 
                         LOG(@"");
