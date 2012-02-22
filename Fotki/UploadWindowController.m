@@ -352,6 +352,7 @@ typedef enum {
 
     [self.albumLinkLabel setHidden:NO];
     [self.albumLinkLabel setTitleWithMnemonic:@"Upload error"];
+    [self.uploadCancelButton setTitle:@"Close"];
 
 }
 
@@ -362,6 +363,7 @@ typedef enum {
     [self.uploadProgressIndicator setHidden:YES];
     [self.progressStatisticLabel setHidden:YES];
     [self.albumLinkLabel setHidden:NO];
+    [self.uploadCancelButton setTitle:@"Close"];
 
     if (arrayPathsFilesFailed.count > 0) {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Click to open your album"];
