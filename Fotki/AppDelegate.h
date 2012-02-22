@@ -30,6 +30,8 @@
 
 - (IBAction)settingsMenuItemClicked:(id)sender;
 
+- (IBAction)aboutMenuClicked:(id)sender;
+
 - (IBAction)exitMenuItemClicked:(id)sender;
 
 - (IBAction)uploadMenuClicked:(id)sender;

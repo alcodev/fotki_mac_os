@@ -22,6 +22,7 @@
 #import "UploadWindowController.h"
 #import "UploadFilesStatisticsCalculator.h"
 #import "UploadFilesDataSource.h"
+#import "AboutWindowController.h"
 
 #define APP_NAME @"Fotki"
 
@@ -30,8 +31,9 @@
 
 @property(nonatomic, retain) FotkiServiceFacade *serviceFacade;
 @property(nonatomic, retain) Account *currentAccount;
-@property(nonatomic, retain) SettingsWindowController *controllerSettingsWindow;
 @property(nonatomic, retain) UploadWindowController *controllerUploadWindow;
+@property(nonatomic, retain) SettingsWindowController *controllerSettingsWindow;
+@property(nonatomic, retain) AboutWindowController *controllerAboutWindow;
 @property(nonatomic, retain) DragStatusView *dragStatusView;
 
 - (void)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
@@ -76,6 +78,7 @@
 @synthesize controllerSettingsWindow = _controllerSettingsWindow;
 @synthesize controllerUploadWindow = _controllerUploadWindow;
 @synthesize isUploadFinished = _isUploadFinished;
+@synthesize controllerAboutWindow = _controllerAboutWindow;
 
 
 - (id)init {
@@ -104,6 +107,7 @@
     [_controllerSettingsWindow release];
     [_controllerUploadWindow release];
 
+    [_controllerAboutWindow release];
     [super dealloc];
 }
 
@@ -111,12 +115,16 @@
 // Main menu handlers
 //-----------------------------------------------------------------------------------------
 
+- (IBAction)uploadMenuClicked:(id)sender {
+    [self.controllerUploadWindow showWindow:self];
+}
+
 - (IBAction)settingsMenuItemClicked:(id)sender {
     [self.controllerSettingsWindow showWindow:self];
 }
 
-- (IBAction)uploadMenuClicked:(id)sender {
-    [self.controllerUploadWindow showWindow:self];
+- (IBAction)aboutMenuClicked:(id)sender {
+    [self.controllerAboutWindow showWindow:self];
 }
 
 - (IBAction)exitMenuItemClicked:(id)sender {
@@ -254,6 +262,9 @@
             self.isUploadFinished = NO;
         }
     };
+
+    self.controllerAboutWindow = [AboutWindowController controller];
+
     [self restoreSession];
 }
 

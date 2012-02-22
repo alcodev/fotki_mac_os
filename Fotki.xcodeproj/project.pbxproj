@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2521F1C714EB76B400A78B65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2521F1C614EB76B400A78B65 /* libz.dylib */; };
+		25D54F9F14F55B1F00A2D7E6 /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25D54F9E14F55B1F00A2D7E6 /* AboutWindow.xib */; };
 		E1AF2C9D14EF51E100ABF258 /* SettingsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */; };
 		E1AF2CA014EF531F00ABF258 /* SettingsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */; };
 		E1AF2CB214EFDC9C00ABF258 /* UploadWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2CB114EFDC9C00ABF258 /* UploadWindow.xib */; };
@@ -90,6 +91,7 @@
 		E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */; };
 		E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C0 /* ErrorsDataSource.m */; };
 		E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C3 /* UploadError.m */; };
+		E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,7 @@
 
 /* Begin PBXFileReference section */
 		2521F1C614EB76B400A78B65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		25D54F9E14F55B1F00A2D7E6 /* AboutWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
 		E1AF2C9B14EF51E100ABF258 /* SettingsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsWindowController.h; sourceTree = "<group>"; };
 		E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsWindowController.m; sourceTree = "<group>"; };
 		E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsWindow.xib; sourceTree = "<group>"; };
@@ -263,6 +266,8 @@
 		E1EE7F8414AC79AA003AD9C2 /* ErrorsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorsDataSource.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9C3 /* UploadError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadError.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9C5 /* UploadError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadError.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9C8 /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +338,8 @@
 		E1EA4A2B14A59F0400EE9703 /* Fotki */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9C8 /* AboutWindowController.h */,
+				E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */,
 				E1EE7F8414AC79AA003AD9B7 /* UploadWindowController.h */,
 				E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */,
 				E1EE7F8414AC79AA003AD91D /* Consts.h */,
@@ -345,6 +352,7 @@
 				E1AF2C9C14EF51E100ABF258 /* SettingsWindowController.m */,
 				E1AF2C9F14EF531F00ABF258 /* SettingsWindow.xib */,
 				E1AF2CB114EFDC9C00ABF258 /* UploadWindow.xib */,
+				25D54F9E14F55B1F00A2D7E6 /* AboutWindow.xib */,
 			);
 			path = Fotki;
 			sourceTree = "<group>";
@@ -760,6 +768,7 @@
 				E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */,
 				E1AF2CA014EF531F00ABF258 /* SettingsWindow.xib in Resources */,
 				E1AF2CB214EFDC9C00ABF258 /* UploadWindow.xib in Resources */,
+				25D54F9F14F55B1F00A2D7E6 /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,6 +867,7 @@
 				E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */,
 				E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */,
 				E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */,
+				E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
