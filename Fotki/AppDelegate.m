@@ -249,6 +249,7 @@
     };
     self.controllerUploadWindow.onWindowClose = ^{
         if (self.isUploadFinished){
+            self.dragStatusView.isEnable = YES;
             [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
             self.isUploadFinished = NO;
         }
@@ -344,7 +345,6 @@
     self.isUploadFinished = YES;
 
     [NSThread doInMainThread:^() {
-        self.dragStatusView.isEnable = YES;
         [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:linkToAlbum arrayPathsFilesFailed:[statisticsCalculator arrayPathsFilesFailed]];
     }          waitUntilDone:YES];
 }

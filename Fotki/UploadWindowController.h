@@ -20,6 +20,7 @@
 @property(nonatomic, retain) UploadFilesDataSource *uploadFilesDataSource;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesAddButton;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesDeleteButton;
+@property(nonatomic, retain) IBOutlet NSButton *uploadFilesClearListButton;
 @property(nonatomic, retain) IBOutlet NSComboBox *uploadToAlbumComboBox;
 @property(nonatomic, retain) IBOutlet NSButton *uploadButton;
 @property(nonatomic, retain) IBOutlet NSButton *uploadCancelButton;
@@ -47,6 +48,8 @@
 + (id)controller;
 
 - (void)setStateInitializedWithAccount:(Account *)account;
+
+- (IBAction)onClearListButtonClicked:(id)sender;
 
 - (void)makeUploadTabActive;
 

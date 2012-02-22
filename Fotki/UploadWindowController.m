@@ -57,6 +57,7 @@ typedef enum {
 @synthesize errorsTable = _errorsTable;
 @synthesize tabWindow = _tabWindow;
 @synthesize onWindowClose = _onWindowClose;
+@synthesize uploadFilesClearListButton = _uploadFilesClearListButton;
 
 
 - (id)init {
@@ -123,6 +124,7 @@ typedef enum {
     [_errorsTable release];
     [_tabWindow release];
     [_onWindowClose release];
+    [_uploadFilesClearListButton release];
     [super dealloc];
 }
 
@@ -188,6 +190,11 @@ typedef enum {
     }
 }
 
+- (IBAction)onClearListButtonClicked:(id)sender {
+    [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
+    [self.uploadFilesTable reloadData];
+}
+
 - (void)makeUploadTabActive {
     [self.tabWindow selectTabViewItemAtIndex:0];
 }
@@ -206,14 +213,10 @@ typedef enum {
 // NSDraggingDestination implementation
 //-----------------------------------------------------------------------------------------
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    return NSDragOperationCopy;
+    return [self.uploadFilesTable isEnabled]? NSDragOperationCopy: NSDragOperationNone;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
-    if (![self.uploadFilesTable isEnabled]) {
-        return NO;
-    }
-
     [self makeUploadTabActive];
 
     BOOL result = NO;
@@ -288,6 +291,7 @@ typedef enum {
 
     [self.uploadFilesAddButton setEnabled:YES];
     [self.uploadFilesDeleteButton setEnabled:YES];
+    [self.uploadFilesClearListButton setEnabled:YES];
 
     [self.uploadToAlbumComboBox setEnabled:YES];
 
@@ -322,6 +326,7 @@ typedef enum {
 
     [self.uploadFilesAddButton setEnabled:NO];
     [self.uploadFilesDeleteButton setEnabled:NO];
+    [self.uploadFilesClearListButton setEnabled:NO];
 
     [self.uploadToAlbumComboBox setEnabled:NO];
 

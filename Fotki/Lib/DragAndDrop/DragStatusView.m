@@ -48,7 +48,6 @@
 
 }
 
-//we want to copy the files
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     return self.isEnable? NSDragOperationCopy: NSDragOperationNone;
 }
