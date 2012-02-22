@@ -47,6 +47,8 @@
 
 - (void)setStateInitializedWithAccount:(Account *)account;
 
+- (void)makeUploadTabActive;
+
 - (void)changeApplyButtonStateBasedOnFormState;
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress;

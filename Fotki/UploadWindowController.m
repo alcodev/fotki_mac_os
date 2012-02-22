@@ -186,8 +186,12 @@ typedef enum {
     }
 }
 
-- (void)prepareWindowBeforeClose {
+- (void)makeUploadTabActive {
     [self.tabWindow selectTabViewItemAtIndex:0];
+}
+
+- (void)prepareWindowBeforeClose {
+    [self makeUploadTabActive];
     [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
     [self.errorsDataSource.errors removeAllObjects];
@@ -210,6 +214,8 @@ typedef enum {
     if (![self.uploadFilesTable isEnabled]) {
         return NO;
     }
+
+    [self makeUploadTabActive];
 
     BOOL result = NO;
     if (self.onNeedAcceptDrop) {
