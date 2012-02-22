@@ -6,6 +6,11 @@
 #import "NSImage+Helper.h"
 #import "FileSystemHelper.h"
 
+@interface DragStatusView ()
+- (void)manuallyCallRedraw;
+
+@end
+
 @implementation DragStatusView {
 @private
     BOOL _isOnline;
@@ -17,6 +22,7 @@
 @synthesize onFilesDragged = _onFilesDragged;
 @synthesize isOnline = _isOnline;
 @synthesize isEnable = _isEnable;
+@synthesize isMenuVisible = _isMenuVisible;
 
 
 - (void)dealloc {
@@ -31,25 +37,40 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
+    [_statusItem drawStatusBarBackgroundInRect:[self bounds]
+                                 withHighlight:self.isMenuVisible];
     if (self.isOnline) {
         NSImage *iconImage = [[NSImage imageNamed:@"F-online.png"] extractAsImageRepresentationOfSize:0];
-        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
     }
     else {
         NSImage *iconImage = [[NSImage imageNamed:@"F-offline.png"] extractAsImageRepresentationOfSize:0];
-        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeCopy fraction:1];
+        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
     }
+}
+
+
+- (void)menuWillOpen:(NSMenu *)menu NS_AVAILABLE_MAC(10_5) {
+    self.isMenuVisible = YES;
+    [self manuallyCallRedraw];
+}
+
+- (void)menuDidClose:(NSMenu *)menu NS_AVAILABLE_MAC(10_5) {
+    self.isMenuVisible = NO;
+    [self manuallyCallRedraw];
 }
 
 - (void)changeIconState:(BOOL)isOnline {
     self.isOnline = isOnline;
+    [self manuallyCallRedraw];
+}
+- (void)manuallyCallRedraw {
     [self setHidden:YES];
     [self setHidden:NO];
-
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    return self.isEnable? NSDragOperationCopy: NSDragOperationNone;
+    return self.isEnable ? NSDragOperationCopy : NSDragOperationNone;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
@@ -69,6 +90,7 @@
     if (self) {
         [self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
         self.menu = menu;
+        self.menu.delegate = self;
         self.statusItem = statusItem;
         self.onFilesDragged = onFilesDragged;
         self.isEnable = YES;

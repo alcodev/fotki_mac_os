@@ -8,7 +8,7 @@
 
 typedef void (^DragFilesCallback)(id);
 
-@interface DragStatusView : NSView
+@interface DragStatusView : NSView <NSMenuDelegate>
 
 @property(nonatomic, retain)NSStatusItem *statusItem;
 @property(nonatomic, retain)NSMenu *menu;
@@ -19,6 +19,8 @@ typedef void (^DragFilesCallback)(id);
 @property(nonatomic) BOOL isOnline;
 
 @property(nonatomic) BOOL isEnable;
+
+@property(nonatomic) BOOL isMenuVisible;
 
 - (void)changeIconState:(BOOL)isOnline;
 
