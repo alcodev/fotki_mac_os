@@ -22,8 +22,6 @@ typedef enum {
 
 - (void)showLinkToAlbum:(NSString *)urlToAlbum withUrlText:(NSString *)urlText;
 
-- (void)setProgressBarsHidden:(BOOL)isHidden;
-
 @end
 
 
@@ -77,7 +75,6 @@ typedef enum {
         [self.uploadCancelButton setAction:@selector(onCloseButtonClicked:)];
 
         [self.window setDelegate:self];
-        //NSImage *image = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertNoteIcon)];
     }
 
     return self;
@@ -254,10 +251,6 @@ typedef enum {
     }
 }
 
-- (void)setProgressBarsHidden:(BOOL)isHidden {
-    [self.uploadProgressIndicator setHidden:isHidden];
-}
-
 - (void)changeApplyButtonStateBasedOnFormState {
     BOOL hasFilesToUpload = self.uploadFilesTable.numberOfRows > 0;
     BOOL isAlbumSelected = self.selectedAlbum != nil;
@@ -364,4 +357,5 @@ typedef enum {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }
 }
+
 @end

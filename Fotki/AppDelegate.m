@@ -229,7 +229,7 @@
     self.controllerUploadWindow.onAddFileButtonClicked = ^{
         NSArray *arraySelectedUrls = [DialogUtils showOpenImageFileDialog];
         for (NSURL *url in arraySelectedUrls) {
-            if (![self.controllerUploadWindow.arrayFilesToUpload containsObject:url.path]){
+            if (![self.controllerUploadWindow.arrayFilesToUpload containsObject:url.path]) {
                 [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
             }
         }
@@ -264,7 +264,13 @@
 
 - (void)doUploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album {
     NSString *linkToAlbum = [self getUrlToAlbum:album];
+    NSMutableDictionary *errorsDictionary = [[NSMutableDictionary alloc] init];
+    NSArray *keys = errorsDictionary.allKeys;
 
+    for(NSString *key in keys){
+        NSString *value = [errorsDictionary objectForKey:key];
+    }
+    
     UploadFilesStatisticsCalculator *statisticsCalculator = [UploadFilesStatisticsCalculator calculatorWithPathsFiles:arrayPathsFiles];
     LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite / 1024);
     LOG(@"");
@@ -306,11 +312,11 @@
 
                             NSString *statisticText =
                                     [NSString stringWithFormat:@"Uploading %d of %d (%@ of %@) at speed %@. Estimated time left: %@",
-                                                    indexFilePath, arrayPathsFiles.count,
-                                                    [FileSystemHelper formatFileSize:statisticsCalculator.bytesCurrentTotalWritten],
-                                                    [FileSystemHelper formatFileSize:statisticsCalculator.bytesTotalExpectedToWrite],
-                                                    [FileSystemHelper formatSpeed:statisticsCalculator.speed],
-                                                    [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft]];
+                                                               indexFilePath, arrayPathsFiles.count,
+                                                               [FileSystemHelper formatFileSize:statisticsCalculator.bytesCurrentTotalWritten],
+                                                               [FileSystemHelper formatFileSize:statisticsCalculator.bytesTotalExpectedToWrite],
+                                                               [FileSystemHelper formatSpeed:statisticsCalculator.speed],
+                                                               [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft]];
 
                             [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressTotal totalProgressLabel:statisticText];
                         }          waitUntilDone:YES];
@@ -363,10 +369,10 @@
     [self.dragStatusView changeIconState:NO];
 }
 
-- (void)addUniqueElementsFromArray:(NSArray *)srcArray toArray:(NSMutableArray *)dstArray{
+- (void)addUniqueElementsFromArray:(NSArray *)srcArray toArray:(NSMutableArray *)dstArray {
     NSSet *set = [NSSet setWithArray:srcArray];
-    for(NSObject *object in set){
-        if (![dstArray containsObject:object]){
+    for (NSObject *object in set) {
+        if (![dstArray containsObject:object]) {
             [dstArray addObject:object];
         }
     }
