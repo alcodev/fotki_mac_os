@@ -56,6 +56,7 @@ typedef enum {
 @synthesize errorsDataSource = _errorsDataSource;
 @synthesize errorsTable = _errorsTable;
 @synthesize tabWindow = _tabWindow;
+@synthesize onWindowClose = _onWindowClose;
 
 
 - (id)init {
@@ -121,6 +122,7 @@ typedef enum {
     [_errorsDataSource release];
     [_errorsTable release];
     [_tabWindow release];
+    [_onWindowClose release];
     [super dealloc];
 }
 
@@ -192,10 +194,7 @@ typedef enum {
 
 - (void)prepareWindowBeforeClose {
     [self makeUploadTabActive];
-    [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
-    [self.uploadFilesTable reloadData];
-    [self.errorsDataSource.errors removeAllObjects];
-    [self.errorsTable reloadData];
+    self.onWindowClose();
 }
 
 - (IBAction)onCloseButtonClicked:(id)sender {
@@ -284,6 +283,9 @@ typedef enum {
     [self.uploadFilesTable reloadData];
     [self.uploadFilesTable setEnabled:YES];
 
+    [self.errorsDataSource.errors removeAllObjects];
+    [self.errorsTable reloadData];
+
     [self.uploadFilesAddButton setEnabled:YES];
     [self.uploadFilesDeleteButton setEnabled:YES];
 
@@ -367,7 +369,7 @@ typedef enum {
 }
 
 - (void)addError:(NSString *)errorDescription forEvent:(NSString *)event {
-   [self.errorsDataSource.errors addObject:[[[UploadError alloc] initWithEvent:event andErrorDescription:errorDescription] autorelease]];
-   [self.errorsTable reloadData];
+    [self.errorsDataSource.errors addObject:[[[UploadError alloc] initWithEvent:event andErrorDescription:errorDescription] autorelease]];
+    [self.errorsTable reloadData];
 }
 @end

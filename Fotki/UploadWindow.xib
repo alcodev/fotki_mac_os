@@ -52,7 +52,7 @@
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
-				<string key="NSWindowContentMinSize">{486, 426}</string>
+				<string key="NSWindowContentMinSize">{643, 355}</string>
 				<object class="NSView" key="NSWindowView" id="780121213">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -405,7 +405,6 @@
 												<int key="NSvFlags">290</int>
 												<string key="NSFrame">{{10, 9}, {606, 26}}</string>
 												<reference key="NSSuperview" ref="758564690"/>
-												<reference key="NSNextKeyView" ref="426396637"/>
 												<string key="NSReuseIdentifierKey">_NS:708</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSComboBoxCell" key="NSCell" id="140612425">
@@ -787,7 +786,7 @@
 					<string key="NSReuseIdentifierKey">_NS:224</string>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1366, 746}}</string>
-				<string key="NSMinSize">{486, 448}</string>
+				<string key="NSMinSize">{643, 377}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
 				<double key="NSContentBorderThicknessMinY">32</double>

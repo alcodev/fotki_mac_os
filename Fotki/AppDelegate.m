@@ -75,6 +75,7 @@
 
 @synthesize controllerSettingsWindow = _controllerSettingsWindow;
 @synthesize controllerUploadWindow = _controllerUploadWindow;
+@synthesize isUploadFinished = _isUploadFinished;
 
 
 - (id)init {
@@ -115,7 +116,6 @@
 }
 
 - (IBAction)uploadMenuClicked:(id)sender {
-    [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
     [self.controllerUploadWindow showWindow:self];
 }
 
@@ -160,6 +160,7 @@
 - (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
     [NSThread doInNewThread:^{
         [self doSyncLoginWithUsername:username password:password];
+        [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
     }];
 }
 
@@ -246,7 +247,12 @@
             [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
         }];
     };
-
+    self.controllerUploadWindow.onWindowClose = ^{
+        if (self.isUploadFinished){
+            [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
+            self.isUploadFinished = NO;
+        }
+    };
     [self restoreSession];
 }
 
@@ -335,7 +341,7 @@
             [statisticsCalculator setUploadFailedForPath:pathFile];
         }
     }
-
+    self.isUploadFinished = YES;
 
     [NSThread doInMainThread:^() {
         self.dragStatusView.isEnable = YES;

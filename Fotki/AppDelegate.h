@@ -26,6 +26,8 @@
 @property(nonatomic, retain)IBOutlet NSProgressIndicator *currentFileProgressIndicator;
 @property(nonatomic, retain)IBOutlet NSProgressIndicator *totalFileProgressIndicator;
 
+@property(nonatomic) BOOL isUploadFinished;
+
 - (IBAction)settingsMenuItemClicked:(id)sender;
 
 - (IBAction)exitMenuItemClicked:(id)sender;
