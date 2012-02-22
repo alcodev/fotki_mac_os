@@ -8,10 +8,10 @@
 
 @class Account;
 @class Album;
+@class UploadFilesDataSource;
 
-@interface UploadWindowController : NSWindowController<NSTableViewDataSource, NSComboBoxDataSource, NSWindowDelegate>
+@interface UploadWindowController : NSWindowController<NSComboBoxDataSource, NSWindowDelegate>
 
-@property(nonatomic, retain) NSMutableArray *arrayFilesToUpload;
 @property(nonatomic, retain) NSArray *arrayAlbums;
 
 @property(nonatomic, retain) IBOutlet NSTextField *welcomeLabel;
@@ -35,6 +35,8 @@
 @property(nonatomic, copy) Callback onAddFileButtonClicked;
 @property(nonatomic, copy) ParametrizedCallback onDeleteFileButtonClicked;
 @property(nonatomic, copy) Callback onNeedUpload;
+
+@property(nonatomic, retain)UploadFilesDataSource *uploadFilesDataSource;
 
 + (id)controller;
 

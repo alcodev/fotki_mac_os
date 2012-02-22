@@ -21,6 +21,7 @@
 #import "ApiConnectionException.h"
 #import "UploadWindowController.h"
 #import "UploadFilesStatisticsCalculator.h"
+#import "UploadFilesDataSource.h"
 
 #define APP_NAME @"Fotki"
 
@@ -198,7 +199,7 @@
     self.dragStatusView = [[[DragStatusView alloc] initWithFrame:NSMakeRect(0, 0, 24, 24) andMenu:statusMenu andStatusMenuItem:statusItem onFilesDragged:^(NSArray *files) {
         [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
         [self.controllerUploadWindow showWindow:self];
-        [self addUniqueElementsFromArray:files toArray:self.controllerUploadWindow.arrayFilesToUpload];
+        [self addUniqueElementsFromArray:files toArray:self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload];
         [self.controllerUploadWindow.uploadFilesTable reloadData];
         [self.controllerUploadWindow changeApplyButtonStateBasedOnFormState];
     }] autorelease];
@@ -220,7 +221,7 @@
         if ([[pasteboard types] containsObject:NSFilenamesPboardType]) {
             NSArray *pathsAll = [pasteboard propertyListForType:NSFilenamesPboardType];
             NSArray *pathsImages = [FileSystemHelper getImagesFromFiles:pathsAll];
-            [self addUniqueElementsFromArray:pathsImages toArray:self.controllerUploadWindow.arrayFilesToUpload];
+            [self addUniqueElementsFromArray:pathsImages toArray:self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload];
             return YES;
         } else {
             return NO;
@@ -229,14 +230,14 @@
     self.controllerUploadWindow.onAddFileButtonClicked = ^{
         NSArray *arraySelectedUrls = [DialogUtils showOpenImageFileDialog];
         for (NSURL *url in arraySelectedUrls) {
-            if (![self.controllerUploadWindow.arrayFilesToUpload containsObject:url.path]) {
-                [self.controllerUploadWindow.arrayFilesToUpload addObject:[url path]];
+            if (![self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload containsObject:url.path]) {
+                [self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload addObject:[url path]];
             }
         }
     };
     self.controllerUploadWindow.onDeleteFileButtonClicked = ^(NSNumber *selectedRowIndex) {
         if ([selectedRowIndex integerValue] >= 0) {
-            [self.controllerUploadWindow.arrayFilesToUpload removeObjectAtIndex:(NSUInteger) [selectedRowIndex integerValue]];
+            [self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload removeObjectAtIndex:(NSUInteger) [selectedRowIndex integerValue]];
         }
     };
     self.controllerUploadWindow.onNeedUpload = ^{
@@ -264,13 +265,7 @@
 
 - (void)doUploadImagesAtPaths:(NSArray *)arrayPathsFiles toAlbum:(Album *)album {
     NSString *linkToAlbum = [self getUrlToAlbum:album];
-    NSMutableDictionary *errorsDictionary = [[NSMutableDictionary alloc] init];
-    NSArray *keys = errorsDictionary.allKeys;
 
-    for(NSString *key in keys){
-        NSString *value = [errorsDictionary objectForKey:key];
-    }
-    
     UploadFilesStatisticsCalculator *statisticsCalculator = [UploadFilesStatisticsCalculator calculatorWithPathsFiles:arrayPathsFiles];
     LOG(@"bytesTotalExpectedToWrite: %d", statisticsCalculator.bytesTotalExpectedToWrite / 1024);
     LOG(@"");

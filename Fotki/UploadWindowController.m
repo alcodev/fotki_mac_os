@@ -7,6 +7,7 @@
 #import "TextUtils.h"
 #import "Album.h"
 #import "Account.h"
+#import "UploadFilesDataSource.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -27,7 +28,6 @@ typedef enum {
 
 @implementation UploadWindowController
 
-@synthesize arrayFilesToUpload = _arrayFilesToUpload;
 @synthesize arrayAlbums = _arrayAlbums;
 
 @synthesize welcomeLabel = _welcomeLabel;
@@ -50,12 +50,13 @@ typedef enum {
 @synthesize onNeedUpload = _onNeedUpload;
 @synthesize errorsUploadFilesLabel = _errorsUploadFilesLabel;
 @synthesize progressStatisticLabel = _progressStatisticLabel;
+@synthesize uploadFilesDataSource = _uploadFilesDataSource;
 
 
 - (id)init {
     self = [super initWithWindowNibName:@"UploadWindow"];
     if (self) {
-        self.arrayFilesToUpload = [NSMutableArray array];
+        self.uploadFilesDataSource = [UploadFilesDataSource dataSource];
 
         //HACK: http://borkware.com/quickies/single?id=276
         //The window controller nib doesn't get loaded until the window is manipulated.
@@ -65,7 +66,7 @@ typedef enum {
 
         self.currentState = kStateUnknown;
 
-        self.uploadFilesTable.dataSource = self;
+        self.uploadFilesTable.dataSource = self.uploadFilesDataSource;
         self.uploadToAlbumComboBox.dataSource = self;
 
         [self.uploadFilesAddButton setAction:@selector(onAddButtonClicked:)];
@@ -96,7 +97,6 @@ typedef enum {
     [_uploadButton release];
     [_uploadCancelButton release];
 
-    [_arrayFilesToUpload release];
     [_arrayAlbums release];
 
     [_onNeedAlbums release];
@@ -107,6 +107,7 @@ typedef enum {
 
     [_errorsUploadFilesLabel release];
     [_progressStatisticLabel release];
+    [_uploadFilesDataSource release];
     [super dealloc];
 }
 
@@ -130,7 +131,7 @@ typedef enum {
 }
 
 - (NSArray *)selectedPaths {
-    return self.arrayFilesToUpload;
+    return self.uploadFilesDataSource.arrayFilesToUpload;
 }
 
 - (Album *)selectedAlbum {
@@ -171,26 +172,13 @@ typedef enum {
 }
 
 - (void)prepareWindowBeforeClose {
-    [self.arrayFilesToUpload removeAllObjects];
+    [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
 }
 
 - (IBAction)onCloseButtonClicked:(id)sender {
     [self prepareWindowBeforeClose];
     [self.window close];
-}
-
-//-----------------------------------------------------------------------------------------
-// NSTableViewDataSource implementation
-//-----------------------------------------------------------------------------------------
-
-- (int)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [self.arrayFilesToUpload count];
-}
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex {
-    NSString *valueToDisplay = [self.arrayFilesToUpload objectAtIndex:(NSUInteger) rowIndex];
-    return valueToDisplay;
 }
 
 //-----------------------------------------------------------------------------------------
@@ -272,7 +260,7 @@ typedef enum {
     NSString *welcomeString = [NSString stringWithFormat:@"Logged in as %@", account.fullName];
     [self.welcomeLabel setTitleWithMnemonic:welcomeString];
 
-    [self.arrayFilesToUpload removeAllObjects];
+    [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
     [self.uploadFilesTable reloadData];
     [self.uploadFilesTable setEnabled:YES];
     [self.uploadFilesTable registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];

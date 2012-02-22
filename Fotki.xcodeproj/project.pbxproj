@@ -87,6 +87,7 @@
 		E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B2 /* ApiServiceException.m */; };
 		E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9B5 /* UploadWindowController.m */; };
 		E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */; };
+		E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -254,6 +255,8 @@
 		E1EE7F8414AC79AA003AD9B8 /* Callbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Callbacks.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9B9 /* UploadFilesStatisticsCalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadFilesStatisticsCalculator.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9BA /* UploadFilesStatisticsCalculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadFilesStatisticsCalculator.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadFilesDataSource.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9BF /* UploadFilesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadFilesDataSource.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -407,6 +410,7 @@
 				E1EE7F8414AC79AA003AD978 /* ImageUtils */,
 				E1EE7F8414AC79AA003AD980 /* Utils */,
 				E1EE7F8414AC79AA003AD98E /* DragAndDrop */,
+				E1EE7F8414AC79AA003AD9BC /* DataSources */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -655,6 +659,15 @@
 			path = Exceptions;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD9BC /* DataSources */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD9BF /* UploadFilesDataSource.h */,
+				E1EE7F8414AC79AA003AD9BD /* UploadFilesDataSource.m */,
+			);
+			path = DataSources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -832,6 +845,7 @@
 				E1EE7F8414AC79AA003AD9B3 /* ApiServiceException.m in Sources */,
 				E1EE7F8414AC79AA003AD9B6 /* UploadWindowController.m in Sources */,
 				E1EE7F8414AC79AA003AD9BB /* UploadFilesStatisticsCalculator.m in Sources */,
+				E1EE7F8414AC79AA003AD9BE /* UploadFilesDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
