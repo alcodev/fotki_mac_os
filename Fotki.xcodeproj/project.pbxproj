@@ -92,6 +92,7 @@
 		E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C0 /* ErrorsDataSource.m */; };
 		E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C3 /* UploadError.m */; };
 		E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */; };
+		E1EE7F8414AC79AA003AD9CB /* ClickableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,6 +269,8 @@
 		E1EE7F8414AC79AA003AD9C5 /* UploadError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadError.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9C8 /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickableTextField.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9CC /* ClickableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickableTextField.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -425,6 +428,7 @@
 				E1EE7F8414AC79AA003AD980 /* Utils */,
 				E1EE7F8414AC79AA003AD98E /* DragAndDrop */,
 				E1EE7F8414AC79AA003AD9BC /* DataSources */,
+				E1EE7F8414AC79AA003AD9C9 /* CustomComponents */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -686,6 +690,15 @@
 			path = DataSources;
 			sourceTree = "<group>";
 		};
+		E1EE7F8414AC79AA003AD9C9 /* CustomComponents */ = {
+			isa = PBXGroup;
+			children = (
+				E1EE7F8414AC79AA003AD9CC /* ClickableTextField.h */,
+				E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */,
+			);
+			path = CustomComponents;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -868,6 +881,7 @@
 				E1EE7F8414AC79AA003AD9C1 /* ErrorsDataSource.m in Sources */,
 				E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */,
 				E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */,
+				E1EE7F8414AC79AA003AD9CB /* ClickableTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

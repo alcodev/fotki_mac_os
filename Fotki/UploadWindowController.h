@@ -10,6 +10,7 @@
 @class Album;
 @class UploadFilesDataSource;
 @class ErrorsDataSource;
+@class ClickableTextField;
 
 @interface UploadWindowController : NSWindowController<NSComboBoxDataSource, NSWindowDelegate, NSDraggingDestination>
 
@@ -26,7 +27,7 @@
 @property(nonatomic, retain) IBOutlet NSButton *uploadCancelButton;
 
 @property(nonatomic, retain) IBOutlet NSProgressIndicator *uploadProgressIndicator;
-@property(nonatomic, retain) IBOutlet NSTextField *errorsUploadFilesLabel;
+@property(nonatomic, retain) IBOutlet ClickableTextField *errorsUploadFilesLabel;
 @property(nonatomic, retain) IBOutlet NSTextField *progressStatisticLabel;
 @property(nonatomic, retain) IBOutlet NSTextField *albumLinkLabel;
 

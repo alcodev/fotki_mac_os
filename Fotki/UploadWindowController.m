@@ -10,6 +10,7 @@
 #import "UploadFilesDataSource.h"
 #import "ErrorsDataSource.h"
 #import "Lib/DataSources/UploadError.h"
+#import "ClickableTextField.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -18,6 +19,8 @@ typedef enum {
 @interface UploadWindowController ()
 
 @property(nonatomic, assign) UploadWindowState currentState;
+
+- (void)makeErrorsTabActive;
 
 - (void)prepareWindowBeforeClose;
 
@@ -77,6 +80,10 @@ typedef enum {
 
         self.errorsDataSource = [ErrorsDataSource dataSource];
         self.errorsTable.dataSource = self.errorsDataSource;
+
+        self.errorsUploadFilesLabel.onMouseClicked = ^(NSEvent *event){
+            [self makeErrorsTabActive];
+        };
 
         self.uploadToAlbumComboBox.dataSource = self;
 
@@ -197,6 +204,10 @@ typedef enum {
 
 - (void)makeUploadTabActive {
     [self.tabWindow selectTabViewItemAtIndex:0];
+}
+
+- (void)makeErrorsTabActive {
+    [self.tabWindow selectTabViewItemAtIndex:1];
 }
 
 - (void)prepareWindowBeforeClose {
