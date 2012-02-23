@@ -18,8 +18,6 @@
     NSStatusItem *statusItem;
 }
 
-@property(assign) IBOutlet NSWindow *settingsWindow;
-@property(assign) IBOutlet NSWindow *uploadWindow;
 @property(nonatomic, retain)IBOutlet NSTextField *albumLinkLabel;
 @property(nonatomic, retain)IBOutlet NSTextField *totalProgressLabel;
 @property(nonatomic, retain)IBOutlet NSTextField *currentFileProgressLabel;

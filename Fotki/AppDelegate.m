@@ -67,8 +67,6 @@
 @synthesize serviceFacade = _serviceFacade;
 @synthesize currentAccount = _currentAccount;
 
-@synthesize settingsWindow = _settingsWindow;
-@synthesize uploadWindow = _uploadWindow;
 @synthesize albumLinkLabel = _albumLinkLabel;
 @synthesize dragStatusView = _dragStatusView;
 @synthesize totalProgressLabel = _totalProgressLabel;
@@ -86,7 +84,6 @@
     self = [super init];
     if (self != nil) {
         self.serviceFacade = [[[FotkiServiceFacade alloc] init] autorelease];
-        [_uploadWindow registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
     }
     return self;
 }
