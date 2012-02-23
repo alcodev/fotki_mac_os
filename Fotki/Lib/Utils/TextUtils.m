@@ -10,13 +10,13 @@
 
 @implementation TextUtils
 
-+(id)hyperlinkFromString:(NSString*)inString withURL:(NSURL*)aURL
++(id)hyperlinkFromString:(NSString*)inString withURL:(NSURL*)url
 {
     NSMutableAttributedString* attrString = [[NSMutableAttributedString alloc] initWithString: inString];
     NSRange range = NSMakeRange(0, [attrString length]);
 
     [attrString beginEditing];
-    [attrString addAttribute:NSLinkAttributeName value:[aURL absoluteString] range:range];
+    [attrString addAttribute:NSLinkAttributeName value:[url absoluteString] range:range];
 
     // make the text appear in blue
     [attrString addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:range];

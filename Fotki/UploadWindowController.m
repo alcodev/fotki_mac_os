@@ -81,7 +81,7 @@ typedef enum {
         self.errorsDataSource = [ErrorsDataSource dataSource];
         self.errorsTable.dataSource = self.errorsDataSource;
 
-        self.errorsUploadFilesLabel.onMouseClicked = ^(NSEvent *event){
+        self.errorsUploadFilesLabel.onMouseClicked = ^(NSEvent *event) {
             [self makeErrorsTabActive];
         };
 
@@ -224,7 +224,7 @@ typedef enum {
 // NSDraggingDestination implementation
 //-----------------------------------------------------------------------------------------
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
-    return [self.uploadFilesTable isEnabled]? NSDragOperationCopy: NSDragOperationNone;
+    return [self.uploadFilesTable isEnabled] ? NSDragOperationCopy : NSDragOperationNone;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
@@ -367,6 +367,21 @@ typedef enum {
 
 }
 
+- (void)showErrorText:(NSString *)errorText {
+    [self.errorsUploadFilesLabel setAllowsEditingTextAttributes:YES];
+    [self.errorsUploadFilesLabel setSelectable:YES];
+
+    //todo: make another solution: this hack to show link but really on click shows errors tab
+    NSURL *url = [NSURL URLWithString:@"http://www.fotki.com"];
+
+    NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+    [attributedString appendAttributedString:[TextUtils hyperlinkFromString:errorText withURL:url]];
+
+
+    [self.errorsUploadFilesLabel setHidden:NO];
+    [self.errorsUploadFilesLabel setAttributedStringValue:attributedString];
+}
+
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed {
     self.currentState = kStateUploaded;
     [self setStateUploadingWithFileProgressValue:100.0 totalProgressLabel:@"Done"];
@@ -379,8 +394,7 @@ typedef enum {
     if (arrayPathsFilesFailed.count > 0) {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Click to open your album"];
         NSString *errorText = [NSString stringWithFormat:@"Failed to upload %d files", arrayPathsFilesFailed.count];
-        [self.errorsUploadFilesLabel setHidden:NO];
-        [self.errorsUploadFilesLabel setTitleWithMnemonic:errorText];
+        [self showErrorText:errorText];
     } else {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }
