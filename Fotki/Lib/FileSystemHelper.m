@@ -11,8 +11,8 @@
 @implementation FileSystemHelper
 
 + (BOOL)isImageFileAtPath:(NSString *)path {
-    NSWorkspace *sharedWorkspace = [NSWorkspace sharedWorkspace];
-    return [sharedWorkspace type:[sharedWorkspace typeOfFile:path error:NULL] conformsToType:@"public.image"];
+    NSString *fileExtension = path.pathExtension;
+    return [[FileSystemHelper supportedImageFilesTypes] containsObject:[fileExtension lowercaseString]];
 }
 
 + (BOOL)isDirectoryAtPath:(NSString *)path {
@@ -103,43 +103,8 @@
     return totalSize;
 }
 
-+ (NSString *)formatFileSize:(float)sizeInByte {
-    double kilobytes = sizeInByte / 1024;
-    double megabytes = kilobytes / 1024;
-    double gigabytes = megabytes / 1024;
-
-    if ((int)gigabytes > 0){
-        return [NSString stringWithFormat:@"%d Gb", (int)gigabytes];
-    }
-
-    if ((int)megabytes > 0){
-        return [NSString stringWithFormat:@"%d Mb", (int)megabytes];
-    }
-
-    if ((int)kilobytes > 0){
-        return [NSString stringWithFormat:@"%d Kb", (int)kilobytes];
-    }
-
-    return [NSString stringWithFormat:@"%d b", (int)sizeInByte];
++(NSArray *)supportedImageFilesTypes{
+    return [NSMutableArray arrayWithObjects:@"jpg", @"jpeg", @"png", @"gif", nil];
 }
 
-+ (NSString *)formatSpeed:(float)speedInByteSec {
-    double speedInKBSec = speedInByteSec / 1024;
-    double speedInMBSec = speedInKBSec / 1024;
-    double speedInGBSec = speedInMBSec / 1024;
-
-    if ((int)speedInGBSec > 0){
-        return [NSString stringWithFormat:@"%d Gb/sec", (int)speedInGBSec];
-    }
-
-    if ((int)speedInMBSec > 0){
-        return [NSString stringWithFormat:@"%d Mb/sec", (int)speedInMBSec];
-    }
-
-    if ((int)speedInKBSec > 0){
-        return [NSString stringWithFormat:@"%d Kb/sec", (int)speedInKBSec];
-    }
-
-    return [NSString stringWithFormat:@"%d b/sec", (int)speedInByteSec];
-}
 @end

@@ -23,6 +23,7 @@
 #import "UploadFilesStatisticsCalculator.h"
 #import "UploadFilesDataSource.h"
 #import "AboutWindowController.h"
+#import "TextUtils.h"
 
 #define APP_NAME @"Fotki"
 
@@ -325,9 +326,9 @@
                             NSString *statisticText =
                                     [NSString stringWithFormat:@"Uploading %d of %d (%@ of %@) at speed %@. Estimated time left: %@",
                                                                indexFilePath, arrayPathsFiles.count,
-                                                               [FileSystemHelper formatFileSize:statisticsCalculator.bytesCurrentTotalWritten],
-                                                               [FileSystemHelper formatFileSize:statisticsCalculator.bytesTotalExpectedToWrite],
-                                                               [FileSystemHelper formatSpeed:statisticsCalculator.speed],
+                                                               [TextUtils formatFileSize:statisticsCalculator.bytesCurrentTotalWritten],
+                                                               [TextUtils formatFileSize:statisticsCalculator.bytesTotalExpectedToWrite],
+                                                               [TextUtils formatSpeed:statisticsCalculator.speed],
                                                                [DateUtils formatLeftTime:statisticsCalculator.secondsTotalLeft]];
 
                             [self.controllerUploadWindow setStateUploadingWithFileProgressValue:valueProgressTotal totalProgressLabel:statisticText];

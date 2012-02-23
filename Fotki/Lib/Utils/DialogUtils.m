@@ -5,21 +5,20 @@
 
 
 #import "DialogUtils.h"
+#import "FileSystemHelper.h"
 
 
 @implementation DialogUtils {
 
 }
 + (NSArray *)showOpenImageFileDialog {
-    NSOpenPanel *openDlg = [NSOpenPanel openPanel];
-    [openDlg setCanChooseFiles:YES];
-    [openDlg setAllowsMultipleSelection:YES];
-    NSMutableArray *imageTypes = [[NSMutableArray alloc] init];
-    [imageTypes addObject:@"public.image"];
-    [openDlg setAllowedFileTypes:imageTypes];
+    NSOpenPanel *openImageFilesDialog = [NSOpenPanel openPanel];
+    [openImageFilesDialog setCanChooseFiles:YES];
+    [openImageFilesDialog setAllowsMultipleSelection:YES];
+    [openImageFilesDialog setAllowedFileTypes:[FileSystemHelper supportedImageFilesTypes]];
 
-    if ([openDlg runModal] == NSOKButton) {
-        NSArray *files = [openDlg URLs];
+    if ([openImageFilesDialog runModal] == NSOKButton) {
+        NSArray *files = [openImageFilesDialog URLs];
         return files;
     }
     return [[[NSMutableArray alloc] init] autorelease];

@@ -11,4 +11,7 @@
 @interface TextUtils : NSObject
 + (id)hyperlinkFromString:(NSString *)inString withURL:(NSURL *)aURL;
 
++ (NSString *)formatFileSize:(float)sizeInByte;
+
++ (NSString *)formatSpeed:(float)speedInByteSec;
 @end
