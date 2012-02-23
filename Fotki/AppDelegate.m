@@ -250,7 +250,7 @@
     };
     self.controllerUploadWindow.onNeedUpload = ^{
         self.dragStatusView.isEnable = NO;
-        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 totalProgressLabel:@"Start"];
+        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 totalProgressLabel:@"Starting..."];
 
         [NSThread doInNewThread:^{
             [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
