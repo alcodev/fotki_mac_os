@@ -52,7 +52,7 @@ typedef enum {
 @synthesize onNeedAcceptDrop = _onNeedAcceptDrop;
 @synthesize onAddFileButtonClicked = _onAddFileButtonClicked;
 @synthesize onDeleteFileButtonClicked = _onDeleteFileButtonClicked;
-@synthesize onNeedUpload = _onNeedUpload;
+@synthesize onApplyButtonClicked = _onApplyButtonClicked;
 @synthesize errorsUploadFilesLabel = _errorsUploadFilesLabel;
 @synthesize progressStatisticLabel = _progressStatisticLabel;
 @synthesize uploadFilesDataSource = _uploadFilesDataSource;
@@ -122,7 +122,7 @@ typedef enum {
     [_onNeedAcceptDrop release];
     [_onAddFileButtonClicked release];
     [_onDeleteFileButtonClicked release];
-    [_onNeedUpload release];
+    [_onApplyButtonClicked release];
 
     [_errorsUploadFilesLabel release];
     [_progressStatisticLabel release];
@@ -192,8 +192,8 @@ typedef enum {
 }
 
 - (IBAction)onApplyButtonClicked:(id)sender {
-    if (self.onNeedUpload) {
-        self.onNeedUpload();
+    if (self.onApplyButtonClicked) {
+        self.onApplyButtonClicked();
     }
 }
 
@@ -268,11 +268,11 @@ typedef enum {
         [self.albumLinkLabel setAttributedStringValue:attributedString];
     } else {
         [self.albumLinkLabel setTitleWithMnemonic:@""];
-        //[self.albumLinkLabel setTitleWithMnemonic:@"Error get album url"];
     }
 }
 
 - (void)changeApplyButtonStateBasedOnFormState {
+    [self.uploadButton setTitle:@"Upload"];
     BOOL hasFilesToUpload = self.uploadFilesTable.numberOfRows > 0;
     BOOL isAlbumSelected = self.selectedAlbum != nil;
     BOOL uploadButtonEnabledState = hasFilesToUpload && isAlbumSelected;
@@ -365,6 +365,9 @@ typedef enum {
     [self.albumLinkLabel setTitleWithMnemonic:@"Upload error"];
     [self.uploadCancelButton setTitle:@"Close"];
 
+    [self.uploadButton setEnabled:YES];
+    [self.uploadButton setTitle:@"Start new upload"];
+
 }
 
 - (void)showErrorText:(NSString *)errorText {
@@ -390,6 +393,8 @@ typedef enum {
     [self.progressStatisticLabel setHidden:YES];
     [self.albumLinkLabel setHidden:NO];
     [self.uploadCancelButton setTitle:@"Close"];
+    [self.uploadButton setEnabled:YES];
+    [self.uploadButton setTitle:@"Start new upload"];
 
     if (arrayPathsFilesFailed.count > 0) {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Click to open your album"];

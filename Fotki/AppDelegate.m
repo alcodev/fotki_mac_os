@@ -248,13 +248,18 @@
             [self.controllerUploadWindow.uploadFilesDataSource.arrayFilesToUpload removeObjectAtIndex:(NSUInteger) [selectedRowIndex integerValue]];
         }
     };
-    self.controllerUploadWindow.onNeedUpload = ^{
-        self.dragStatusView.isEnable = NO;
-        [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 totalProgressLabel:@"Starting..."];
+    self.controllerUploadWindow.onApplyButtonClicked = ^{
+        if (self.isUploadFinished) {
+            [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
+            self.isUploadFinished = NO;
+        } else {
+            self.dragStatusView.isEnable = NO;
+            [self.controllerUploadWindow setStateUploadingWithFileProgressValue:0.0 totalProgressLabel:@"Starting..."];
 
-        [NSThread doInNewThread:^{
-            [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
-        }];
+            [NSThread doInNewThread:^{
+                [self uploadImagesAtPaths:self.controllerUploadWindow.selectedPaths toAlbum:self.controllerUploadWindow.selectedAlbum];
+            }];
+        }
     };
     self.controllerUploadWindow.onWindowClose = ^{
         if (self.isUploadFinished){

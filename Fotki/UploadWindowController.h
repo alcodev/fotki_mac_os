@@ -38,7 +38,7 @@
 @property(nonatomic, copy) AcceptDropCallback onNeedAcceptDrop;
 @property(nonatomic, copy) Callback onAddFileButtonClicked;
 @property(nonatomic, copy) ParametrizedCallback onDeleteFileButtonClicked;
-@property(nonatomic, copy) Callback onNeedUpload;
+@property(nonatomic, copy) Callback onApplyButtonClicked;
 @property(nonatomic, copy) Callback onWindowClose;
 
 @property(nonatomic, retain) IBOutlet NSTableView *errorsTable;

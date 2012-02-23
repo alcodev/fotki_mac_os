@@ -546,7 +546,7 @@
 											<object class="NSButton" id="426396637">
 												<reference key="NSNextResponder" ref="758564690"/>
 												<int key="NSvFlags">289</int>
-												<string key="NSFrame">{{463, 2}, {82, 32}}</string>
+												<string key="NSFrame">{{347, 2}, {139, 32}}</string>
 												<reference key="NSSuperview" ref="758564690"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="595996634"/>
@@ -570,7 +570,7 @@
 											<object class="NSButton" id="595996634">
 												<reference key="NSNextResponder" ref="758564690"/>
 												<int key="NSvFlags">289</int>
-												<string key="NSFrame">{{538, 2}, {82, 32}}</string>
+												<string key="NSFrame">{{481, 2}, {139, 32}}</string>
 												<reference key="NSSuperview" ref="758564690"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="123833260"/>
@@ -1538,11 +1538,9 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>onClearListButtonClicked:</string>
 							<string>onCloseButtonClicked:</string>
-							<string>onErrorsUploadFilesLabelClick:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -1553,7 +1551,6 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>onClearListButtonClicked:</string>
 							<string>onCloseButtonClicked:</string>
-							<string>onErrorsUploadFilesLabelClick:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1563,10 +1560,6 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">onCloseButtonClicked:</string>
-								<string key="candidateClassName">id</string>
-							</object>
-							<object class="IBActionInfo">
-								<string key="name">onErrorsUploadFilesLabelClick:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
@@ -1594,7 +1587,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
 							<string>NSTableView</string>
-							<string>NSTextField</string>
+							<string>ClickableTextField</string>
 							<string>NSTextField</string>
 							<string>NSTabView</string>
 							<string>NSButton</string>
@@ -1639,7 +1632,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">errorsUploadFilesLabel</string>
-								<string key="candidateClassName">NSTextField</string>
+								<string key="candidateClassName">ClickableTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">progressStatisticLabel</string>
