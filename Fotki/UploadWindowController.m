@@ -433,4 +433,9 @@ typedef enum {
     [self.uploadFilesTable.yellowRows addObject:[NSNumber numberWithInteger:index]];
 
 }
+
+- (void)setStateLogout{
+    self.currentState = kStateUnknown;
+}
+
 @end

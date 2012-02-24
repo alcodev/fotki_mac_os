@@ -38,7 +38,7 @@
 @property(nonatomic, retain) AboutWindowController *controllerAboutWindow;
 @property(nonatomic, retain) DragStatusView *dragStatusView;
 
-- (void)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
+- (BOOL)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
 - (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password;
 
@@ -133,7 +133,7 @@
 
 //-----------------------------------------------------------------------------------------
 
-- (void)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password {
+- (BOOL)doSyncLoginWithUsername:(NSString *)username password:(NSString *)password {
     @try {
         [self.controllerSettingsWindow setStateAsLoggingInWithUsername:username passowrd:password];
 
@@ -153,21 +153,26 @@
 
         [self setStateAsLoggedIn];
         [self.controllerSettingsWindow setStateAsLoggedInWithAccount:self.currentAccount];
+        return YES;
     } @catch (ApiConnectionException *ex) {
         LOG(@"Authentication error: %@", ex.description);
         [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsErrorWithUsername:username passowrd:password status:@"Connection error"];
+        return NO;
     } @catch (ApiException *ex) {
         LOG(@"Authentication error: %@", ex.description);
         [self setStateAsLoggedOut];
         [self.controllerSettingsWindow setStateAsNotLoggedInWithStatus:@"Authentication error"];
+        return NO;
     }
 }
 
 - (void)doAsyncLoginWithUsername:(NSString *)username password:(NSString *)password {
     [NSThread doInNewThread:^{
-        [self doSyncLoginWithUsername:username password:password];
-        [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
+        BOOL isLoggedIn = [self doSyncLoginWithUsername:username password:password];
+        if(isLoggedIn){
+            [self.controllerUploadWindow setStateInitializedWithAccount:self.currentAccount];
+        }
     }];
 }
 
@@ -177,6 +182,7 @@
 }
 
 - (void)doLogout {
+    [self.controllerUploadWindow setStateLogout];
     [self.serviceFacade logOut];
     [self doClearSession];
 }

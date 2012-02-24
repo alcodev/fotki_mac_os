@@ -70,4 +70,7 @@
 - (void)addErrorFileIndex:(NSInteger)integer;
 
 - (void)addExistFileIndex:(NSInteger)integer;
+
+- (void)setStateLogout;
+
 @end
