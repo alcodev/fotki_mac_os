@@ -93,6 +93,7 @@
 		E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C3 /* UploadError.m */; };
 		E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9C6 /* AboutWindowController.m */; };
 		E1EE7F8414AC79AA003AD9CB /* ClickableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */; };
+		E1EE7F8414AC79AA003AD9CE /* UploadTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD9CD /* UploadTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -271,6 +272,8 @@
 		E1EE7F8414AC79AA003AD9C8 /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickableTextField.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD9CC /* ClickableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickableTextField.h; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9CD /* UploadTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadTableView.m; sourceTree = "<group>"; };
+		E1EE7F8414AC79AA003AD9CF /* UploadTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadTableView.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -693,6 +696,8 @@
 		E1EE7F8414AC79AA003AD9C9 /* CustomComponents */ = {
 			isa = PBXGroup;
 			children = (
+				E1EE7F8414AC79AA003AD9CF /* UploadTableView.h */,
+				E1EE7F8414AC79AA003AD9CD /* UploadTableView.m */,
 				E1EE7F8414AC79AA003AD9CC /* ClickableTextField.h */,
 				E1EE7F8414AC79AA003AD9CA /* ClickableTextField.m */,
 			);
@@ -882,6 +887,7 @@
 				E1EE7F8414AC79AA003AD9C4 /* UploadError.m in Sources */,
 				E1EE7F8414AC79AA003AD9C7 /* AboutWindowController.m in Sources */,
 				E1EE7F8414AC79AA003AD9CB /* ClickableTextField.m in Sources */,
+				E1EE7F8414AC79AA003AD9CE /* UploadTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
