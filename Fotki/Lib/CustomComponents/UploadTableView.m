@@ -10,15 +10,15 @@
 
 @implementation UploadTableView
 
-@synthesize greenRows = _greenRows;
-@synthesize redRows = _redRows;
-@synthesize yellowRows = _yellowRows;
+@synthesize successUploadRows = _successUploadRows;
+@synthesize errorUploadRows = _errorUploadRows;
+@synthesize existFilesRows = _existFilesRows;
 
 
 - (void)dealloc {
-    [_greenRows release];
-    [_redRows release];
-    [_yellowRows release];
+    [_successUploadRows release];
+    [_errorUploadRows release];
+    [_existFilesRows release];
     [super dealloc];
 }
 
@@ -36,13 +36,13 @@
 }
 
 - (void)drawRow:(int)row clipRect:(NSRect)clipRect {
-    if ([self.greenRows containsObject:[NSNumber numberWithInteger:row]]) {
+    if ([self.successUploadRows containsObject:[NSNumber numberWithInteger:row]]) {
         [self drawColorRow:row clipRect:clipRect color:[[NSColor greenColor] colorWithAlphaComponent:0.2]];
     }
-    else if ([self.yellowRows containsObject:[NSNumber numberWithInteger:row]]) {
-        [self drawColorRow:row clipRect:clipRect color:[[NSColor yellowColor] colorWithAlphaComponent:0.2]];
+    else if ([self.existFilesRows containsObject:[NSNumber numberWithInteger:row]]) {
+        [self drawColorRow:row clipRect:clipRect color:[[NSColor greenColor] colorWithAlphaComponent:0.1]];
     }
-    else if ([self.redRows containsObject:[NSNumber numberWithInteger:row]]) {
+    else if ([self.errorUploadRows containsObject:[NSNumber numberWithInteger:row]]) {
         [self drawColorRow:row clipRect:clipRect color:[[NSColor redColor] colorWithAlphaComponent:0.2]];
     }
     else{

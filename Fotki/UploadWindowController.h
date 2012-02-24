@@ -46,6 +46,7 @@
 @property(nonatomic, retain) ErrorsDataSource *errorsDataSource;
 
 @property(nonatomic, retain) IBOutlet NSTabView *tabWindow;
+@property(nonatomic, retain) IBOutlet NSBox *legendBox;
 
 + (id)controller;
 

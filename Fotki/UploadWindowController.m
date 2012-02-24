@@ -62,6 +62,7 @@ typedef enum {
 @synthesize tabWindow = _tabWindow;
 @synthesize onWindowClose = _onWindowClose;
 @synthesize uploadFilesClearListButton = _uploadFilesClearListButton;
+@synthesize legendBox = _legendBox;
 
 
 - (id)init {
@@ -97,9 +98,9 @@ typedef enum {
         [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
         [self.window setDelegate:self];
 
-        self.uploadFilesTable.redRows = [NSMutableArray array];
-        self.uploadFilesTable.greenRows = [NSMutableArray array];
-        self.uploadFilesTable.yellowRows = [NSMutableArray array];
+        self.uploadFilesTable.errorUploadRows = [NSMutableArray array];
+        self.uploadFilesTable.successUploadRows = [NSMutableArray array];
+        self.uploadFilesTable.existFilesRows = [NSMutableArray array];
     }
 
     return self;
@@ -137,6 +138,7 @@ typedef enum {
     [_tabWindow release];
     [_onWindowClose release];
     [_uploadFilesClearListButton release];
+    [_legendBox release];
     [super dealloc];
 }
 
@@ -268,7 +270,13 @@ typedef enum {
         [self.albumLinkLabel setSelectable:YES];
         NSURL *url = [NSURL URLWithString:urlToAlbum];
         NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] init] autorelease];
+
         [attributedString appendAttributedString:[TextUtils hyperlinkFromString:urlText withURL:url]];
+
+        NSMutableParagraphStyle *mutParaStyle = [[NSMutableParagraphStyle alloc] init];
+        [mutParaStyle setAlignment:NSCenterTextAlignment];
+        [attributedString addAttributes:[NSDictionary dictionaryWithObject:mutParaStyle forKey:NSParagraphStyleAttributeName] range:NSMakeRange(0, [attributedString length])];
+        [mutParaStyle release];
 
         [self.albumLinkLabel setAttributedStringValue:attributedString];
     } else {
@@ -299,9 +307,9 @@ typedef enum {
     [self.welcomeLabel setTitleWithMnemonic:welcomeString];
 
     [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
-    [self.uploadFilesTable.greenRows removeAllObjects];
-    [self.uploadFilesTable.yellowRows removeAllObjects];
-    [self.uploadFilesTable.redRows removeAllObjects];
+    [self.uploadFilesTable.successUploadRows removeAllObjects];
+    [self.uploadFilesTable.existFilesRows removeAllObjects];
+    [self.uploadFilesTable.errorUploadRows removeAllObjects];
 
     [self.uploadFilesTable reloadData];
     [self.uploadFilesTable setEnabled:YES];
@@ -337,6 +345,7 @@ typedef enum {
     [self.uploadCancelButton setTitle:@"Close"];
 
     [self.errorsTable reloadData];
+    [self.legendBox setHidden:YES];
 }
 
 - (void)setStateUploadingWithFileProgressValue:(double)progressValueTotal totalProgressLabel:(NSString *)labelTotalProgress {
@@ -376,6 +385,7 @@ typedef enum {
 
     [self.uploadButton setEnabled:YES];
     [self.uploadButton setTitle:@"Start new upload"];
+    [self.legendBox setHidden:NO];
 
 }
 
@@ -412,6 +422,7 @@ typedef enum {
     } else {
         [self showLinkToAlbum:urlToAlbum withUrlText:@"Files successfully uploaded. Click to open your album"];
     }
+    [self.legendBox setHidden:NO];
 }
 
 - (void)addError:(NSString *)errorDescription forEvent:(NSString *)event {
@@ -420,17 +431,17 @@ typedef enum {
 }
 
 - (void)addSuccessFileIndex:(NSInteger)index {
-    [self.uploadFilesTable.greenRows addObject:[NSNumber numberWithInteger:index]];
+    [self.uploadFilesTable.successUploadRows addObject:[NSNumber numberWithInteger:index]];
 
 }
 
 - (void)addErrorFileIndex:(NSInteger)index {
-    [self.uploadFilesTable.redRows addObject:[NSNumber numberWithInteger:index]];
+    [self.uploadFilesTable.errorUploadRows addObject:[NSNumber numberWithInteger:index]];
 
 }
 
 - (void)addExistFileIndex:(NSInteger)index {
-    [self.uploadFilesTable.yellowRows addObject:[NSNumber numberWithInteger:index]];
+    [self.uploadFilesTable.existFilesRows addObject:[NSNumber numberWithInteger:index]];
 
 }
 

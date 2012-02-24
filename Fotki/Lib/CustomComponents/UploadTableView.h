@@ -10,8 +10,8 @@
 
 @interface UploadTableView :  NSTableView
 
-@property(nonatomic, retain) NSMutableArray *greenRows;
-@property(nonatomic, retain) NSMutableArray *redRows;
-@property(nonatomic, retain) NSMutableArray *yellowRows;
+@property(nonatomic, retain) NSMutableArray *successUploadRows;
+@property(nonatomic, retain) NSMutableArray *errorUploadRows;
+@property(nonatomic, retain) NSMutableArray *existFilesRows;
 
 @end
