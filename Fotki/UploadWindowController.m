@@ -432,17 +432,17 @@ typedef enum {
 
 - (void)addSuccessFileIndex:(NSInteger)index {
     [self.uploadFilesTable.successUploadRows addObject:[NSNumber numberWithInteger:index]];
-
+    [self.uploadFilesTable reloadData];
 }
 
 - (void)addErrorFileIndex:(NSInteger)index {
     [self.uploadFilesTable.errorUploadRows addObject:[NSNumber numberWithInteger:index]];
-
+    [self.uploadFilesTable reloadData];
 }
 
 - (void)addExistFileIndex:(NSInteger)index {
     [self.uploadFilesTable.existFilesRows addObject:[NSNumber numberWithInteger:index]];
-
+    [self.uploadFilesTable reloadData];
 }
 
 - (void)setStateLogout{

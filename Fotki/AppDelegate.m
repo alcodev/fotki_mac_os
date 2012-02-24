@@ -370,7 +370,6 @@
     self.isUploadFinished = YES;
 
     [NSThread doInMainThread:^() {
-        [self.controllerUploadWindow.uploadFilesTable reloadData];
         [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:linkToAlbum arrayPathsFilesFailed:[statisticsCalculator arrayPathsFilesFailed]];
     }          waitUntilDone:YES];
 }
