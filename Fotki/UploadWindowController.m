@@ -11,6 +11,7 @@
 #import "ErrorsDataSource.h"
 #import "Lib/DataSources/UploadError.h"
 #import "ClickableTextField.h"
+#import "UploadTableView.h"
 
 typedef enum {
     kStateUnknown, kStateInitialized, kStateUploading, kStateUploaded
@@ -95,6 +96,10 @@ typedef enum {
 
         [self.window registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
         [self.window setDelegate:self];
+
+        self.uploadFilesTable.redRows = [NSMutableArray array];
+        self.uploadFilesTable.greenRows = [NSMutableArray array];
+        self.uploadFilesTable.yellowRows = [NSMutableArray array];
     }
 
     return self;
@@ -294,6 +299,10 @@ typedef enum {
     [self.welcomeLabel setTitleWithMnemonic:welcomeString];
 
     [self.uploadFilesDataSource.arrayFilesToUpload removeAllObjects];
+    [self.uploadFilesTable.greenRows removeAllObjects];
+    [self.uploadFilesTable.yellowRows removeAllObjects];
+    [self.uploadFilesTable.redRows removeAllObjects];
+
     [self.uploadFilesTable reloadData];
     [self.uploadFilesTable setEnabled:YES];
 
@@ -408,5 +417,20 @@ typedef enum {
 - (void)addError:(NSString *)errorDescription forEvent:(NSString *)event {
     [self.errorsDataSource.errors addObject:[[[UploadError alloc] initWithEvent:event andErrorDescription:errorDescription] autorelease]];
     [self.errorsTable reloadData];
+}
+
+- (void)addSuccessFileIndex:(NSInteger)index {
+    [self.uploadFilesTable.greenRows addObject:[NSNumber numberWithInteger:index]];
+
+}
+
+- (void)addErrorFileIndex:(NSInteger)index {
+    [self.uploadFilesTable.redRows addObject:[NSNumber numberWithInteger:index]];
+
+}
+
+- (void)addExistFileIndex:(NSInteger)index {
+    [self.uploadFilesTable.yellowRows addObject:[NSNumber numberWithInteger:index]];
+
 }
 @end

@@ -24,6 +24,7 @@
 #import "UploadFilesDataSource.h"
 #import "AboutWindowController.h"
 #import "TextUtils.h"
+#import "UploadTableView.h"
 
 #define APP_NAME @"Fotki"
 
@@ -278,6 +279,7 @@
         LOG(@"Error occurred: %@", exception.description);
         [self.controllerUploadWindow addError:exception.description forEvent:@"Upload images"];
         self.dragStatusView.isEnable = YES;
+        [self.controllerUploadWindow.uploadFilesTable reloadData];
         [self.controllerUploadWindow setStateUploadedWithException:exception];
     }
 
@@ -300,6 +302,7 @@
                 NSString *crcFile = [CRCUtils crcFromDataAsString:[FileSystemHelper getFileData:pathFile]];
                 if ([self.serviceFacade checkCrc32:crcFile inAlbum:album]) {
                     LOG(@"File '%@' already exists on server, skipping it", pathFile);
+                    [self.controllerUploadWindow addExistFileIndex:indexFilePath];
                     isFileUploaded = YES;
                     [statisticsCalculator setUploadSuccessForPath:pathFile];
                 } else {
@@ -341,11 +344,13 @@
                     }];
 
                     LOG(@"File '%@' was successfully uploaded", pathFile);
+                    [self.controllerUploadWindow addSuccessFileIndex:indexFilePath];
                     [statisticsCalculator setUploadSuccessForPath:pathFile];
                     isFileUploaded = YES;
                 }
             } @catch (ApiException *ex) {
                 LOG(@"Error uploading file '%@', reason: %@", pathFile, ex.description);
+                [self.controllerUploadWindow addErrorFileIndex:indexFilePath];
                 [self.controllerUploadWindow addError:ex.description forEvent:[NSString stringWithFormat:@"Uploading file: %@", pathFile]];
                 countAttempts++;
                 isFileUploaded = NO;
@@ -359,6 +364,7 @@
     self.isUploadFinished = YES;
 
     [NSThread doInMainThread:^() {
+        [self.controllerUploadWindow.uploadFilesTable reloadData];
         [self.controllerUploadWindow setStateUploadedWithLinkToAlbum:linkToAlbum arrayPathsFilesFailed:[statisticsCalculator arrayPathsFilesFailed]];
     }          waitUntilDone:YES];
 }

@@ -11,13 +11,14 @@
 @class UploadFilesDataSource;
 @class ErrorsDataSource;
 @class ClickableTextField;
+@class UploadTableView;
 
 @interface UploadWindowController : NSWindowController<NSComboBoxDataSource, NSWindowDelegate, NSDraggingDestination>
 
 @property(nonatomic, retain) NSArray *arrayAlbums;
 
 @property(nonatomic, retain) IBOutlet NSTextField *welcomeLabel;
-@property(nonatomic, retain) IBOutlet NSTableView *uploadFilesTable;
+@property(nonatomic, retain) IBOutlet UploadTableView *uploadFilesTable;
 @property(nonatomic, retain) UploadFilesDataSource *uploadFilesDataSource;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesAddButton;
 @property(nonatomic, retain) IBOutlet NSButton *uploadFilesDeleteButton;
@@ -63,4 +64,10 @@
 - (void)setStateUploadedWithLinkToAlbum:(NSString *)urlToAlbum arrayPathsFilesFailed:(NSMutableArray *)arrayPathsFilesFailed;
 
 - (void)addError:(NSString *)errorDescription forEvent:(NSString *)event;
+
+- (void)addSuccessFileIndex:(NSInteger)index;
+
+- (void)addErrorFileIndex:(NSInteger)integer;
+
+- (void)addExistFileIndex:(NSInteger)integer;
 @end
