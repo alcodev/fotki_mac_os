@@ -167,7 +167,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="177183157">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">138413056</int>
-								<string key="NSContents">Copyright @ 2012 Your company name</string>
+								<string key="NSContents">© 1998-2012 FOTKI INC or its affiliates</string>
 								<object class="NSFont" key="NSSupport" id="136878847">
 									<string key="NSName">LucidaGrande</string>
 									<double key="NSSize">12</double>
@@ -484,7 +484,7 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NS.key.0">fotki_icon</string>
-			<string key="NS.object.0">{48, 48}</string>
+			<string key="NS.object.0">{512, 512}</string>
 		</object>
 	</data>
 </archive>

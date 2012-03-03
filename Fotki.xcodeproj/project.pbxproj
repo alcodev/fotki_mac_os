@@ -69,7 +69,6 @@
 		E1EE7F8414AC79AA003AD97A /* BadgeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD979 /* BadgeUtils.m */; };
 		E1EE7F8414AC79AA003AD97E /* ImageWithSiteSynchronizator.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD97D /* ImageWithSiteSynchronizator.m */; };
 		E1EE7F8414AC79AA003AD982 /* DirectoryUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */; };
-		E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD984 /* fotki_icon.png */; };
 		E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */; };
 		E1EE7F8414AC79AA003AD989 /* DialogUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD988 /* DialogUtils.m */; };
 		E1EE7F8414AC79AA003AD98C /* AlbumsExtracter.m in Sources */ = {isa = PBXBuildFile; fileRef = E1EE7F8414AC79AA003AD98B /* AlbumsExtracter.m */; };
@@ -227,7 +226,6 @@
 		E1EE7F8414AC79AA003AD97F /* ImageWithSiteSynchronizator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageWithSiteSynchronizator.h; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD981 /* DirectoryUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD983 /* DirectoryUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryUtils.h; sourceTree = "<group>"; };
-		E1EE7F8414AC79AA003AD984 /* fotki_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fotki_icon.png; path = Resources/fotki_icon.png; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = fotki_icon.icns; path = Resources/fotki_icon.icns; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD988 /* DialogUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DialogUtils.m; sourceTree = "<group>"; };
 		E1EE7F8414AC79AA003AD98A /* DialogUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DialogUtils.h; sourceTree = "<group>"; };
@@ -400,7 +398,6 @@
 				E1EE7F8414AC79AA003AD99D /* F-online.png */,
 				E1EE7F8414AC79AA003AD99B /* F-offline.png */,
 				E1EE7F8414AC79AA003AD986 /* fotki_icon.icns */,
-				E1EE7F8414AC79AA003AD984 /* fotki_icon.png */,
 				E1EE7F7F14AC79AA003AD8DF /* check.icns */,
 				E1EE7F8014AC79AA003AD8DF /* nosync.icns */,
 				E1EE7F8114AC79AA003AD8DF /* updated.icns */,
@@ -780,7 +777,6 @@
 				E1EE7F8214AC79AA003AD8DF /* check.icns in Resources */,
 				E1EE7F8314AC79AA003AD8DF /* nosync.icns in Resources */,
 				E1EE7F8414AC79AA003AD8DF /* updated.icns in Resources */,
-				E1EE7F8414AC79AA003AD985 /* fotki_icon.png in Resources */,
 				E1EE7F8414AC79AA003AD987 /* fotki_icon.icns in Resources */,
 				E1EE7F8414AC79AA003AD99C /* F-offline.png in Resources */,
 				E1EE7F8414AC79AA003AD99E /* F-online.png in Resources */,
