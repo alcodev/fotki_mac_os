@@ -41,11 +41,11 @@
                                  withHighlight:self.isMenuVisible];
     if (self.isOnline) {
         NSImage *iconImage = [[NSImage imageNamed:@"F-online.png"] extractAsImageRepresentationOfSize:0];
-        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
+        [iconImage drawInRect:CGRectMake(3, 3, iconImage.size.width, iconImage.size.height) fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
     }
     else {
         NSImage *iconImage = [[NSImage imageNamed:@"F-offline.png"] extractAsImageRepresentationOfSize:0];
-        [iconImage drawInRect:[self bounds] fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
+        [iconImage drawInRect:CGRectMake(3, 3, iconImage.size.width, iconImage.size.height) fromRect:NSZeroRect operation:NSCompositeHighlight fraction:1];
     }
 }
 
