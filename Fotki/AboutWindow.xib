@@ -103,7 +103,7 @@
 							<object class="NSTextFieldCell" key="NSCell" id="993805571">
 								<int key="NSCellFlags">68288064</int>
 								<int key="NSCellFlags2">138413056</int>
-								<string key="NSContents">Application name</string>
+								<string key="NSContents">Fotki</string>
 								<object class="NSFont" key="NSSupport">
 									<string key="NSName">LucidaGrande-Bold</string>
 									<double key="NSSize">14</double>
